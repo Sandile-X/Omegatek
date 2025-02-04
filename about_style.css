@@ -1,0 +1,337 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600&display=swap");
+* {
+  font-family: 'Montserrat', sans-serif;
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  outline: none;
+  border: none;
+  text-decoration: none;
+  -webkit-transition: all .2s linear;
+  transition: all .2s linear;
+}
+
+html {
+  font-size: 62.5%;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+}
+
+html::-webkit-scrollbar {
+  width: 1rem;
+}
+
+html::-webkit-scrollbar-track {
+  background: #fff;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: #b30ce6;
+  border-radius: 5rem;
+}
+
+section {
+  padding: 5rem 10%;
+}
+
+section {
+  padding: 5rem 10%;
+}
+
+.heading {
+  text-align: center;
+  margin-bottom: 3rem;
+  font-size: 4rem;
+  text-transform: capitalize;
+  color: #334;
+}
+
+.heading span {
+  color: #b30ce6;
+}
+
+.btn {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 1rem 3rem;
+  cursor: pointer;
+  background: #fff;
+  font-size: 1.7rem;
+  text-transform: capitalize;
+  color: #334;
+  border: 0.2rem solid #334;
+}
+
+.btn:hover {
+  background: #b30ce6;
+  border-color: #b30ce6;
+  color: #fff;
+}
+
+.header .contact-info {
+  padding: 2rem 10%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  background: #b30ce6;
+}
+
+.header .contact-info p {
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+.header .contact-info p i {
+  padding-right: .5rem;
+  color: yellow;
+}
+
+.header .navbar {
+  padding: 2rem 10%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  background: #fff;
+  border-bottom: 0.2rem solid #334;
+  position: relative;
+  z-index: 1000;
+  height: 70px;
+}
+
+.header .navbar.active {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  border-bottom: none;
+  -webkit-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+          box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+.header .navbar .logo img {
+  width: 200px; /* Adjust the size of your logo */
+  height: auto; /* Maintain aspect ratio */
+  cursor: pointer; /* Changes cursor to pointer on hover */
+}
+
+/* General Styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+/* Hero Section Styles */
+.hero-section {
+    position: relative;
+    height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.hero-section video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+.hero-text {
+    color: white;
+    text-align: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+}
+
+.hero-text h1 {
+    font-size: 3rem;
+    margin: 0;
+}
+
+.hero-text p {
+    font-size: 1.2rem;
+}
+
+
+/* About Section */
+.about-section {
+  background-color: #f9f9f9;
+  padding: 50px 20px;
+}
+
+.about-section .container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.about-section .main-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.about-section .text {
+  flex: 1;
+  min-width: 300px;
+  max-width: 600px;
+}
+
+.about-section .text h2 {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.about-section .text p {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.about-section .text .btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #25D366;
+  color: white;
+  text-transform: uppercase;
+  font-weight: bold;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.about-section .text .btn:hover {
+  background-color: #1ebe57;
+}
+
+.about-section .media {
+  flex: 1;
+  min-width: 300px;
+  max-width: 600px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.about-section .media .image, .about-section .media .video {
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Tiles Section */
+.about-section .tiles {
+  margin-top: 50px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  position: relative;
+}
+
+.about-section .tiles .tile {
+  background: white;
+  padding: 20px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.about-section .tiles .tile:hover {
+  transform: scale(1.05);
+  background-color: #f7f7f7;
+}
+
+.about-section .tiles .tile img {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 10px;
+}
+
+.about-section .tiles .tile h3 {
+  font-size: 1.8rem;
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.about-section .tiles .tile .tile-text {
+  font-size: 1rem;
+  color: #666;
+  margin-top: 10px;
+  display: none;
+}
+
+.about-section .tiles .tile.left {
+  transform: translateX(-20%);
+}
+
+.about-section .tiles .tile.right {
+  transform: translateX(20%);
+}
+
+
+
+
+
+
+
+.header .navbar .logo {
+  font-size: 2.5rem;
+  text-transform: capitalize;
+  color: #334;
+  font-weight: bolder;
+}
+
+.header .navbar .logo i {
+  color: #b30ce6;
+}
+
+.header .navbar .links a {
+  margin-left: 2rem;
+  font-size: 2rem;
+  text-transform: capitalize;
+  color: #334;
+}
+
+.header .navbar .links a:hover {
+  text-decoration: underline;
+  color: #b30ce6;
+}
+
+.header #menu-btn {
+  font-size: 3rem;
+  cursor: pointer;
+  color: #334;
+  display: none;
+}
