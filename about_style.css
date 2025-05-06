@@ -300,11 +300,246 @@ body {
   transform: translateX(20%);
 }
 
+/* About Page Styles */
+.about-page {
+    padding: 6rem 5%;
+    background: #fff;
+}
 
+.about-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
 
+.about-title {
+    text-align: center;
+    font-size: 4rem;
+    color: #334;
+    margin-bottom: 3rem;
+}
 
+.about-title span {
+    color: #b30ce6;
+}
 
+.about-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    margin-bottom: 5rem;
+}
 
+.about-image {
+    flex: 1 1 30rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.about-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 1rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+.about-text {
+    flex: 1 1 50rem;
+}
+
+.about-text h2 {
+    font-size: 2.5rem;
+    color: #b30ce6;
+    margin-bottom: 1.5rem;
+}
+
+.about-text p {
+    font-size: 1.6rem;
+    color: #777;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+}
+
+/* Timeline Styles */
+.timeline {
+    margin: 5rem 0;
+}
+
+.timeline h2 {
+    font-size: 3rem;
+    color: #334;
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.timeline-container {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.timeline-container::after {
+    content: '';
+    position: absolute;
+    width: 0.6rem;
+    background-color: #b30ce6;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    margin-left: -0.3rem;
+    border-radius: 1rem;
+}
+
+.timeline-item {
+    padding: 1rem 4rem;
+    position: relative;
+    width: 50%;
+    box-sizing: border-box;
+    margin-bottom: 3rem;
+}
+
+.timeline-item:nth-child(odd) {
+    left: 0;
+    text-align: right;
+}
+
+.timeline-item:nth-child(even) {
+    left: 50%;
+}
+
+.timeline-dot {
+    position: absolute;
+    width: 2.5rem;
+    height: 2.5rem;
+    right: -1.25rem;
+    background-color: white;
+    border: 0.4rem solid #b30ce6;
+    top: 1.5rem;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.timeline-item:nth-child(even) .timeline-dot {
+    left: -1.25rem;
+}
+
+.timeline-date {
+    font-size: 2.2rem;
+    color: #b30ce6;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.timeline-content {
+    padding: 2rem;
+    background-color: white;
+    border-radius: 0.6rem;
+    box-shadow: 0 0.3rem 0.6rem rgba(0, 0, 0, 0.1);
+}
+
+.timeline-content h3 {
+    font-size: 2rem;
+    color: #334;
+    margin-bottom: 1rem;
+}
+
+.timeline-content p {
+    font-size: 1.5rem;
+    color: #777;
+    line-height: 1.6;
+}
+
+/* CTA Section */
+.cta-section {
+    text-align: center;
+    background-color: #f5f5f5;
+    padding: 4rem 2rem;
+    border-radius: 1rem;
+    margin-top: 5rem;
+}
+
+.cta-section h2 {
+    font-size: 2.8rem;
+    color: #334;
+    margin-bottom: 1rem;
+}
+
+.cta-section p {
+    font-size: 1.8rem;
+    color: #777;
+    margin-bottom: 2rem;
+}
+
+.cta-section .btn {
+    font-size: 1.8rem;
+    padding: 1.2rem 3.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 991px) {
+    .timeline-container::after {
+        left: 3.1rem;
+    }
+    
+    .timeline-item {
+        width: 100%;
+        padding-left: 7rem;
+        padding-right: 2rem;
+    }
+    
+    .timeline-item:nth-child(odd) {
+        text-align: left;
+    }
+    
+    .timeline-item:nth-child(even) {
+        left: 0%;
+    }
+    
+    .timeline-dot {
+        left: 0.9rem;
+        right: auto;
+    }
+    
+    .timeline-item:nth-child(even) .timeline-dot {
+        left: 0.9rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-title {
+        font-size: 3rem;
+    }
+    
+    .about-text h2 {
+        font-size: 2.2rem;
+    }
+    
+    .timeline h2 {
+        font-size: 2.5rem;
+    }
+    
+    .cta-section h2 {
+        font-size: 2.2rem;
+    }
+}
+
+@media (max-width: 450px) {
+    .about-page {
+        padding: 3rem 2rem;
+    }
+    
+    .about-title {
+        font-size: 2.5rem;
+    }
+    
+    .timeline-date {
+        font-size: 1.8rem;
+    }
+    
+    .timeline-content h3 {
+        font-size: 1.8rem;
+    }
+}
 
 .header .navbar .logo {
   font-size: 2.5rem;

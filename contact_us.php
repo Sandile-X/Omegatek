@@ -1,30 +1,50 @@
 <?php
+// Set headers to prevent CORS issues
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
+
+// Initialize response array
+$response = [
+    "status" => "error",
+    "message" => "An error occurred"
+];
+
+// Check if form was submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $name = htmlspecialchars($_POST['name']);
-    $email = htmlspecialchars($_POST['email']);
-    $phone = htmlspecialchars($_POST['phone']);
-    $message = htmlspecialchars($_POST['message']);
-
-    // Set your email details
-    $to = "your_email@example.com";
-    $subject = "New Contact Form Submission";
-    $headers = "From: $email";
-
-    // Email body
-    $emailBody = "Name: $name\n";
-    $emailBody .= "Email: $email\n";
-    $emailBody .= "Phone: $phone\n";
-    $emailBody .= "Message:\n$message\n";
-
-    // Send the email
-    if (mail($to, $subject, $emailBody, $headers)) {
-        // Redirect to thank-you page
-        header("Location: thank_you.html");
-        exit();
+    // Get form data
+    $name = isset($_POST['name']) ? strip_tags(trim($_POST['name'])) : '';
+    $phone = isset($_POST['phone']) ? strip_tags(trim($_POST['phone'])) : '';
+    $message = isset($_POST['message']) ? strip_tags(trim($_POST['message'])) : '';
+    
+    // Validate form data
+    if (empty($name) || empty($phone) || empty($message)) {
+        $response["message"] = "All fields are required";
     } else {
-        echo "Failed to send message. Please try again.";
+        // Admin email address
+        $to = "sales@megatronixx.co.za";
+        
+        // Email subject
+        $subject = "New Contact Form Submission from Megatronixx Website";
+        
+        // Prepare email content
+        $email_content = "Name: $name\n";
+        $email_content .= "Phone: $phone\n\n";
+        $email_content .= "Message:\n$message\n";
+        
+        // Email headers
+        $headers = "From: no-reply@megatronixx.co.za\r\n";
+        $headers .= "Reply-To: $name <$phone>\r\n";
+        
+        // Send email
+        if (mail($to, $subject, $email_content, $headers)) {
+            $response["status"] = "success";
+            $response["message"] = "Thank you! Your message has been sent.";
+        } else {
+            $response["message"] = "Oops! Something went wrong, we couldn't send your message.";
+        }
     }
-} else {
-    echo "Invalid request.";
 }
+
+// Return JSON response
+echo json_encode($response);
 ?>
