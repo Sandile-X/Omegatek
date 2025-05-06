@@ -98,8 +98,9 @@
 
       <div class="links">
          <a href="#hero">home</a>
-         <a href="#about">about</a>
-         <a href="#services">services</a>
+         <a href="about.html">about</a>
+         <a href="services.html">services</a>
+         <a href="blog.html">blog</a>
          <a href="#gallery">gallery</a>
          <a href="#team">team</a>
          <a href="#reviews">reviews</a>
@@ -268,6 +269,54 @@
 </section>
 
 <!-- services section ends -->
+
+<!-- pricing section starts -->
+<section class="pricing" id="pricing">
+   <h1 class="heading"> our <span>pricing</span> </h1>
+   
+   <div class="box-container">
+      <div class="price-box">
+         <h3>Basic Repair</h3>
+         <div class="price">R300<span>/starting from</span></div>
+         <img src="images/service-3.svg" alt="">
+         <ul>
+            <li><i class="fas fa-check"></i> Screen Replacements</li>
+            <li><i class="fas fa-check"></i> Battery Replacements</li>
+            <li><i class="fas fa-check"></i> Basic Diagnostics</li>
+            <li><i class="fas fa-check"></i> Software Issues</li>
+         </ul>
+         <button id="basicRepairBtn" class="btn book-btn">Book Now</button>
+      </div>
+      
+      <div class="price-box featured">
+         <div class="banner">Popular</div>
+         <h3>Standard Repair</h3>
+         <div class="price">R550<span>/starting from</span></div>
+         <img src="images/service-1.svg" alt="">
+         <ul>
+            <li><i class="fas fa-check"></i> Computer/Laptop Repairs</li>
+            <li><i class="fas fa-check"></i> Gaming Console Fixes</li>
+            <li><i class="fas fa-check"></i> Data Recovery</li>
+            <li><i class="fas fa-check"></i> Hardware Upgrades</li>
+         </ul>
+         <button id="standardRepairBtn" class="btn book-btn">Book Now</button>
+      </div>
+      
+      <div class="price-box">
+         <h3>Premium Service</h3>
+         <div class="price">R800<span>/starting from</span></div>
+         <img src="images/service-5.svg" alt="">
+         <ul>
+            <li><i class="fas fa-check"></i> Advanced Electronics</li>
+            <li><i class="fas fa-check"></i> TV/Home Theater Repair</li>
+            <li><i class="fas fa-check"></i> Complex Board Repairs</li>
+            <li><i class="fas fa-check"></i> Priority Service</li>
+         </ul>
+         <button id="premiumRepairBtn" class="btn book-btn">Book Now</button>
+      </div>
+   </div>
+</section>
+<!-- pricing section ends -->
 
 <!-- gallery section starts  -->
 
@@ -505,6 +554,47 @@
 </section>
 
 <!-- contact section ends -->
+
+<!-- Booking Modal -->
+<div id="bookingModal" class="modal">
+   <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h3>Book a Repair Service</h3>
+      <form id="bookingForm">
+         <div class="inputBox">
+            <input type="text" id="bookingName" placeholder="Your Name" required>
+            <input type="tel" id="bookingPhone" placeholder="Your Phone Number" required>
+         </div>
+         <div class="inputBox">
+            <select id="serviceType" required>
+               <option value="" disabled selected>Select Service Type</option>
+               <option value="Computer Repair">Computer Repair</option>
+               <option value="Laptop Repair">Laptop Repair</option>
+               <option value="Smartphone Repair">Smartphone Repair</option>
+               <option value="Game Console Repair">Game Console Repair</option>
+               <option value="Multimedia Repair">Multimedia Repair</option>
+               <option value="Smartwatch Repair">Smartwatch Repair</option>
+            </select>
+            <select id="preferredTime" required>
+               <option value="" disabled selected>Preferred Time</option>
+               <option value="Morning (9AM-12PM)">Morning (9AM-12PM)</option>
+               <option value="Afternoon (12PM-3PM)">Afternoon (12PM-3PM)</option>
+               <option value="Evening (3PM-7PM)">Evening (3PM-7PM)</option>
+            </select>
+         </div>
+         <div class="inputBox">
+            <input type="date" id="preferredDate" min="" required>
+         </div>
+         <textarea id="issueDescription" placeholder="Describe your device and the issue you're experiencing" cols="30" rows="5" required></textarea>
+         <input type="submit" value="Book Now" class="btn">
+      </form>
+   </div>
+</div>
+
+<!-- Floating Book Now Button -->
+<div class="floating-button">
+   <button id="openBooking" class="btn">Book Now</button>
+</div>
 
 <!-- footer section starts  -->
 
