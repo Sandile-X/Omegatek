@@ -71,22 +71,26 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     
     // Read More button functionality
-    // In a real implementation, these would link to individual blog post pages
+    // Only intercept links that don't have proper destinations
     const readMoreButtons = document.querySelectorAll(".read-more");
     readMoreButtons.forEach(button => {
-        button.addEventListener("click", function(e) {
-            e.preventDefault();
-            
-            // Get the post title
-            let postTitle;
-            if (this.closest(".featured-post")) {
-                postTitle = this.closest(".featured-post").querySelector("h2").textContent;
-            } else {
-                postTitle = this.closest(".post-card").querySelector("h3").textContent;
-            }
-            
-            alert(`Full article for "${postTitle}" coming soon! This would normally link to the full blog post.`);
-        });
+        // Check if the link is just a placeholder "#" link
+        if (button.getAttribute("href") === "#") {
+            button.addEventListener("click", function(e) {
+                e.preventDefault();
+                
+                // Get the post title
+                let postTitle;
+                if (this.closest(".featured-post")) {
+                    postTitle = this.closest(".featured-post").querySelector("h2").textContent;
+                } else {
+                    postTitle = this.closest(".post-card").querySelector("h3").textContent;
+                }
+                
+                alert(`Full article for "${postTitle}" coming soon! This would normally link to the full blog post.`);
+            });
+        }
+        // Let links with real destinations (like blog-post-maintenance-tips.html) work normally
     });
     
     // Pagination functionality (for demonstration)

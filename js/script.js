@@ -82,11 +82,41 @@ function validateEmail(email) {
 
 // Typewriter effect for hero section
 document.addEventListener("DOMContentLoaded", function() {
-   const typewriterElement = document.querySelector(".typewriter h2");
-   if (typewriterElement) {
-      typewriterElement.style.animation = "typing 3s steps(30, end) forwards, blink 0.7s step-end infinite alternate";
-   }
+    // Initialize the typewriter animation
+    initTypewriter();
 });
+
+function initTypewriter() {
+    const typewriterElement = document.querySelector(".typewriter h2");
+    if (typewriterElement) {
+        // Reset the animation to ensure it runs continuously
+        typewriterElement.style.animation = 'none';
+        typewriterElement.offsetHeight; // Trigger reflow
+        typewriterElement.style.animation = `
+            typing 3s steps(30, end), 
+            blink 0.7s step-end infinite alternate
+        `;
+
+        // Set a recurring animation reset
+        setInterval(() => {
+            // Remove the animation temporarily
+            typewriterElement.style.animation = 'none';
+            typewriterElement.offsetHeight; // Trigger reflow
+            
+            // Restart the animation
+            typewriterElement.style.animation = `
+                typing 3s steps(30, end), 
+                blink 0.7s step-end infinite alternate
+            `;
+            
+            // Reset the width to zero to restart typing effect
+            typewriterElement.style.width = '0';
+            setTimeout(() => {
+                typewriterElement.style.width = '';
+            }, 50);
+        }, 6000); // Reset every 6 seconds (3s typing + 3s pause)
+    }
+}
 
 // Gallery lightbox initialization
 document.addEventListener("DOMContentLoaded", function() {
@@ -243,6 +273,75 @@ document.addEventListener("DOMContentLoaded", function() {
                 serviceTypeSelect.selectedIndex = 4; // Multimedia Repair option
             }
         });
+    }
+});
+
+// Reviews Slideshow
+document.addEventListener("DOMContentLoaded", function() {
+    const reviewsSlides = document.querySelectorAll(".reviews-slide");
+    const navigationDots = document.querySelectorAll(".reviews-nav .dot");
+    let currentSlide = 0;
+    let slideshowInterval;
+
+    // Function to show a specific slide
+    function showSlide(slideIndex) {
+        // Hide all slides
+        reviewsSlides.forEach(slide => {
+            slide.classList.remove("active");
+        });
+        
+        // Remove active class from all dots
+        navigationDots.forEach(dot => {
+            dot.classList.remove("active");
+        });
+        
+        // Show the current slide
+        reviewsSlides[slideIndex].classList.add("active");
+        navigationDots[slideIndex].classList.add("active");
+        
+        // Update current slide index
+        currentSlide = slideIndex;
+    }
+    
+    // Function to show the next slide
+    function nextSlide() {
+        let nextIndex = currentSlide + 1;
+        if (nextIndex >= reviewsSlides.length) {
+            nextIndex = 0; // Loop back to the first slide
+        }
+        showSlide(nextIndex);
+    }
+    
+    // Start automatic slideshow with 90-second intervals (1.5 minutes)
+    function startSlideshow() {
+        slideshowInterval = setInterval(nextSlide, 90000); // 90000 ms = 1.5 minutes
+    }
+    
+    // Stop the automatic slideshow
+    function stopSlideshow() {
+        clearInterval(slideshowInterval);
+    }
+    
+    // Initialize the slideshow
+    if (reviewsSlides.length > 0) {
+        showSlide(0); // Show the first slide
+        startSlideshow(); // Start automatic transitions
+        
+        // Add click event listeners to navigation dots
+        navigationDots.forEach((dot, index) => {
+            dot.addEventListener("click", function() {
+                stopSlideshow(); // Stop the automatic slideshow when manual navigation is used
+                showSlide(index); // Show the clicked slide
+                startSlideshow(); // Restart automatic transitions
+            });
+        });
+        
+        // Pause slideshow when user hovers over the slideshow area
+        const reviewsContainer = document.querySelector(".reviews-container");
+        if (reviewsContainer) {
+            reviewsContainer.addEventListener("mouseenter", stopSlideshow);
+            reviewsContainer.addEventListener("mouseleave", startSlideshow);
+        }
     }
 });
 

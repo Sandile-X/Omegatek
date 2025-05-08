@@ -483,13 +483,34 @@ section {
 
 .reviews {
   background: #f5f5f5;
+  padding: 5rem 10%;
+}
+
+.reviews .reviews-container {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.reviews .reviews-slider {
+  overflow: hidden;
+  position: relative;
+}
+
+.reviews .reviews-slide {
+  display: none;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.reviews .reviews-slide.active {
+  display: block;
+  opacity: 1;
 }
 
 .reviews .box-container {
-  display: -ms-grid;
   display: grid;
-  -ms-grid-columns: (minmax(30rem, 1fr))[auto-fit];
-      grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
   gap: 2rem;
 }
 
@@ -497,13 +518,17 @@ section {
   text-align: center;
   padding: 3rem;
   background: #fff;
-  -webkit-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-          box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
   border: 0.2rem solid #334;
+  transition: transform 0.3s ease, background 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .reviews .box-container .box:hover {
   background: #334;
+  transform: translateY(-10px);
 }
 
 .reviews .box-container .box:hover .text p {
@@ -523,6 +548,7 @@ section {
   position: relative;
   z-index: 0;
   padding: 1.5rem 0;
+  flex-grow: 1;
 }
 
 .reviews .box-container .box .text i {
@@ -530,8 +556,7 @@ section {
   position: absolute;
   top: 50%;
   left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-          transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
   z-index: -1;
   opacity: .3;
   color: #b30ce6;
@@ -543,17 +568,50 @@ section {
   color: #777;
 }
 
-.reviews .box-container .box .user img {
-  height: 7rem;
-  width: 7rem;
-  border-radius: 50%;
-  margin-bottom: .5rem;
+.reviews .box-container .box .user {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: auto;
+}
+
+.reviews .box-container .box .user .user-icon {
+  font-size: 3.5rem;
+  color: #b30ce6;
+  margin-right: 1rem;
 }
 
 .reviews .box-container .box .user h3 {
   font-size: 1.7rem;
   text-transform: capitalize;
   color: #334;
+}
+
+/* Navigation Dots */
+.reviews-nav {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+}
+
+.reviews-nav .dot {
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  background: #ccc;
+  margin: 0 0.5rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.reviews-nav .dot.active {
+  background: #b30ce6;
+}
+
+@media (max-width: 768px) {
+  .reviews .box-container {
+    grid-template-columns: 1fr;
+  }
 }
 
 .contact .row {
@@ -880,6 +938,8 @@ section {
   text-align: center;
   border-left: 5px solid #000;
   padding: 20px;
+  position: relative;
+  overflow: hidden;
 }
 
 /* Typewriter Effect - Fix */
@@ -893,7 +953,15 @@ section {
   animation: 
     typing 3s steps(30, end) forwards, 
     blink 0.7s step-end infinite alternate,
-    typingReset 3s steps(1, end) 3s infinite;
+    resetTypewriter 12s steps(1) infinite; /* 3s typing + 5s delay + 4s for reset */
+  position: relative;
+  background: transparent;
+}
+
+/* Animation container to handle the loop */
+.typewriter {
+  position: relative;
+  overflow: hidden;
 }
 
 /* Typing Animation */
@@ -902,10 +970,11 @@ section {
   to { width: 100%; }
 }
 
-/* Reset Animation for infinite loop */
-@keyframes typingReset {
-  from { width: 100%; }
-  to { width: 0; }
+/* New reset animation with proper timing */
+@keyframes resetTypewriter {
+  0%, 24.9% { width: 0; }
+  25%, 65% { width: 100%; } /* Stay at 100% for 5 seconds (41% of total animation time) */
+  65.1%, 100% { width: 0; }
 }
 
 /* Cursor Blinking Effect */
