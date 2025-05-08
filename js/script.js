@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function() {
          }
          
          // Create WhatsApp message content
-         const whatsappNumber = "0736538207"; 
+         const whatsappNumber = "27736538207"; 
          const whatsappUrl = `https://wa.me/${whatsappNumber}?text=Name:%20${encodeURIComponent(userName)}%0APhone:%20${encodeURIComponent(userPhone)}%0AMessage:%20${encodeURIComponent(userMessage)}`;
          
          // Redirect to WhatsApp
@@ -185,7 +185,7 @@ document.addEventListener("DOMContentLoaded", function() {
                             `Description: ${issueDescription}`;
             
             // Open WhatsApp with pre-filled message
-            const whatsappNumber = "0736538207";
+            const whatsappNumber = "27736538207";
             const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
             window.open(whatsappUrl, "_blank");
             
