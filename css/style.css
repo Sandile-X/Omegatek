@@ -887,15 +887,25 @@ section {
   display: inline-block;
   overflow: hidden;
   white-space: nowrap;
-  border-right: 3px solid #b30ce6; /* Cursor effect */
+  border-right: 4px solid #b30ce6; /* Cursor effect - slightly thicker */
   width: 0;
-  animation: typing 3s steps(30, end) forwards, blink 0.7s step-end infinite alternate;
+  font-size: 3.5rem; /* Bigger text */
+  animation: 
+    typing 3s steps(30, end) forwards, 
+    blink 0.7s step-end infinite alternate,
+    typingReset 3s steps(1, end) 3s infinite;
 }
 
 /* Typing Animation */
 @keyframes typing {
   from { width: 0; }
   to { width: 100%; }
+}
+
+/* Reset Animation for infinite loop */
+@keyframes typingReset {
+  from { width: 100%; }
+  to { width: 0; }
 }
 
 /* Cursor Blinking Effect */
