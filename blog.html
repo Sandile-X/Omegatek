@@ -6,11 +6,45 @@
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    
    <!-- SEO Meta Tags -->
-   <meta name="description" content="Tech repair tips, electronics maintenance advice, and tech insights from Megatronixx - Your Midrand electronics repair experts.">
+   <meta name="description" content="Tech repair tips, electronics maintenance advice, and tech insights from Omegatek Solutions - Your Midrand electronics repair experts.">
    <meta name="keywords" content="tech tips, electronics repair, computer maintenance, smartphone repair, Midrand, tech advice">
-   <meta name="author" content="Megatronixx">
+   <meta name="author" content="Omegatek Solutions">
+   <!-- Open Graph Meta Tags -->
+   <meta property="og:title" content="Tech Blog | Repair Tips & Advice | Omegatek Solutions" />
+   <meta property="og:description" content="Tech repair tips, electronics maintenance advice, and tech insights from Omegatek Solutions - Your Midrand electronics repair experts." />
+   <meta property="og:type" content="website" />
+   <meta property="og:url" content="https://omegatek.co.za/blog.html" />
+   <meta property="og:image" content="https://omegatek.co.za/images2/OMEGATEK_SOLUTIONS_9-NO BG.png" />
+
+   <!-- Twitter Card Meta Tags -->
+   <meta name="twitter:card" content="summary_large_image" />
+   <meta name="twitter:title" content="Tech Blog | Repair Tips & Advice | Omegatek Solutions" />
+   <meta name="twitter:description" content="Tech repair tips, electronics maintenance advice, and tech insights from Omegatek Solutions - Your Midrand electronics repair experts." />
+   <meta name="twitter:image" content="https://omegatek.co.za/images2/OMEGATEK_SOLUTIONS_9-NO BG.png" />
+
+   <!-- Canonical Tag -->
+   <link rel="canonical" href="https://omegatek.co.za/blog.html" />
+
+   <!-- Structured Data: Blog -->
+   <script type="application/ld+json">
+   {
+     "@context": "https://schema.org",
+     "@type": "Blog",
+     "name": "Omegatek Solutions Blog",
+     "url": "https://omegatek.co.za/blog.html",
+     "description": "Tech repair tips, electronics maintenance advice, and tech insights from Omegatek Solutions.",
+     "publisher": {
+       "@type": "Organization",
+       "name": "Omegatek Solutions",
+       "logo": {
+         "@type": "ImageObject",
+         "url": "https://omegatek.co.za/images2/OMEGATEK_SOLUTIONS_9-NO BG.png"
+       }
+     }
+   }
+   </script>
    
-   <title>Tech Blog | Repair Tips & Advice | Megatronixx</title>
+   <title>Tech Blog | Repair Tips & Advice | Omegatek Solutions</title>
 
    <!-- Font awesome cdn link  -->
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -20,7 +54,7 @@
    <link rel="stylesheet" href="blog_style.css">
 
    <!-- Favicon -->
-   <link rel="icon" type="image/png" href="images2/Megatronix3.png">
+   <link rel="icon" type="image/png" href="images2/OMEGATEK ICON ONLY.png">
 </head>
 <body>
    
@@ -29,14 +63,14 @@
 
    <div class="contact-info">
       <p> <i class="fas fa-map"></i> Midrand, Gauteng, South Africa </p>
-      <p> <i class="fas fa-envelope"></i> sales@megatronixx.co.za </p>
+      <p> <i class="fas fa-envelope"></i> sales@omegatek.co.za </p>
       <p> <i class="fas fa-phone"></i> 073 653 8207 </p>
    </div>
 
    <nav class="navbar">
       <div class="logo">
          <a href="index.html">
-           <img src="images2/Megatronix3-removebg-preview.png" alt="Megatronixx Logo">
+           <img src="images2/OMEGATEK_SOLUTIONS_9-NO BG.png" alt="Omegatek Solutions Logo" loading="lazy">
          </a>
       </div>
 
@@ -47,8 +81,8 @@
          <a href="webdev.html">Web/App Dev</a>
          <a href="blog.html" class="active">blog</a>
          <!-- <a href="index.html#team">team</a> -->
-         <a href="index.html#reviews">reviews</a>
          <a href="index.html#contact">contact</a>
+         <a href="products.html">products</a>
       </div>
 
       <div id="menu-btn" class="fa fa-bars"></div>
@@ -69,14 +103,20 @@
 <!-- Blog category navigation -->
 <div class="blog-categories">
     <div class="container">
-        <ul>
-            <li class="active"><a href="#all">All Posts</a></li>
-            <li><a href="#computers">Computers</a></li>
-            <li><a href="#smartphones">Smartphones</a></li>
-            <li><a href="#maintenance">Maintenance</a></li>
-            <li><a href="#diy">DIY Repairs</a></li>
-            <li><a href="#tech-news">Tech News</a></li>
-        </ul>
+        <div class="blog-nav-content">
+            <ul>
+                <li class="active"><a href="#all">All Posts</a></li>
+                <li><a href="#computers">Computers</a></li>
+                <li><a href="#smartphones">Smartphones</a></li>
+                <li><a href="#maintenance">Maintenance</a></li>
+                <li><a href="#diy">DIY Repairs</a></li>
+                <li><a href="#tech-news">Tech News</a></li>
+            </ul>
+            <div class="blog-search">
+                <input type="text" id="blog-search" placeholder="Search articles...">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -85,7 +125,7 @@
     <div class="container">
         <div class="featured-post">
             <div class="post-image">
-                <img src="images2/A1.avif" alt="Device Maintenance Tips">
+                <img src="images2/A1.avif" alt="Device Maintenance Tips" loading="lazy">
                 <div class="post-date">
                     <span class="day">06</span>
                     <span class="month">May</span>
@@ -106,7 +146,7 @@
         <div class="posts-grid">
             <div class="post-card" id="computers">
                 <div class="post-image">
-                    <img src="images2/gal 1.jpg" alt="Computer Overheating">
+                    <img src="images2/blog/Solving Overheating Issues.jpg" alt="Solving Overheating Issues in Laptops" loading="lazy">
                     <div class="post-date">
                         <span class="day">29</span>
                         <span class="month">Apr</span>
@@ -126,7 +166,7 @@
 
             <div class="post-card" id="smartphones">
                 <div class="post-image">
-                    <img src="images2/gal 3.png" alt="Smartphone Battery Life">
+                    <img src="images2/blog/10 Proven Ways.jpg" alt="10 Proven Ways to Extend Your Smartphone's Battery Life" loading="lazy">
                     <div class="post-date">
                         <span class="day">22</span>
                         <span class="month">Apr</span>
@@ -140,13 +180,13 @@
                     </div>
                     <h3>10 Proven Ways to Extend Your Smartphone's Battery Life</h3>
                     <p>Frustrated with your phone dying before the day ends? These practical battery-saving techniques go beyond the obvious tips, focusing on the settings and habits that have the biggest impact on battery longevity.</p>
-                    <a href="#" class="btn read-more">Read More</a>
+                    <a href="blog-post-smartphone-battery.html" class="btn read-more">Read More</a>
                 </div>
             </div>
 
             <div class="post-card" id="diy">
                 <div class="post-image">
-                    <img src="images2/gal 2.jpeg" alt="RAM Upgrade">
+                    <img src="images2/blog/DIY RAM Upgrade.jpg" alt="DIY RAM Upgrade" loading="lazy">
                     <div class="post-date">
                         <span class="day">15</span>
                         <span class="month">Apr</span>
@@ -160,13 +200,13 @@
                     </div>
                     <h3>DIY RAM Upgrade: A Step-by-Step Guide for All Computer Types</h3>
                     <p>Adding RAM is one of the most cost-effective upgrades for improving computer performance. We break down the process for desktops, laptops, and even some tablets, with model-specific considerations.</p>
-                    <a href="#" class="btn read-more">Read More</a>
+                    <a href="blog-post-diy-ram-upgrade.html" class="btn read-more">Read More</a>
                 </div>
             </div>
 
             <div class="post-card" id="maintenance">
                 <div class="post-image">
-                    <img src="images2/gal 6.png" alt="Data Backup">
+                    <img src="images2/blog/321 backup strat.jpg" alt="The 3-2-1 Backup Strategy" loading="lazy">
                     <div class="post-date">
                         <span class="day">08</span>
                         <span class="month">Apr</span>
@@ -186,7 +226,7 @@
 
             <div class="post-card" id="tech-news">
                 <div class="post-image">
-                    <img src="images2/gal 5.png" alt="Smart Home Security">
+                    <img src="images2/blog/Smart Home Security Vulnerabilities.jpg" alt="Smart Home Security Vulnerabilities" loading="lazy">
                     <div class="post-date">
                         <span class="day">01</span>
                         <span class="month">Apr</span>
@@ -200,13 +240,13 @@
                     </div>
                     <h3>Smart Home Security Vulnerabilities: What You Need to Know</h3>
                     <p>The convenience of connected devices comes with security risks. We examine the most common smart home security flaws and provide practical steps to protect your privacy and security without sacrificing functionality.</p>
-                    <a href="#" class="btn read-more">Read More</a>
+                    <a href="blog-post-smart-home-security.html" class="btn read-more">Read More</a>
                 </div>
             </div>
 
             <div class="post-card">
                 <div class="post-image">
-                    <img src="images/team-2.jpg" alt="Game Console Repair">
+                    <img src="images2/blog/Common Gaming Console Problems.jpg" alt="Common Gaming Console Problems and How to Fix Them" loading="lazy">
                     <div class="post-date">
                         <span class="day">25</span>
                         <span class="month">Mar</span>
@@ -220,7 +260,7 @@
                     </div>
                     <h3>Common Gaming Console Problems and How to Fix Them</h3>
                     <p>Gaming consoles often develop specific issues that can be resolved without professional help. From overheating to disc reading problems, we cover troubleshooting for PlayStation, Xbox, and Nintendo systems.</p>
-                    <a href="#" class="btn read-more">Read More</a>
+                    <a href="blog-post-gaming-console-problems.html" class="btn read-more">Read More</a>
                 </div>
             </div>
         </div>
@@ -262,7 +302,6 @@
          <a class="link" href="blog.html"> <i class="fas fa-angle-right"></i> blog</a>
          <a class="link" href="webdev.html"> <i class="fas fa-angle-right"></i> Web/App Dev</a>
          <!-- <a class="link" href="index.html#team"> <i class="fas fa-angle-right"></i> team</a> -->
-         <a class="link" href="index.html#reviews"> <i class="fas fa-angle-right"></i> reviews</a>
          <a class="link" href="index.html#contact"> <i class="fas fa-angle-right"></i> contact</a>
       </div>
 
@@ -280,7 +319,7 @@
       <div class="box">
          <h3>contact info</h3>
          <a href="index.html#contact" class="link"> <i class="fas fa-phone"></i> 073 653 8207 </a>
-         <a href="index.html#contact" class="link"> <i class="fas fa-envelope"></i> sales@megatronixx.co.za </a>
+         <a href="index.html#contact" class="link"> <i class="fas fa-envelope"></i> sales@omegatek.co.za </a>
          <a href="index.html#contact" class="link"> <i class="fas fa-map"></i> kaalfontein, Midrand, Gauteng, South Africa </a>
       </div>
 
@@ -300,9 +339,14 @@
       </div>
    </div>
 
-   <div class="credit"> created by <span><a href="https://www.facebook.com/sandile.milanzi.10">Sandile Milanzi (Megatronixx)</a></span> | all rights reserved! </div>
+   <div class="credit"> created by <span><a href="https://www.facebook.com/sandile.milanzi.10">Sandile Milanzi (Omegatek Solutions)</a></span> | all rights reserved! </div>
 </section>
 <!-- Footer section ends -->
+
+<!-- Back to top button -->
+<div class="back-to-top">
+    <i class="fas fa-arrow-up"></i>
+</div>
 
 <!-- Custom js file link  -->
 <script src="js/script.js"></script>

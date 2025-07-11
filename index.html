@@ -6,13 +6,50 @@
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    
    <!-- SEO Meta Tags -->
-   <meta name="description" content="Megatronixx provides professional electronics repair services in Midrand, Gauteng. Specializing in computer, laptop, smartphone, game console, and multimedia device repairs.">
+   <meta name="description" content="Omegatek Solutions provides professional electronics repair services in Midrand, Gauteng. Specializing in computer, laptop, smartphone, game console, and multimedia device repairs.">
    <meta name="keywords" content="electronics repair, computer repair, laptop repair, smartphone repair, Midrand, Gauteng, South Africa, screen repair, tech repair">
-   <meta name="author" content="Megatronixx">
+   <meta name="author" content="Omegatek Solutions">
    <meta name="robots" content="index, follow">
+   <!-- Open Graph Meta Tags -->
+   <meta property="og:title" content="Omegatek Solutions - Professional Electronics Repair Services" />
+   <meta property="og:description" content="Expert repair services for computers, laptops, smartphones, and more. Based in Midrand, Gauteng." />
+   <meta property="og:type" content="website" />
+   <meta property="og:url" content="https://omegatek.co.za/index.html" />
+   <meta property="og:image" content="https://omegatek.co.za/images2/Megatronix3.png" />
+
+   <!-- Twitter Card Meta Tags -->
+   <meta name="twitter:card" content="summary_large_image" />
+   <meta name="twitter:title" content="Omegatek Solutions - Professional Electronics Repair Services" />
+   <meta name="twitter:description" content="Expert repair services for computers, laptops, smartphones, and more. Based in Midrand, Gauteng." />
+   <meta name="twitter:image" content="https://omegatek.co.za/images2/Megatronix3.png" />
+
+   <!-- Canonical Tag -->
+   <link rel="canonical" href="https://omegatek.co.za/index.html" />
+
+   <!-- Structured Data: Organization -->
+   <script type="application/ld+json">
+   {
+     "@context": "https://schema.org",
+     "@type": "Organization",
+     "name": "Omegatek Solutions",
+     "url": "https://omegatek.co.za/",
+     "logo": "https://omegatek.co.za/images2/Megatronix3.png",
+     "contactPoint": [{
+       "@type": "ContactPoint",
+       "telephone": "+27-73-653-8207",
+       "contactType": "customer service",
+       "email": "sales@omegatek.co.za"
+     }],
+     "sameAs": [
+       "https://www.facebook.com/sandile.milanzi.10",
+       "https://www.instagram.com/djx015/",
+       "https://www.linkedin.com/in/sandile-milanzi-235692276/"
+     ]
+   }
+   </script>
    
    <!-- Open Graph / Social Media Meta Tags -->
-   <meta property="og:title" content="Megatronixx - Professional Electronics Repair Services">
+   <meta property="og:title" content="Omegatek Solutions - Professional Electronics Repair Services">
    <meta property="og:description" content="Expert repair services for computers, laptops, smartphones, and more. Based in Midrand, Gauteng.">
    <meta property="og:image" content="images2/Megatronix3.png">
    <meta property="og:url" content="https://megatronixx.co.za">
@@ -20,22 +57,72 @@
    
    <!-- Twitter Card Meta Tags -->
    <meta name="twitter:card" content="summary_large_image">
-   <meta name="twitter:title" content="Megatronixx - Professional Electronics Repair Services">
+   <meta name="twitter:title" content="Omegatek Solutions - Professional Electronics Repair Services">
    <meta name="twitter:description" content="Expert repair services for computers, laptops, smartphones, and more. Based in Midrand, Gauteng.">
    <meta name="twitter:image" content="images2/Megatronix3.png">
    
-   <title>Megatronixx - Professional Electronics Repair Services</title>
+   <title>Omegatek Solutions - Professional Electronics Repair Services</title>
 
    <!-- font awesome cdn link  -->
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery-js/1.4.0/css/lightgallery.min.css">
+   <!-- AOS Animation Library -->
+   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightgallery-js/1.4.0/css/lightgallery.min.css">   <!-- Tailwind CSS CDN -->
+   <script src="https://cdn.tailwindcss.com"></script>
+   <script>
+     tailwind.config = {
+       theme: {
+         extend: {
+           colors: {
+             primary: '#b30ce6',      // Your purple brand color
+             secondary: '#334',       // Your dark text color
+             accent: '#fff',          // White
+             light: '#f5f5f5',       // Light background
+             dark: '#777'             // Light text color
+           },
+           backdropBlur: {
+             xs: '2px',
+           },
+           animation: {
+             'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+             'float': 'float 3s ease-in-out infinite',
+             'shimmer': 'shimmer 2s linear infinite',
+             'bounce-soft': 'bounce-soft 1s ease-in-out infinite',
+           },
+           keyframes: {
+             'pulse-glow': {
+               '0%, 100%': { 
+                 boxShadow: '0 0 20px rgba(179, 12, 230, 0.4)' 
+               },
+               '50%': { 
+                 boxShadow: '0 0 40px rgba(179, 12, 230, 0.8), 0 0 60px rgba(179, 12, 230, 0.4)' 
+               },
+             },
+             'float': {
+               '0%, 100%': { transform: 'translateY(0px)' },
+               '50%': { transform: 'translateY(-10px)' },
+             },
+             'shimmer': {
+               '0%': { transform: 'translateX(-100%)' },
+               '100%': { transform: 'translateX(100%)' },
+             },
+             'bounce-soft': {
+               '0%, 100%': { transform: 'translateY(0)' },
+               '50%': { transform: 'translateY(-5px)' },
+             },
+           }
+         }
+       }
+     }
+   </script>
 
    <!-- custom css file link  -->
    <link rel="stylesheet" href="css/style.css">
 
    <!-- Favicon -->
-   <link rel="icon" type="image/png" href="images2/Megatronix3.png">
+   <link rel="icon" type="image/png" href="images2/OMEGATEK ICON ONLY.png">
    
    <!-- Chatway widget -->
    <script id="chatway" async="true" src="https://cdn.chatway.app/widget.js?id=ZZTU6jAkfm7u"></script>
@@ -45,7 +132,7 @@
      {
        "@context": "https://schema.org",
        "@type": "LocalBusiness",
-       "name": "Megatronixx",
+       "name": "Omegatek Solutions",
        "image": "images2/Megatronix3.png",
        "description": "Professional electronics repair services in Midrand, Gauteng. Specializing in computer, laptop, smartphone, and game console repairs.",
        "address": {
@@ -84,14 +171,14 @@
 
    <div class="contact-info">
       <p> <i class="fas fa-map"></i> Midrand, Gauteng, South Africa </p>
-      <p> <i class="fas fa-envelope"></i> sales@megatronixx.co.za </p>
+      <p> <i class="fas fa-envelope"></i> sales@omegatek.co.za </p>
       <p> <i class="fas fa-phone"></i> 073 653 8207 </p>
    </div>
 
    <nav class="navbar">
       <div class="logo">
          <a href="index.html">
-           <img src="images2/Megatronix3-removebg-preview.png" alt="Your Logo">
+           <img src="images2/OMEGATEK_SOLUTIONS_9-NO BG.png" alt="Your Logo">
          </a>
        </div>
      <!-- <a href="#" class="logo"> <i class="fas fa-tools"></i> Megatronixx </a> -->
@@ -102,8 +189,8 @@
          <a href="services.html">services</a>
          <a href="webdev.html">Web/App Dev</a>
          <a href="blog.html">blog</a>
-         <a href="#reviews">reviews</a>
          <a href="#contact">contact</a>
+         <a href="products.html">products</a>
       </div>
 
       <div id="menu-btn" class="fa fa-bars"></div>
@@ -111,27 +198,25 @@
    </nav>
 
 </header>
-<!-- header section ends -->
-
-
-    <!-- Hero Section with Video Background and Typewriter Effect -->
+<!-- header section ends -->    <!-- Hero Section with Video Background and Typewriter Effect -->
     <div class="hero-section" id= "hero" > 
-      <!-- Left Half with Video Background -->
-      <div class="hero-left">
+      <!-- Full Width Video Background -->
+      <div class="hero-video relative overflow-hidden">
           <video autoplay muted loop>
-              <source src="images2/vid 2.mp4" type="video/mp4">
+              <source src="images2/new ethnic hero.mp4" type="video/mp4">
               Your browser does not support the video tag.
           </video>
-          <div class="hero-text">
-              <h1>Welcome to Our World</h1>
-              <p>Innovation and Excellence in Every Step</p>
+          <!-- Gradient Overlay -->
+          <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-black/40"></div>
+          <div class="hero-text relative z-10 bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl shadow-2xl">
+              <h1 class="text-white drop-shadow-lg">Welcome to Our World</h1>
+              <p class="text-white/90 drop-shadow-md">Innovation and Excellence in Every Step</p>
           </div>
       </div>
 
-      <!-- Right Half with Text and Animation -->
-      <div class="hero-right">
-          <div class="typewriter">
-              <h2>Megatronixx: The electronix Specialists!</h2>
+      <!-- Full Width Text Section with Typewriter -->
+      <div class="hero-content bg-gradient-to-br from-white via-gray-50 to-purple-50">          <div class="typewriter">
+              <h2 class="text-black">Omegatek Solutions: The electronix Specialists!</h2>
           </div>
       </div>
   </div>
@@ -147,13 +232,13 @@
 <section class="home" id="home">
 
    <div class="image">
-      <img src="images/home-img.svg" alt="">
+      <img src="images/home-img.svg" alt="" class="slide-in-on-scroll home-animate">
    </div>
 
    <div class="content">
       <h3>Why fix it yourself? Leave it to the pros.</h3>
-      <p>Trust megatronixx, to get your device revived & fully functional again!</p>
-      <a href="#about" class="btn">get started</a>
+      <p>Trust Omegatek Solutions, to get your device revived & fully functional again!</p>
+      <a href="#about" class="btn bg-gradient-to-r from-primary to-purple-600 hover:from-purple-600 hover:to-primary transform hover:scale-105 transition-all duration-300 text-white font-semibold shadow-lg hover:shadow-xl">get started</a>
    </div>
 
 </section>
@@ -208,12 +293,43 @@
       <h3>best quality Repair services</h3>
       <p>At Megatronix, we specialize in professional screen repair services for all types of devices, including laptops, desktops, tablets, and smartphones. Our experienced technicians use high-quality replacement parts to ensure your screen is restored to its original clarity and functionality. Whether your screen is cracked, shattered, or experiencing display issues, we provide fast, reliable, and affordable repairs to get your device back in perfect working condition. Trust Megatronix for a seamless and hassle-free screen repair experience!</p>
       <p></p>
-      <a href="#contact" class="btn">Get Quote</a>
+      <a href="#contact" class="btn bg-gradient-to-r from-primary to-purple-600 hover:from-purple-600 hover:to-primary transform hover:scale-105 transition-all duration-300 text-white font-semibold shadow-lg hover:shadow-xl">Get Quote</a>
    </div>
 
    <div class="image">
-      <img src="images/about-img.svg" alt="">
+      <img src="images/about-img.svg" alt="" class="slide-in-on-scroll about-animate">
    </div>
+<script>
+// Scroll-triggered slide-in animation for home/about images
+function handleSlideInOnScroll() {
+  const elements = document.querySelectorAll('.slide-in-on-scroll');
+  const windowHeight = window.innerHeight;
+  elements.forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < windowHeight * 0.85) {
+      el.classList.add('slide-in-visible');
+    } else {
+      el.classList.remove('slide-in-visible');
+    }
+  });
+}
+window.addEventListener('scroll', handleSlideInOnScroll);
+window.addEventListener('DOMContentLoaded', handleSlideInOnScroll);
+</script>
+<style>
+.slide-in-on-scroll {
+  opacity: 0;
+  transform: translateX(80px);
+  transition: opacity 1.6s cubic-bezier(.4,0,.2,1), transform 1.6s cubic-bezier(.4,0,.2,1);
+}
+.slide-in-on-scroll.about-animate {
+  transform: translateX(-80px);
+}
+.slide-in-on-scroll.slide-in-visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+</style>
 
 </section>
 
@@ -223,44 +339,72 @@
 
 <section class="services" id="services">
 
-   <h1 class="heading"> our <span>services</span> </h1>
+   <h1 class="heading" data-aos="fade-down"> our <span>services</span> </h1>   <div class="box-container">
 
-   <div class="box-container">
-
-      <div class="box">
-         <img src="images/service-1.svg" alt="">
-         <h3>computer repair</h3>
-         <p>Megatronix offers comprehensive computer repair services to address all your hardware and software issues. Our skilled technicians are equipped to handle a wide range of problems, from system crashes and hardware failures to virus removal and software installations. We provide fast, reliable, and affordable repairs for desktops, laptops, and all-in-one computers. Trust Megatronix to restore your computer's performance and ensure it runs smoothly and efficiently.</p>
+      <div class="box group transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-primary/30 cursor-pointer relative overflow-hidden bg-white hover:bg-gradient-to-br hover:from-white hover:to-purple-50 rounded-xl border border-transparent hover:border-primary/20" data-aos="fade-up" data-aos-delay="100">
+         <!-- Shimmer effect overlay -->
+         <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:animate-shimmer transition-transform duration-1000"></div>
+         
+         <div class="transition-all duration-500 group-hover:scale-110 group-hover:animate-bounce-soft relative z-10">
+            <img src="images/service-1.svg" alt="" class="transition-all duration-500 group-hover:drop-shadow-lg">
+         </div>
+         <h3 class="group-hover:text-primary transition-all duration-300 font-semibold relative z-10 group-hover:animate-pulse-glow">computer repair</h3>
+         <p class="relative z-10 transition-all duration-300 group-hover:text-gray-700">Omegatek Solutions offers comprehensive computer repair services to address all your hardware and software issues. Our skilled technicians are equipped to handle a wide range of problems, from system crashes and hardware failures to virus removal and software installations. We provide fast, reliable, and affordable repairs for desktops, laptops, and all-in-one computers. Trust Omegatek Solutions to restore your computer's performance and ensure it runs smoothly and efficiently.</p>
+         
+         <!-- Glowing border effect -->
+         <div class="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-primary/10 via-transparent to-primary/10 pointer-events-none"></div>
       </div>
 
-      <div class="box">
-         <img src="images/service-2.svg" alt="">
-         <h3>laptop repair</h3>
-         <p>At Megatronix, we provide expert laptop repair services to fix any issue your device may encounter. Whether you're dealing with a broken screen, battery problems, overheating, or software malfunctions, our skilled technicians have the experience and tools to get your laptop back in optimal condition. We offer fast, reliable, and affordable repairs for all makes and models. Rely on Megatronix to keep your laptop running smoothly and efficiently.</p>
+      <div class="box group transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-primary/30 cursor-pointer relative overflow-hidden bg-white hover:bg-gradient-to-br hover:from-white hover:to-purple-50 rounded-xl border border-transparent hover:border-primary/20" data-aos="fade-up" data-aos-delay="200">
+         <!-- Shimmer effect overlay -->
+         <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:animate-shimmer transition-transform duration-1000"></div>
+         
+         <div class="transition-all duration-500 group-hover:scale-110 group-hover:animate-bounce-soft relative z-10">
+            <img src="images/service-2.svg" alt="" class="transition-all duration-500 group-hover:drop-shadow-lg">
+         </div>
+         <h3 class="group-hover:text-primary transition-all duration-300 font-semibold relative z-10 group-hover:animate-pulse-glow">laptop repair</h3>
+         <p class="relative z-10 transition-all duration-300 group-hover:text-gray-700">At Omegatek Solutions, we provide expert laptop repair services to fix any issue your device may encounter. Whether you're dealing with a broken screen, battery problems, overheating, or software malfunctions, our skilled technicians have the experience and tools to get your laptop back in optimal condition. We offer fast, reliable, and affordable repairs for all makes and models. Rely on Omegatek Solutions to keep your laptop running smoothly and efficiently.</p>
+         
+         <!-- Glowing border effect -->
+         <div class="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-primary/10 via-transparent to-primary/10 pointer-events-none"></div>
       </div>
 
-      <div class="box">
-         <img src="images/service-3.svg" alt="">
-         <h3>smartphone repair</h3>
-         <p>Megatronix specializes in professional smartphone repair services to address all your mobile device issues. Whether it's a cracked screen, battery replacement, charging problems, or software glitches, our experienced technicians are here to help. We provide fast, reliable, and affordable repairs for all major smartphone brands. Trust Megatronix to restore your smartphone to its full functionality, keeping you connected and productive.</p>
+      <div class="box group transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-primary/30 cursor-pointer relative overflow-hidden bg-white hover:bg-gradient-to-br hover:from-white hover:to-purple-50 rounded-xl border border-transparent hover:border-primary/20" data-aos="fade-up" data-aos-delay="300">
+         <!-- Shimmer effect overlay -->
+         <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:animate-shimmer transition-transform duration-1000"></div>
+         
+         <div class="transition-all duration-500 group-hover:scale-110 group-hover:animate-bounce-soft relative z-10">
+            <img src="images/service-3.svg" alt="" class="transition-all duration-500 group-hover:drop-shadow-lg">
+         </div>
+         <h3 class="group-hover:text-primary transition-all duration-300 font-semibold relative z-10 group-hover:animate-pulse-glow">smartphone repair</h3>
+         <p class="relative z-10 transition-all duration-300 group-hover:text-gray-700">Omegatek Solutions specializes in professional smartphone repair services to address all your mobile device issues. Whether it's a cracked screen, battery replacement, charging problems, or software glitches, our experienced technicians are here to help. We provide fast, reliable, and affordable repairs for all major smartphone brands. Trust Omegatek Solutions to restore your smartphone to its full functionality, keeping you connected and productive.</p>
+         
+         <!-- Glowing border effect -->
+         <div class="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-primary/10 via-transparent to-primary/10 pointer-events-none"></div>
       </div>
 
-      <div class="box">
-         <img src="images/service-4.svg" alt="">
-         <h3>game console repair</h3>
-         <p>At Megatronix, we offer expert game console repair services to get you back to your gaming adventures quickly. Our skilled technicians can handle a wide range of issues, from hardware failures and overheating to software glitches and connectivity problems. We service all major gaming consoles, including PlayStation, Xbox, Nintendo Switch, and older models like the Wii and PS3. Whether it's a disc drive issue, controller malfunction, or power supply problem, you can count on Megatronix for fast, reliable, and affordable repairs to keep your gaming experience uninterrupted.</p>
+      <div class="box group transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/20 cursor-pointer" data-aos="fade-up" data-aos-delay="400">
+         <div class="transition-transform duration-300 group-hover:scale-110">
+            <img src="images/service-4.svg" alt="" class="transition-all duration-300">
+         </div>
+         <h3 class="group-hover:text-primary transition-colors duration-300">game console repair</h3>
+         <p>At Omegatek Solutions, we offer expert game console repair services to get you back to your gaming adventures quickly. Our skilled technicians can handle a wide range of issues, from hardware failures and overheating to software glitches and connectivity problems. We service all major gaming consoles, including PlayStation, Xbox, Nintendo Switch, and older models like the Wii and PS3. Whether it's a disc drive issue, controller malfunction, or power supply problem, you can count on Omegatek Solutions for fast, reliable, and affordable repairs to keep your gaming experience uninterrupted.</p>
       </div>
 
-      <div class="box">
-         <img src="images/service-5.svg" alt="">
-         <h3>multi media repair</h3>
-         <p>Megatronix provides top-quality multimedia repair services for all your audio and visual equipment. Whether it's a malfunctioning TV, broken speakers, or a faulty projector, our skilled technicians are equipped to handle a variety of multimedia devices. We ensure fast, reliable, and affordable repairs to keep your entertainment systems running smoothly. Trust Megatronix for expert solutions to all your multimedia repair needs.</p>
+      <div class="box group transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/20 cursor-pointer" data-aos="fade-up" data-aos-delay="500">
+         <div class="transition-transform duration-300 group-hover:scale-110">
+            <img src="images/service-5.svg" alt="" class="transition-all duration-300">
+         </div>
+         <h3 class="group-hover:text-primary transition-colors duration-300">multi media repair</h3>
+         <p>Omegatek Solutions provides top-quality multimedia repair services for all your audio and visual equipment. Whether it's a malfunctioning TV, broken speakers, or a faulty projector, our skilled technicians are equipped to handle a variety of multimedia devices. We ensure fast, reliable, and affordable repairs to keep your entertainment systems running smoothly. Trust Omegatek Solutions for expert solutions to all your multimedia repair needs.</p>
       </div>
 
-      <div class="box">
-         <img src="images/service-6.svg" alt="">
-         <h3>software/website development</h3>
-         <p>Megatronixx now offers professional software and website development services to help businesses establish a strong digital presence. Our expert developers create custom websites, mobile applications, and software solutions tailored to your specific needs. From responsive e-commerce platforms to custom business applications, we deliver high-quality digital products that drive growth and enhance your brand. Trust Megatronixx for innovative and scalable digital solutions.</p>
+      <div class="box group transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/20 cursor-pointer" data-aos="fade-up" data-aos-delay="600">
+         <div class="transition-transform duration-300 group-hover:scale-110">
+            <img src="images/service-6.svg" alt="" class="transition-all duration-300">
+         </div>
+         <h3 class="group-hover:text-primary transition-colors duration-300">software/website development</h3>
+         <p>Omegatek Solutions now offers professional software and website development services to help businesses establish a strong digital presence. Our expert developers create custom websites, mobile applications, and software solutions tailored to your specific needs. From responsive e-commerce platforms to custom business applications, we deliver high-quality digital products that drive growth and enhance your brand. Trust Omegatek Solutions for innovative and scalable digital solutions.</p>
       </div>
 
    </div>
@@ -271,37 +415,55 @@
 
 <!-- pricing section starts -->
 <section class="pricing" id="pricing">
-   <h1 class="heading"> our <span>pricing</span> </h1>
+   <h1 class="heading" data-aos="fade-down"> our <span>pricing</span> </h1>
    
    <div class="box-container">
-      <div class="price-box">
-         <h3>Basic Repair</h3>
-         <div class="price">R300<span>/starting from</span></div>
-         <img src="images/service-3.svg" alt="">
-         <ul>
+      <div class="price-box group relative overflow-hidden bg-white hover:bg-gradient-to-br hover:from-white hover:to-purple-50 transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-primary/30 cursor-pointer border border-transparent hover:border-primary/20 rounded-xl" data-aos="fade-right" data-aos-delay="100">
+         <!-- Shimmer overlay -->
+         <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:animate-shimmer transition-transform duration-1000"></div>
+         
+         <h3 class="group-hover:text-primary transition-all duration-300 font-bold relative z-10">Basic Repair</h3>
+         <div class="price group-hover:animate-bounce-soft relative z-10">R300<span>/starting from</span></div>
+         <img src="images/service-3.svg" alt="" class="transition-all duration-500 group-hover:scale-110 group-hover:drop-shadow-lg relative z-10">
+         <ul class="relative z-10">
             <li><i class="fas fa-check"></i> Screen Replacements</li>
             <li><i class="fas fa-check"></i> Battery Replacements</li>
             <li><i class="fas fa-check"></i> Basic Diagnostics</li>
             <li><i class="fas fa-check"></i> Software Issues</li>
          </ul>
-         <button id="basicRepairBtn" class="btn book-btn">Book Now</button>
+         <button id="basicRepairBtn" class="btn book-btn group relative overflow-hidden bg-gradient-to-r from-primary to-purple-600 hover:from-purple-600 hover:to-primary transform hover:scale-110 transition-all duration-500 hover:shadow-[0_0_40px_rgba(179,12,230,0.6)] hover:animate-pulse-glow">
+            <span class="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 group-hover:animate-shimmer"></span>
+            <span class="relative z-10 font-semibold tracking-wide">Book Now</span>
+         </button>
       </div>
       
-      <div class="price-box featured">
-         <div class="banner">Popular</div>
-         <h3>Standard Repair</h3>
-         <div class="price">R550<span>/starting from</span></div>
-         <img src="images/service-1.svg" alt="">
-         <ul>
+      <div class="price-box featured group relative overflow-hidden bg-gradient-to-br from-primary/5 to-purple-100/20 hover:from-primary/10 hover:to-purple-200/30 transform transition-all duration-500 hover:scale-110 hover:shadow-2xl hover:shadow-primary/40 cursor-pointer border-2 border-primary/30 hover:border-primary/60 rounded-xl animate-float" data-aos="fade-up" data-aos-delay="200">
+         <!-- Enhanced shimmer for featured card -->
+         <div class="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-primary/20 to-transparent group-hover:animate-shimmer transition-transform duration-1000"></div>
+         <!-- Pulsing glow background -->
+         <div class="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/10 opacity-50 group-hover:opacity-100 transition-opacity duration-500 animate-pulse-glow"></div>
+         
+         <div class="banner absolute top-0 left-0 w-full flex items-center justify-center gap-4 h-16 bg-gradient-to-r from-purple-700 via-primary to-purple-500/90 text-white font-extrabold text-2xl md:text-3xl shadow-2xl drop-shadow-2xl tracking-widest border-none backdrop-blur-xl bg-opacity-80 animate-shimmer" style="letter-spacing:0.16em; z-index:50; box-shadow:0 0 32px 8px rgba(179,12,230,0.22), 0 0 0 4px rgba(179,12,230,0.4) inset;">
+           <i class="fas fa-star text-yellow-300 text-3xl animate-pulse-glow"></i>
+           <span class="whitespace-nowrap px-4 py-1" style="text-shadow:0 2px 12px #b30ce6,0 0 2px #fff;">POPULAR</span>
+           <i class="fas fa-fire text-orange-400 text-3xl animate-pulse-glow"></i>
+         </div>
+         <h3 class="group-hover:text-primary transition-all duration-300 font-bold relative z-10">Standard Repair</h3>
+         <div class="price group-hover:animate-bounce-soft relative z-10 text-primary font-bold">R550<span>/starting from</span></div>
+         <img src="images/service-1.svg" alt="" class="transition-all duration-500 group-hover:scale-125 group-hover:drop-shadow-2xl relative z-10 group-hover:animate-float">
+         <ul class="relative z-10">
             <li><i class="fas fa-check"></i> Computer/Laptop Repairs</li>
             <li><i class="fas fa-check"></i> Gaming Console Fixes</li>
             <li><i class="fas fa-check"></i> Data Recovery</li>
             <li><i class="fas fa-check"></i> Hardware Upgrades</li>
          </ul>
-         <button id="standardRepairBtn" class="btn book-btn">Book Now</button>
+         <button id="standardRepairBtn" class="btn book-btn group relative overflow-hidden bg-gradient-to-r from-primary to-purple-600 hover:from-purple-600 hover:to-primary transform hover:scale-110 transition-all duration-500 hover:shadow-[0_0_40px_rgba(179,12,230,0.6)] hover:animate-pulse-glow">
+            <span class="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 group-hover:animate-shimmer"></span>
+            <span class="relative z-10 font-semibold tracking-wide">Book Now</span>
+         </button>
       </div>
       
-      <div class="price-box">
+      <div class="price-box" data-aos="fade-left" data-aos-delay="300">
          <h3>Premium Service</h3>
          <div class="price">R800<span>/starting from</span></div>
          <img src="images/service-5.svg" alt="">
@@ -311,7 +473,10 @@
             <li><i class="fas fa-check"></i> Complex Board Repairs</li>
             <li><i class="fas fa-check"></i> Priority Service</li>
          </ul>
-         <button id="premiumRepairBtn" class="btn book-btn">Book Now</button>
+         <button id="premiumRepairBtn" class="btn book-btn group relative overflow-hidden bg-gradient-to-r from-primary to-purple-600 hover:from-purple-600 hover:to-primary transform hover:scale-110 transition-all duration-500 hover:shadow-[0_0_40px_rgba(179,12,230,0.6)] hover:animate-pulse-glow">
+            <span class="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 group-hover:animate-shimmer"></span>
+            <span class="relative z-10 font-semibold tracking-wide">Book Now</span>
+         </button>
       </div>
       
       <div class="price-box">
@@ -324,7 +489,10 @@
             <li><i class="fas fa-check"></i> SEO Optimization</li>
             <li><i class="fas fa-check"></i> Content Management System</li>
          </ul>
-         <button id="webDevBtn" class="btn book-btn">Get Quote</button>
+         <button id="webDevBtn" class="btn book-btn group relative overflow-hidden bg-gradient-to-r from-primary to-purple-600 hover:from-purple-600 hover:to-primary transform hover:scale-110 transition-all duration-500 hover:shadow-[0_0_40px_rgba(179,12,230,0.6)] hover:animate-pulse-glow">
+            <span class="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 group-hover:animate-shimmer"></span>
+            <span class="relative z-10 font-semibold tracking-wide">Get Quote</span>
+         </button>
       </div>
    </div>
 </section>
@@ -334,16 +502,16 @@
 
 <section class="gallery" id="gallery">
 
-   <h1 class="heading"> our <span>gallery</span> </h1>
+   <h1 class="heading" data-aos="fade-down"> our <span>gallery</span> </h1>
 
    <div class="gallery-container">
 
-      <a class="box" href="images2/gal 1.jpg"><img src="images2/gal 1.jpg" alt=""></a>
-      <a class="box" href="images2/gal 3.png"><img src="images2/gal 3.png" alt=""></a>
-      <a class="box" href="images2/gal.jpg"><img src="images2/gal.jpg" alt=""></a>
-      <a class="box" href="images/g-img-4.jpg"><img src="images/g-img-4.jpg" alt=""></a>
-      <a class="box" href="images2/gal 6.png"><img src="images2/gal 6.png" alt=""></a>
-      <a class="box" href="images/g-img-6.jpg"><img src="images/g-img-6.jpg" alt=""></a>
+      <a class="box" href="images2/gal 1.jpg" data-aos="zoom-in" data-aos-delay="100"><img src="images2/gal 1.jpg" alt=""></a>
+      <a class="box" href="images2/gal 3.png" data-aos="zoom-in" data-aos-delay="200"><img src="images2/gal 3.png" alt=""></a>
+      <a class="box" href="images2/gal.jpg" data-aos="zoom-in" data-aos-delay="300"><img src="images2/gal.jpg" alt=""></a>
+      <a class="box" href="images/g-img-4.jpg" data-aos="zoom-in" data-aos-delay="400"><img src="images/g-img-4.jpg" alt=""></a>
+      <a class="box" href="images2/gal 6.png" data-aos="zoom-in" data-aos-delay="500"><img src="images2/gal 6.png" alt=""></a>
+      <a class="box" href="images/g-img-6.jpg" data-aos="zoom-in" data-aos-delay="600"><img src="images/g-img-6.jpg" alt=""></a>
 
    </div>
 
@@ -459,32 +627,31 @@
 
 <section class="reviews" id="reviews">
 
-   <h1 class="heading"> clients <span>reviews</span> </h1>
+   <h1 class="heading" data-aos="fade-down"> clients <span>reviews</span> </h1>
 
    <div class="reviews-container">
       <div class="reviews-slider">
-         <!-- Slide 1 (Original 3 reviews) -->
-         <div class="reviews-slide active">
+         <!-- Slide 1 (Original 3 reviews) -->         <div class="reviews-slide active">
             <div class="box-container">
-               <div class="box">
+               <div class="box group bg-gradient-to-br from-white to-gray-50 transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-primary/20 border border-gray-100" data-aos="fade-right" data-aos-delay="100">
                   <div class="star">
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
-                     <i class="fas fa-star"></i>
+                     <i class="fas fa-star text-yellow-400"></i>
+                     <i class="fas fa-star text-yellow-400"></i>
+                     <i class="fas fa-star text-yellow-400"></i>
+                     <i class="fas fa-star text-yellow-400"></i>
+                     <i class="fas fa-star text-yellow-400"></i>
                   </div>
-                  <div class="text">
-                     <i class="fas fa-quote-right"></i>
-                     <p>I had my laptop screen replaced by Megatronixx and I'm extremely satisfied with the service. Fast turnaround time and very professional work. My laptop looks brand new! Highly recommend their services to anyone in need of quality repairs.</p>
+                  <div class="text relative">
+                     <i class="fas fa-quote-right text-primary/20"></i>
+                     <p class="relative z-10">I had my laptop screen replaced by Omegatek Solutions and I'm extremely satisfied with the service. Fast turnaround time and very professional work. My laptop looks brand new! Highly recommend their services to anyone in need of quality repairs.</p>
                   </div>
                   <div class="user">
-                     <div class="user-icon"><i class="fas fa-user-circle"></i></div>
+                     <div class="user-icon"><i class="fas fa-user-circle text-primary"></i></div>
                      <h3>David M.</h3>
                   </div>
                </div>
 
-               <div class="box">
+               <div class="box" data-aos="fade-up" data-aos-delay="200">
                   <div class="star">
                      <i class="fas fa-star"></i>
                      <i class="fas fa-star"></i>
@@ -494,7 +661,7 @@
                   </div>
                   <div class="text">
                      <i class="fas fa-quote-right"></i>
-                     <p>After dropping my smartphone and cracking the screen, I was devastated. Megatronixx not only fixed it perfectly but did so quickly and at a reasonable price. The staff was friendly and kept me updated throughout the repair process.</p>
+                     <p>After dropping my smartphone and cracking the screen, I was devastated. Omegatek Solutions not only fixed it perfectly but did so quickly and at a reasonable price. The staff was friendly and kept me updated throughout the repair process.</p>
                   </div>
                   <div class="user">
                      <div class="user-icon"><i class="fas fa-user-circle"></i></div>
@@ -512,7 +679,7 @@
                   </div>
                   <div class="text">
                      <i class="fas fa-quote-right"></i>
-                     <p>My gaming console stopped working right before a tournament, and Megatronixx saved the day! They diagnosed and fixed the issue within hours. Their technical knowledge is impressive, and their customer service is outstanding.</p>
+                     <p>My gaming console stopped working right before a tournament, and Omegatek Solutions saved the day! They diagnosed and fixed the issue within hours. Their technical knowledge is impressive, and their customer service is outstanding.</p>
                   </div>
                   <div class="user">
                      <div class="user-icon"><i class="fas fa-user-circle"></i></div>
@@ -535,7 +702,7 @@
                   </div>
                   <div class="text">
                      <i class="fas fa-quote-right"></i>
-                     <p>I brought my old computer in for an upgrade, and the team at Megatronixx went above and beyond. They advised me on the best components for my needs and budget. Now my PC runs like new, and I didn't have to buy a whole new system!</p>
+                     <p>I brought my old computer in for an upgrade, and the team at Omegatek Solutions went above and beyond. They advised me on the best components for my needs and budget. Now my PC runs like new, and I didn't have to buy a whole new system!</p>
                   </div>
                   <div class="user">
                      <div class="user-icon"><i class="fas fa-user-circle"></i></div>
@@ -553,7 +720,7 @@
                   </div>
                   <div class="text">
                      <i class="fas fa-quote-right"></i>
-                     <p>The water damage repair service at Megatronixx is exceptional. I spilled coffee on my laptop keyboard, and I thought it was ruined forever. They managed to salvage all my data and replace the damaged components at a reasonable price.</p>
+                     <p>The water damage repair service at Omegatek Solutions is exceptional. I spilled coffee on my laptop keyboard, and I thought it was ruined forever. They managed to salvage all my data and replace the damaged components at a reasonable price.</p>
                   </div>
                   <div class="user">
                      <div class="user-icon"><i class="fas fa-user-circle"></i></div>
@@ -571,7 +738,7 @@
                   </div>
                   <div class="text">
                      <i class="fas fa-quote-right"></i>
-                     <p>I had a complicated issue with my tablet that several other shops couldn't fix. The technicians at Megatronixx were persistent and found a solution that nobody else could. Their dedication to solving problems is truly impressive.</p>
+                     <p>I had a complicated issue with my tablet that several other shops couldn't fix. The technicians at Omegatek Solutions were persistent and found a solution that nobody else could. Their dedication to solving problems is truly impressive.</p>
                   </div>
                   <div class="user">
                      <div class="user-icon"><i class="fas fa-user-circle"></i></div>
@@ -594,7 +761,7 @@
                   </div>
                   <div class="text">
                      <i class="fas fa-quote-right"></i>
-                     <p>The customer service at Megatronixx sets them apart. They took the time to explain the issue with my smartphone in detail and gave me options for repair. There was no pressure, just honest advice that helped me make an informed decision.</p>
+                     <p>The customer service at Omegatek Solutions sets them apart. They took the time to explain the issue with my smartphone in detail and gave me options for repair. There was no pressure, just honest advice that helped me make an informed decision.</p>
                   </div>
                   <div class="user">
                      <div class="user-icon"><i class="fas fa-user-circle"></i></div>
@@ -612,7 +779,7 @@
                   </div>
                   <div class="text">
                      <i class="fas fa-quote-right"></i>
-                     <p>I've used Megatronixx services multiple times for different devices. Their consistent quality and reliability keep me coming back. The technicians remember me and my previous repairs, which shows their attention to customer relationships.</p>
+                     <p>I've used Omegatek Solutions services multiple times for different devices. Their consistent quality and reliability keep me coming back. The technicians remember me and my previous repairs, which shows their attention to customer relationships.</p>
                   </div>
                   <div class="user">
                      <div class="user-icon"><i class="fas fa-user-circle"></i></div>
@@ -630,7 +797,7 @@
                   </div>
                   <div class="text">
                      <i class="fas fa-quote-right"></i>
-                     <p>As a small business owner, I rely heavily on my electronics. When my computer network had issues, Megatronixx not only fixed the immediate problem but also helped set up a more reliable system to prevent future problems. Truly valuable service!</p>
+                     <p>As a small business owner, I rely heavily on my electronics. When my computer network had issues, Omegatek Solutions not only fixed the immediate problem but also helped set up a more reliable system to prevent future problems. Truly valuable service!</p>
                   </div>
                   <div class="user">
                      <div class="user-icon"><i class="fas fa-user-circle"></i></div>
@@ -653,7 +820,7 @@
                   </div>
                   <div class="text">
                      <i class="fas fa-quote-right"></i>
-                     <p>I was skeptical about repairing my older TV instead of buying a new one, but Megatronixx convinced me to give it a try. Not only did they fix it perfectly, but they saved me thousands of rands. It's been working flawlessly for months now.</p>
+                     <p>I was skeptical about repairing my older TV instead of buying a new one, but Omegatek Solutions convinced me to give it a try. Not only did they fix it perfectly, but they saved me thousands of rands. It's been working flawlessly for months now.</p>
                   </div>
                   <div class="user">
                      <div class="user-icon"><i class="fas fa-user-circle"></i></div>
@@ -671,7 +838,7 @@
                   </div>
                   <div class="text">
                      <i class="fas fa-quote-right"></i>
-                     <p>The speed of service at Megatronixx is remarkable. I needed my phone fixed urgently for a business trip, and they completed the repair in just a few hours. Their express service option is worth every penny when you're in a time crunch.</p>
+                     <p>The speed of service at Omegatek Solutions is remarkable. I needed my phone fixed urgently for a business trip, and they completed the repair in just a few hours. Their express service option is worth every penny when you're in a time crunch.</p>
                   </div>
                   <div class="user">
                      <div class="user-icon"><i class="fas fa-user-circle"></i></div>
@@ -689,7 +856,7 @@
                   </div>
                   <div class="text">
                      <i class="fas fa-quote-right"></i>
-                     <p>Megatronixx recovered precious family photos from my crashed hard drive that I thought were lost forever. The joy of getting those irreplaceable memories back was priceless. I'll be forever grateful for their data recovery expertise.</p>
+                     <p>Omegatek Solutions recovered precious family photos from my crashed hard drive that I thought were lost forever. The joy of getting those irreplaceable memories back was priceless. I'll be forever grateful for their data recovery expertise.</p>
                   </div>
                   <div class="user">
                      <div class="user-icon"><i class="fas fa-user-circle"></i></div>
@@ -759,18 +926,18 @@
 
 <!-- contact section ends -->
 
-<!-- Booking Modal -->
-<div id="bookingModal" class="modal">
-   <div class="modal-content">
-      <span class="close-modal">&times;</span>
-      <h3>Book a Repair Service</h3>
-      <form id="bookingForm">
-         <div class="inputBox">
-            <input type="text" id="bookingName" placeholder="Your Name" required>
-            <input type="tel" id="bookingPhone" placeholder="Your Phone Number" required>
-         </div>
-         <div class="inputBox">
-            <select id="serviceType" required>
+<!-- Booking Modal with Tailwind Enhancements -->
+<div id="bookingModal" class="modal fixed inset-0 bg-black/50 backdrop-blur-sm transition-all duration-300 z-50">
+   <div class="modal-content bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl transform transition-all duration-300 border border-white/20">
+      <span class="close-modal text-gray-500 hover:text-primary transition-colors duration-200">&times;</span>
+      <h3 class="text-secondary font-bold mb-6">Book a Repair Service</h3>       <form id="bookingForm" class="space-y-4">         <div class="inputBox grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="text" id="bookingName" placeholder="Your Name" required 
+                   class="w-full h-[55px] px-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 text-2xl">
+            <input type="tel" id="bookingPhone" placeholder="Your Phone Number" required
+                   class="w-full h-[55px] px-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 text-2xl">
+         </div><div class="inputBox grid grid-cols-1 md:grid-cols-2 gap-4">
+            <select id="serviceType" required
+                    class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 text-base">
                <option value="" disabled selected>Select Service Type</option>
                <option value="Computer Repair">Computer Repair</option>
                <option value="Laptop Repair">Laptop Repair</option>
@@ -779,25 +946,33 @@
                <option value="Multimedia Repair">Multimedia Repair</option>
                <option value="Smartwatch Repair">Smartwatch Repair</option>
             </select>
-            <select id="preferredTime" required>
+            <select id="preferredTime" required
+                    class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 text-base">
                <option value="" disabled selected>Preferred Time</option>
                <option value="Morning (9AM-12PM)">Morning (9AM-12PM)</option>
                <option value="Afternoon (12PM-3PM)">Afternoon (12PM-3PM)</option>
                <option value="Evening (3PM-7PM)">Evening (3PM-7PM)</option>
             </select>
-         </div>
-         <div class="inputBox">
-            <input type="date" id="preferredDate" min="" required>
-         </div>
-         <textarea id="issueDescription" placeholder="Describe your device and the issue you're experiencing" cols="30" rows="5" required></textarea>
-         <input type="submit" value="Book Now" class="btn">
+         </div>         <div class="inputBox">
+            <input type="date" id="preferredDate" min="" required
+                   class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 text-base">
+         </div>         <textarea id="issueDescription" placeholder="Describe your device and the issue you're experiencing" cols="30" rows="5" required
+                   class="w-full p-3 border-2 border-gray-300 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all duration-200 resize-none text-base"></textarea>
+         <input type="submit" value="Book Now" 
+                class="btn w-full bg-gradient-to-r from-primary to-purple-600 hover:from-purple-600 hover:to-primary transform hover:scale-105 transition-all duration-300 text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl">
       </form>
    </div>
 </div>
 
-<!-- Floating Book Now Button -->
+<!-- Floating Book Now Button with Enhanced Micro-Animations -->
 <div class="floating-button">
-   <button id="openBooking" class="btn">Book Now</button>
+   <button id="openBooking" class="btn group relative overflow-hidden bg-gradient-to-r from-primary to-purple-600 hover:from-purple-600 hover:to-primary transform hover:scale-125 transition-all duration-500 shadow-xl hover:shadow-2xl hover:shadow-primary/60 animate-float hover:animate-pulse-glow">
+      <!-- Shimmer effect -->
+      <span class="absolute inset-0 bg-gradient-to-r from-white/30 via-white/10 to-white/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 group-hover:animate-shimmer"></span>
+      <!-- Pulsing ring effect -->
+      <span class="absolute inset-0 rounded-full border-2 border-white/30 animate-ping group-hover:border-white/50"></span>
+      <span class="relative z-10 font-bold tracking-wider text-white drop-shadow-lg">Book Now</span>
+   </button>
 </div>
 
 <!-- footer section starts  -->
@@ -832,7 +1007,7 @@
       <div class="box">
          <h3>contact info</h3>
          <a href="#contact" class="link"> <i class="fas fa-phone"></i> 073 653 8207 </a>
-         <a href="#contact" class="link"> <i class="fas fa-envelope"></i> sales@megatronixx.co.za </a>
+         <a href="#contact" class="link"> <i class="fas fa-envelope"></i> sales@omegatek.co.za </a>
          <a href="#contact" class="link"> <i class="fas fa-map"></i> kaalfontein, Midrand, Gauteng, South Africa </a>
       </div>
 
@@ -853,7 +1028,7 @@
 
    </div>
 
-   <div class="credit"> created by  <span> <a href="www.facebook.com/sandile.milanzi.10"></a>Sandile Milanzi (Megatronixx)</span> | all rights reserved! </div>
+   <div class="credit"> created by  <span> <a href="www.facebook.com/sandile.milanzi.10"></a>Sandile Milanzi (Omegatek Solutions)</span> | all rights reserved! </div>
 
 </section>
   
@@ -862,11 +1037,88 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery-js/1.4.0/js/lightgallery.min.js"></script>
 
+<!-- AOS Animation Library -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
 <!-- custom js file link  -->
 <script src="js/script.js"></script>
 
 <script>
+   // Initialize AOS
+   AOS.init({
+     duration: 800,
+     easing: 'ease-out-cubic',
+     once: true,
+     offset: 100
+   });
+   
    lightGallery(document.querySelector('.gallery .gallery-container'));
+   
+   // Enhanced Micro-Interactions
+   document.addEventListener('DOMContentLoaded', function() {
+     // Magnetic button effect
+     const magneticElements = document.querySelectorAll('.book-btn, .floating-button button');
+     
+     magneticElements.forEach(element => {
+       element.addEventListener('mousemove', (e) => {
+         const rect = element.getBoundingClientRect();
+         const x = e.clientX - rect.left - rect.width / 2;
+         const y = e.clientY - rect.top - rect.height / 2;
+         
+         element.style.transform = `translate(${x * 0.1}px, ${y * 0.1}px) scale(1.05)`;
+       });
+       
+       element.addEventListener('mouseleave', () => {
+         element.style.transform = 'translate(0px, 0px) scale(1)';
+       });
+     });
+     
+     // Enhanced service card tilt effect
+     const serviceCards = document.querySelectorAll('.services .box');
+     
+     serviceCards.forEach(card => {
+       card.addEventListener('mousemove', (e) => {
+         const rect = card.getBoundingClientRect();
+         const x = e.clientX - rect.left;
+         const y = e.clientY - rect.top;
+         
+         const centerX = rect.width / 2;
+         const centerY = rect.height / 2;
+         
+         const rotateX = (y - centerY) / 10;
+         const rotateY = (centerX - x) / 10;
+         
+         card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.05)`;
+         card.style.boxShadow = `0 20px 40px rgba(179, 12, 230, 0.3)`;
+       });
+       
+       card.addEventListener('mouseleave', () => {
+         card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)';
+         card.style.boxShadow = '';
+       });
+     });
+     
+     // Pricing card magnetic effect
+     const priceCards = document.querySelectorAll('.price-box');
+     
+     priceCards.forEach(card => {
+       card.addEventListener('mouseenter', () => {
+         card.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+       });
+       
+       card.addEventListener('mousemove', (e) => {
+         const rect = card.getBoundingClientRect();
+         const x = e.clientX - rect.left - rect.width / 2;
+         const y = e.clientY - rect.top - rect.height / 2;
+         
+         card.style.transform = `translate(${x * 0.05}px, ${y * 0.05}px) scale(1.02)`;
+       });
+       
+       card.addEventListener('mouseleave', () => {
+         card.style.transform = 'translate(0px, 0px) scale(1)';
+       });
+     });
+   });
 </script>
 
 </body>

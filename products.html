@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Products | Omegatek Solutions</title>
+   <meta name="description" content="Browse our latest tech products and accessories at Omegatek Solutions.">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+   <link rel="stylesheet" href="css/style.css">
+   <link rel="icon" type="image/png" href="images2/OMEGATEK ICON ONLY.png">
+   <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-light">
+<!-- Header section starts -->
+<header class="header">
+   <div class="contact-info">
+      <p> <i class="fas fa-map"></i> Midrand, Gauteng, South Africa </p>
+      <p> <i class="fas fa-envelope"></i> sales@omegatek.co.za </p>
+      <p> <i class="fas fa-phone"></i> 073 653 8207 </p>
+   </div>
+   <nav class="navbar">
+      <div class="logo">
+         <a href="index.html">
+           <img src="images2/OMEGATEK_SOLUTIONS_9-NO BG.png" alt="Omegatek Solutions Logo">
+         </a>
+      </div>
+      <div class="links">
+         <a href="index.html#hero">home</a>
+         <a href="about.html">about</a>
+         <a href="services.html">services</a>
+         <a href="webdev.html">Web/App Dev</a>
+         <a href="blog.html">blog</a>
+         <a href="products.html" class="active">products</a>
+         <a href="index.html#contact">contact</a>
+      </div>
+      <div id="menu-btn" class="fa fa-bars"></div>
+   </nav>
+</header>
+<!-- Header section ends -->
+
+<section class="py-16 px-4 bg-light min-h-screen">
+  <div class="max-w-6xl mx-auto">
+    <h1 class="text-4xl md:text-5xl font-bold text-center mb-10 text-primary">Our Products</h1>
+    <!-- Category Navigation -->
+    <div id="category-tiles" class="mb-10 flex flex-wrap justify-center gap-6">
+      <button data-category="All" class="group block w-40 h-40 bg-gradient-to-br from-purple-700 to-purple-500 rounded-2xl shadow-xl hover:scale-105 transition-all duration-300 flex flex-col items-center justify-center text-white font-bold text-xl border-4 border-purple-200 hover:border-white focus:ring-4 focus:ring-purple-300 focus:outline-none category-tile">
+        <span class="text-4xl mb-2"><i class="fas fa-th-large"></i></span>
+        All
+      </button>
+      <button data-category="Cables" class="group block w-40 h-40 bg-gradient-to-br from-purple-700 to-purple-500 rounded-2xl shadow-xl hover:scale-105 transition-all duration-300 flex flex-col items-center justify-center text-white font-bold text-xl border-4 border-purple-200 hover:border-white focus:ring-4 focus:ring-purple-300 focus:outline-none category-tile">
+        <span class="text-4xl mb-2"><i class="fas fa-plug"></i></span>
+        Cables
+      </button>
+      <button data-category="Chargers" class="group block w-40 h-40 bg-gradient-to-br from-purple-700 to-purple-500 rounded-2xl shadow-xl hover:scale-105 transition-all duration-300 flex flex-col items-center justify-center text-white font-bold text-xl border-4 border-purple-200 hover:border-white focus:ring-4 focus:ring-purple-300 focus:outline-none category-tile">
+        <span class="text-4xl mb-2"><i class="fas fa-bolt"></i></span>
+        Chargers
+      </button>
+      <button data-category="Earbuds & Audio" class="group block w-40 h-40 bg-gradient-to-br from-purple-700 to-purple-500 rounded-2xl shadow-xl hover:scale-105 transition-all duration-300 flex flex-col items-center justify-center text-white font-bold text-xl border-4 border-purple-200 hover:border-white focus:ring-4 focus:ring-purple-300 focus:outline-none category-tile">
+        <span class="text-4xl mb-2"><i class="fas fa-headphones-alt"></i></span>
+        Earbuds & Audio
+      </button>
+      <button data-category="SSD" class="group block w-40 h-40 bg-gradient-to-br from-purple-700 to-purple-500 rounded-2xl shadow-xl hover:scale-105 transition-all duration-300 flex flex-col items-center justify-center text-white font-bold text-xl border-4 border-purple-200 hover:border-white focus:ring-4 focus:ring-purple-300 focus:outline-none category-tile">
+        <span class="text-4xl mb-2"><i class="fas fa-hdd"></i></span>
+        SSD
+      </button>
+      <button data-category="Memory" class="group block w-40 h-40 bg-gradient-to-br from-purple-700 to-purple-500 rounded-2xl shadow-xl hover:scale-105 transition-all duration-300 flex flex-col items-center justify-center text-white font-bold text-xl border-4 border-purple-200 hover:border-white focus:ring-4 focus:ring-purple-300 focus:outline-none category-tile">
+        <span class="text-4xl mb-2"><i class="fas fa-memory"></i></span>
+        Memory
+      </button>
+      <button data-category="Kits & Stands" class="group block w-40 h-40 bg-gradient-to-br from-purple-700 to-purple-500 rounded-2xl shadow-xl hover:scale-105 transition-all duration-300 flex flex-col items-center justify-center text-white font-bold text-xl border-4 border-purple-200 hover:border-white focus:ring-4 focus:ring-purple-300 focus:outline-none category-tile">
+        <span class="text-4xl mb-2"><i class="fas fa-toolbox"></i></span>
+        Kits & Stands
+      </button>
+    </div>
+    <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div class="w-full md:w-1/2 flex items-center gap-2 mx-auto">
+        <input id="live-search" type="text" placeholder="Search products..." class="w-full border-2 border-purple-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400 text-lg" />
+        <i class="fas fa-search text-purple-700 text-xl"></i>
+      </div>
+    </div>
+    <div id="products-list" class="grid grid-cols-1 sm:grid-cols-2 gap-8"></div>
+    <!-- Shopping Cart Drawer -->
+    <div id="cart-drawer" class="fixed top-0 right-0 w-full max-w-md h-full bg-white shadow-2xl z-[9999] transform translate-x-full transition-transform duration-300 flex flex-col">
+      <div class="flex items-center justify-between p-6 border-b">
+        <h2 class="text-2xl font-bold text-primary">Your Cart</h2>
+        <button id="close-cart" class="text-2xl">&times;</button>
+      </div>
+      <div id="cart-items" class="flex-1 overflow-y-auto p-6"></div>
+      <div class="p-6 border-t">
+        <div class="flex items-center justify-between mb-4">
+          <span class="font-semibold text-lg">Total:</span>
+          <span id="cart-total" class="text-2xl font-bold text-primary">R0</span>
+        </div>
+        <button id="checkout-btn" class="btn w-full bg-gradient-to-r from-purple-700 to-purple-600 hover:from-purple-800 hover:to-purple-700 transform hover:scale-105 transition-all duration-300 text-white font-semibold shadow-lg hover:shadow-xl py-3 rounded-lg text-lg border-2 border-purple-700" style="color:#fff;">Checkout via WhatsApp</button>
+      </div>
+    </div>
+    <!-- Cart Overlay -->
+    <div id="cart-overlay" class="fixed inset-0 bg-black bg-opacity-40 z-[9998] hidden"></div>
+  </div>
+</section>
+
+<!-- Footer section starts -->
+<section class="footer">
+   <div class="box-container">
+      <div class="box">
+         <h3>our services</h3>
+         <a href="services.html" class="link"> <i class="fas fa-angle-right"></i> computer repair </a>
+         <a href="services.html" class="link"> <i class="fas fa-angle-right"></i> laptop repair </a>
+         <a href="services.html" class="link"> <i class="fas fa-angle-right"></i> smartphone repair </a>
+         <a href="services.html" class="link"> <i class="fas fa-angle-right"></i> tablet repair </a>
+         <a href="services.html" class="link"> <i class="fas fa-angle-right"></i> data recovery </a>
+         <a href="services.html" class="link"> <i class="fas fa-angle-right"></i> game console repair </a>
+      </div>
+      <div class="box">
+         <h3>quick links</h3>
+         <a href="index.html" class="link"> <i class="fas fa-angle-right"></i> home </a>
+         <a href="about.html" class="link"> <i class="fas fa-angle-right"></i> about </a>
+         <a href="services.html" class="link"> <i class="fas fa-angle-right"></i> services </a>
+         <a href="blog.html" class="link"> <i class="fas fa-angle-right"></i> blog </a>
+         <a href="webdev.html" class="link"> <i class="fas fa-angle-right"></i> web development </a>
+         <a href="products.html" class="link"> <i class="fas fa-angle-right"></i> products </a>
+         <a href="index.html#contact" class="link"> <i class="fas fa-angle-right"></i> contact </a>
+      </div>
+      <div class="box">
+         <h3>contact info</h3>
+         <p> <i class="fas fa-map"></i> Midrand, Gauteng, South Africa </p>
+         <p> <i class="fas fa-envelope"></i> sales@omegatek.co.za </p>
+         <p> <i class="fas fa-phone"></i> 073 653 8207 </p>
+         <p> <i class="fas fa-clock"></i> Monday - Friday: 8am - 5pm </p>
+         <p> <i class="fas fa-clock"></i> Saturday: 9am - 2pm </p>
+      </div>
+      <div class="box">
+         <h3>follow us</h3>
+         <p>stay connected for the latest updates</p>
+         <form action="">
+            <input type="email" name="" placeholder="enter your email" id="" class="email">
+            <input type="submit" value="subscribe" class="btn">
+         </form>
+         <div class="share">
+            <a href="https://www.facebook.com/sandile.milanzi.10" class="fab fa-facebook-f"></a>
+            <a href="#" class="fab fa-twitter"></a>
+            <a href="https://www.instagram.com/djx015/" class="fab fa-instagram"></a>
+            <a href="https://www.linkedin.com/in/sandile-milanzi-235692276/" class="fab fa-linkedin"></a>
+         </div>
+      </div>
+   </div>
+   <div class="credit"> created by <span><a href="https://www.facebook.com/sandile.milanzi.10">Sandile Milanzi (Omegatek Solutions)</a></span> | all rights reserved! </div>
+</section>
+<!-- Footer section ends -->
+
+<script>
+// Fetch and render products from stockjson.json
+fetch('stockjson.json')
+  .then(res => res.json())
+  .then(data => {
+    // Filter out rows that don't have a product name/description/price
+    let products = data.filter(p => p["__2"] && p["__3"] && p["__7"]);
+    // Remove the first tile if it doesn't contain a product (layout row)
+    if (products.length && (!products[0]["__2"].trim() || products[0]["__2"].toLowerCase().includes('product') || products[0]["__3"].toLowerCase().includes('description'))) {
+      products = products.slice(1);
+    }
+    const container = document.getElementById('products-list');
+    if (!products.length) {
+      container.innerHTML = '<div class="col-span-2 text-center text-gray-500">No products found.</div>';
+      return;
+    }
+    // Assign product images: image003.png, image005.png, ... skipping every second image
+    const imageBase = 'products/image';
+    // --- Cart logic ---
+    let cart = [];
+    function updateCart() {
+      const cartItems = document.getElementById('cart-items');
+      const cartTotal = document.getElementById('cart-total');
+      if (!cart.length) {
+        cartItems.innerHTML = '<div class="text-center text-gray-500">Your cart is empty.</div>';
+        cartTotal.textContent = 'R0';
+        return;
+      }
+      let total = 0;
+      cartItems.innerHTML = cart.map((item, i) => {
+        total += item.price * item.qty;
+        return `
+          <div class="flex items-center mb-6 border-b pb-4">
+            <img src="${item.img}" class="w-20 h-20 object-contain rounded-lg bg-gray-100 mr-4" alt="${item.name}">
+            <div class="flex-1">
+              <div class="font-bold text-lg text-primary mb-1">${item.name}</div>
+              <div class="text-gray-700 mb-1">R${item.price} x ${item.qty}</div>
+              <div class="flex items-center gap-2">
+                <button class="px-2 py-1 bg-gray-200 rounded" onclick="window.changeQty(${i},-1)">-</button>
+                <span>${item.qty}</span>
+                <button class="px-2 py-1 bg-gray-200 rounded" onclick="window.changeQty(${i},1)">+</button>
+                <button class="ml-4 text-red-500" onclick="window.removeFromCart(${i})">Remove</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      cartTotal.textContent = 'R' + total;
+    }
+    window.changeQty = function(idx, delta) {
+      cart[idx].qty += delta;
+      if (cart[idx].qty < 1) cart[idx].qty = 1;
+      updateCart();
+    }
+    window.removeFromCart = function(idx) {
+      cart.splice(idx, 1);
+      updateCart();
+    }
+    // --- Category filtering and live search logic ---
+    // Map product names to categories (simple keyword match)
+    function getCategory(product) {
+      const name = (product["__2"] || '').toLowerCase();
+      if (name.includes('cable')) return 'Cables';
+      if (name.includes('charger')) return 'Chargers';
+      if (name.includes('earbud') || name.includes('audio') || name.includes('headphone') || name.includes('speaker')) return 'Earbuds & Audio';
+      if (name.includes('ssd')) return 'SSD';
+      if (name.includes('memory') || name.includes('ram') || name.includes('flash')) return 'Memory';
+      if (name.includes('kit') || name.includes('stand')) return 'Kits & Stands';
+      return 'Other';
+    }
+
+    let currentCategory = 'All';
+    let currentSearch = '';
+
+    function filterProducts() {
+      let filtered = products;
+      if (currentCategory !== 'All') {
+        filtered = filtered.filter(p => getCategory(p) === currentCategory);
+      }
+      if (currentSearch) {
+        filtered = filtered.filter(p =>
+          p["__2"] && p["__2"].toLowerCase().includes(currentSearch)
+        );
+      }
+      return filtered;
+    }
+
+    function renderProductsLive(filteredProducts) {
+      if (!filteredProducts.length) {
+        container.innerHTML = '<div class="col-span-2 text-center text-gray-500">No products found.</div>';
+        return;
+      }
+      container.innerHTML = filteredProducts.map(product => {
+        // Always use the original index for image assignment
+        const origIdx = products.indexOf(product);
+        let price = parseFloat(product["__7"].replace(/[^\d.]/g, ''));
+        if (!isNaN(price)) price = Math.round(price * 1.35);
+        else price = product["__7"];
+        const imgNum = 3 + origIdx * 2;
+        const imgSrc = `${imageBase}${imgNum.toString().padStart(3, '0')}.png`;
+        return `
+        <div class="bg-white rounded-2xl shadow-2xl p-8 flex flex-col hover:shadow-3xl transition border border-gray-100 min-h-[420px]">
+          <div class="w-full h-56 flex items-center justify-center mb-6 bg-gray-100 rounded-xl overflow-hidden">
+            <img src="${imgSrc}" alt="Product Image" class="object-contain h-full w-full max-w-[180px] max-h-[180px]">
+          </div>
+          <div class="flex-1 flex flex-col justify-between">
+            <h2 class="text-2xl font-bold mb-3 text-primary">${product["__2"]}</h2>
+            <p class="text-gray-700 mb-6 text-lg">${product["__3"]}</p>
+          </div>
+          <div class="flex items-center justify-between mt-6">
+            <span class="text-3xl font-extrabold text-purple-700">R${price}</span>
+            <button class="btn bg-gradient-to-r from-purple-700 to-purple-600 hover:from-purple-800 hover:to-purple-700 transform hover:scale-105 transition-all duration-300 text-white font-semibold shadow-lg hover:shadow-xl add-to-cart px-6 py-3 rounded-lg border-2 border-purple-700" style="color:#fff;" data-name="${product["__2"]}" data-price="${price}" data-img="${imgSrc}">Add to Cart</button>
+          </div>
+        </div>
+        `;
+      }).join('');
+      // Add to cart event listeners
+      document.querySelectorAll('.add-to-cart').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const name = this.getAttribute('data-name');
+          const price = parseInt(this.getAttribute('data-price'));
+          const img = this.getAttribute('data-img');
+          const found = cart.find(item => item.name === name);
+          if (found) found.qty++;
+          else cart.push({ name, price, img, qty: 1 });
+          updateCart();
+          openCart();
+        });
+      });
+    }
+
+    // Initial render
+    renderProductsLive(products);
+
+    // Live search event
+    document.getElementById('live-search').addEventListener('input', function() {
+      currentSearch = this.value.trim().toLowerCase();
+      renderProductsLive(filterProducts());
+    });
+
+    // Category tile click event
+    document.querySelectorAll('.category-tile').forEach(tile => {
+      tile.addEventListener('click', function() {
+        document.querySelectorAll('.category-tile').forEach(t => t.classList.remove('ring-4', 'ring-white', 'scale-110'));
+        this.classList.add('ring-4', 'ring-white', 'scale-110');
+        currentCategory = this.getAttribute('data-category');
+        renderProductsLive(filterProducts());
+      });
+    });
+    // Set initial active tile to 'All'
+    document.querySelector('.category-tile[data-category="All"]').classList.add('ring-4', 'ring-white', 'scale-110');
+    // Add to cart event listeners
+    document.querySelectorAll('.add-to-cart').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const name = this.getAttribute('data-name');
+        const price = parseInt(this.getAttribute('data-price'));
+        const img = this.getAttribute('data-img');
+        const found = cart.find(item => item.name === name);
+        if (found) found.qty++;
+        else cart.push({ name, price, img, qty: 1 });
+        updateCart();
+        openCart();
+      });
+    });
+    // Cart drawer logic
+    const cartDrawer = document.getElementById('cart-drawer');
+    const cartOverlay = document.getElementById('cart-overlay');
+    // Hide navbar when cart is open
+    function setNavbarVisibility(hide) {
+      const header = document.querySelector('header.header');
+      if (header) header.style.display = hide ? 'none' : '';
+    }
+    function openCart() {
+      cartDrawer.classList.remove('translate-x-full');
+      cartOverlay.classList.remove('hidden');
+      setNavbarVisibility(true);
+    }
+    function closeCart() {
+      cartDrawer.classList.add('translate-x-full');
+      cartOverlay.classList.add('hidden');
+      setNavbarVisibility(false);
+    }
+    document.getElementById('close-cart').onclick = closeCart;
+    cartOverlay.onclick = closeCart;
+    // Checkout via WhatsApp
+    document.getElementById('checkout-btn').onclick = function() {
+      if (!cart.length) return;
+      const phone = '27736538207'; // Your WhatsApp number
+      let msg = 'Order from Omegatek Solutions:%0A';
+      cart.forEach(item => {
+        msg += `- ${item.name} x${item.qty} (R${item.price} each)%0A`;
+      });
+      let total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      msg += `%0ATotal: R${total}`;
+      window.open(`https://wa.me/${phone}?text=${msg}`,'_blank');
+    }
+    // Add floating cart button
+    if (!document.getElementById('floating-cart-btn')) {
+      const btn = document.createElement('button');
+      btn.id = 'floating-cart-btn';
+      btn.className = 'fixed bottom-8 right-8 z-[10000] bg-gradient-to-r from-purple-700 to-purple-600 hover:from-purple-800 hover:to-purple-700 text-white rounded-full shadow-2xl p-4 text-2xl border-2 border-purple-700 flex items-center';
+      btn.style.color = '#fff';
+      btn.style.outline = '3px solid #fff';
+      btn.style.boxShadow = '0 0 0 4px #fff, 0 8px 32px 0 rgba(80,0,120,0.25)';
+      btn.innerHTML = '<i class="fas fa-shopping-cart" style="color:#fff; filter: drop-shadow(0 0 2px #000); font-size:1.5em;"></i>';
+      btn.onclick = openCart;
+      document.body.appendChild(btn);
+      // Responsive: move left when cart is open
+      function updateCartBtnPosition() {
+        const cartDrawer = document.getElementById('cart-drawer');
+        if (cartDrawer && !cartDrawer.classList.contains('translate-x-full')) {
+          btn.style.right = 'min(24rem, 100vw - 400px)'; // move left of cart drawer (max-w-md = 28rem)
+          btn.style.bottom = '2rem';
+        } else {
+          btn.style.right = '2rem';
+          btn.style.bottom = '2rem';
+        }
+      }
+      // Listen for cart open/close
+      const cartDrawer = document.getElementById('cart-drawer');
+      const cartOverlay = document.getElementById('cart-overlay');
+      if (cartDrawer && cartOverlay) {
+        const observer = new MutationObserver(updateCartBtnPosition);
+        observer.observe(cartDrawer, { attributes: true, attributeFilter: ['class'] });
+        cartOverlay.addEventListener('click', updateCartBtnPosition);
+        document.getElementById('close-cart').addEventListener('click', updateCartBtnPosition);
+      }
+      window.addEventListener('resize', updateCartBtnPosition);
+      setTimeout(updateCartBtnPosition, 100);
+    }
+    // Initial cart update
+    updateCart();
+  })
+  .catch(() => {
+    document.getElementById('products-list').innerHTML = '<div class="col-span-2 text-center text-red-500">Failed to load products.</div>';
+  });
+</script>
+<script src="js/script.js"></script>
+</body>
+</html>
