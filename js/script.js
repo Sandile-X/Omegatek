@@ -89,32 +89,19 @@ document.addEventListener("DOMContentLoaded", function() {
 function initTypewriter() {
     const typewriterElement = document.querySelector(".typewriter h2");
     if (typewriterElement) {
-        // Reset the animation to ensure it runs continuously
-        typewriterElement.style.animation = 'none';
-        typewriterElement.offsetHeight; // Trigger reflow
-        typewriterElement.style.animation = `
-            typing 3s steps(30, end), 
-            blink 0.7s step-end infinite alternate
-        `;
-
-        // Set a recurring animation reset
-        setInterval(() => {
-            // Remove the animation temporarily
-            typewriterElement.style.animation = 'none';
-            typewriterElement.offsetHeight; // Trigger reflow
-            
-            // Restart the animation
-            typewriterElement.style.animation = `
-                typing 3s steps(30, end), 
-                blink 0.7s step-end infinite alternate
-            `;
-            
-            // Reset the width to zero to restart typing effect
+        // Function to start the typing animation
+        function startTyping() {
             typewriterElement.style.width = '0';
+            typewriterElement.style.animation = 'typing 3s steps(30, end) forwards, blink 0.7s step-end infinite alternate';
+            
+            // After typing completes (3s), wait 8s before restarting
             setTimeout(() => {
-                typewriterElement.style.width = '';
-            }, 50);
-        }, 6000); // Reset every 6 seconds (3s typing + 3s pause)
+                startTyping(); // Restart the cycle
+            }, 11000); // 3s typing + 8s pause
+        }
+        
+        // Start the first animation
+        startTyping();
     }
 }
 

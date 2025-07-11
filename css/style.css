@@ -696,7 +696,7 @@ section {
 }
 
 .footer {
-  background: #f5f5f5;
+  background: #000000;
 }
 
 .footer .box-container {
@@ -710,7 +710,7 @@ section {
 .footer .box-container .box h3 {
   font-size: 2.2rem;
   text-transform: capitalize;
-  color: #334;
+  color: #ffffff;
   padding: 1rem 0;
 }
 
@@ -719,7 +719,7 @@ section {
   padding: .5rem 0;
   font-size: 1.5rem;
   line-height: 2;
-  color: #777;
+  color: #cccccc;
 }
 
 .footer .box-container .box .link i {
@@ -728,7 +728,7 @@ section {
 }
 
 .footer .box-container .box .link:hover {
-  color: #b30ce6;
+  color: #ffffff;
 }
 
 .footer .box-container .box .link:hover i {
@@ -739,19 +739,20 @@ section {
   padding: .5rem 0;
   font-size: 1.5rem;
   line-height: 2;
-  color: #777;
+  color: #cccccc;
 }
 
 .footer .box-container .box p span {
-  color: #b30ce6;
+  color: #ffffff;
 }
 
 .footer .box-container .box .email {
   width: 100%;
-  border: 0.2rem solid #334;
+  border: 0.2rem solid #ffffff;
   padding: 1.6rem 1.4rem;
   font-size: 1.6rem;
-  color: #777;
+  color: #ffffff;
+  background: #333333;
   margin: 1rem 0;
 }
 
@@ -764,8 +765,8 @@ section {
   width: 4.5rem;
   line-height: 4.5rem;
   font-size: 1.7rem;
-  background: #334;
-  color: #fff;
+  background: #ffffff;
+  color: #000000;
   margin-right: .3rem;
   text-align: center;
 }
@@ -777,15 +778,15 @@ section {
 .footer .credit {
   font-size: 2rem;
   text-transform: capitalize;
-  color: #334;
+  color: #ffffff;
   margin-top: 3rem;
   padding-top: 3rem;
-  border-top: 0.2rem solid #334;
+  border-top: 0.2rem solid #ffffff;
   text-align: center;
 }
 
 .footer .credit span {
-  color: #b30ce6;
+  color: #ffffff;
 }
 
 @media (max-width: 1200px) {
@@ -878,26 +879,25 @@ section {
 /* HERO SECTION STYLES */
 .hero-section {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
   border: 5px solid #000;
   overflow: hidden;
 }
 
-/* LEFT SIDE - VIDEO BACKGROUND */
-.hero-left {
-  flex: 1;
+/* FULL WIDTH VIDEO SECTION */
+.hero-video {
   position: relative;
-  width: 50%;
-  height: 100vh;
+  width: 100%;
+  height: 70vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 
-.hero-left video {
+.hero-video video {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -907,36 +907,36 @@ section {
   z-index: -1;
 }
 
-.hero-left .hero-text {
+.hero-video .hero-text {
   position: relative;
   color: white;
   text-align: center;
   padding: 20px;
   background: rgba(222, 61, 243, 0.5);
   border-radius: 10px;
+  z-index: 1;
 }
 
-.hero-left .hero-text h1 {
+.hero-video .hero-text h1 {
   font-size: 3rem;
   margin: 0;
 }
 
-.hero-left .hero-text p {
+.hero-video .hero-text p {
   font-size: 1.2rem;
 }
 
-/* RIGHT SIDE - TEXT & TYPEWRITER */
-.hero-right {
-  flex: 1;
-  width: 50%;
-  height: 100vh;
+/* FULL WIDTH TEXT SECTION WITH TYPEWRITER */
+.hero-content {
+  width: 100%;
+  height: 30vh;
   display: flex;
   justify-content: center;
   align-items: center;
   background: #ffffff;
   color: rgb(176, 0, 240);
   text-align: center;
-  border-left: 5px solid #000;
+  border-top: 5px solid #000;
   padding: 20px;
   position: relative;
   overflow: hidden;
@@ -951,9 +951,7 @@ section {
   width: 0;
   font-size: 3.5rem; /* Bigger text */
   animation: 
-    typing 3s steps(30, end) forwards, 
-    blink 0.7s step-end infinite alternate,
-    resetTypewriter 12s steps(1) infinite; /* 3s typing + 5s delay + 4s for reset */
+    blink 0.7s step-end infinite alternate;
   position: relative;
   background: transparent;
 }
@@ -972,9 +970,9 @@ section {
 
 /* New reset animation with proper timing */
 @keyframes resetTypewriter {
-  0%, 24.9% { width: 0; }
-  25%, 65% { width: 100%; } /* Stay at 100% for 5 seconds (41% of total animation time) */
-  65.1%, 100% { width: 0; }
+  0%, 19.9% { width: 0; }
+  20%, 80% { width: 100%; } /* Stay at 100% for 8 seconds (60% of total animation time) */
+  80.1%, 100% { width: 0; }
 }
 
 /* Cursor Blinking Effect */
@@ -985,28 +983,21 @@ section {
 /* RESPONSIVE DESIGN */
 @media screen and (max-width: 768px) {
   .hero-section {
-    flex-direction: column;
-    height: auto;
+    min-height: auto;
   }
 
-  .hero-left,
-  .hero-right {
-    width: 100%;
+  .hero-video {
     height: 50vh;
   }
 
-  .hero-left video {
-    height: 50vh;
-  }
-
-  .hero-text {
-    font-size: 1.6rem;
-    padding: 10px;
-  }
-
-  .hero-right {
+  .hero-content {
     height: auto;
     padding: 40px 20px;
+  }
+
+  .hero-video .hero-text {
+    font-size: 1.6rem;
+    padding: 10px;
   }
 
   .typewriter h2 {
@@ -1019,11 +1010,15 @@ section {
     font-size: 50%;
   }
 
-  .hero-text h1 {
+  .hero-video {
+    height: 40vh;
+  }
+
+  .hero-video .hero-text h1 {
     font-size: 2.5rem;
   }
 
-  .hero-text p {
+  .hero-video .hero-text p {
     font-size: 1rem;
   }
 
