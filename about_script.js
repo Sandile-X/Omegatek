@@ -30,12 +30,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Mobile menu toggle (reusing the main site functionality)
     let menu = document.querySelector('#menu-btn');
-    let navbarLinks = document.querySelector('.header .navbar .links');
+    let navbar = document.querySelector('.header .navbar .links');
     
-    if (menu) {
-        menu.onclick = () => {
-            menu.classList.toggle('fa-times');
-            navbarLinks.classList.toggle('active');
-        }
-    }
+    menu.onclick = () => {
+        menu.classList.toggle('fa-times');
+        navbar.classList.toggle('active');
+    };
+    
+    window.onscroll = () => {
+        menu.classList.remove('fa-times');
+        navbar.classList.remove('active');
+    };
 });

@@ -21,10 +21,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $response["message"] = "All fields are required";
     } else {
         // Admin email address
-        $to = "sales@megatronixx.co.za";
+        $to = "sales@omegatek.co.za";
         
         // Email subject
-        $subject = "New Contact Form Submission from Megatronixx Website";
+        $subject = "New Contact Form Submission from Omegatek Solutions Website";
         
         // Prepare email content
         $email_content = "Name: $name\n";
@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $email_content .= "Message:\n$message\n";
         
         // Email headers
-        $headers = "From: no-reply@megatronixx.co.za\r\n";
+        $headers = "From: no-reply@omegatek.co.za\r\n";
         $headers .= "Reply-To: $name <$phone>\r\n";
         
         // Send email
