@@ -612,6 +612,31 @@ section {
   .reviews .box-container {
     grid-template-columns: 1fr;
   }
+  
+  body {
+    overflow-x: hidden;
+    position: relative;
+    width: 100%;
+  }
+  
+  /* Fix SVG positioning */
+  svg {
+    max-width: 100%;
+    height: auto;
+    position: relative;
+    left: 0;
+    right: 0;
+  }
+  
+  /* Ensure all containers respect viewport width */
+  .container, 
+  section,
+  .box-container,
+  .header {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
 }
 
 .contact .row {
@@ -857,6 +882,31 @@ section {
             flex-flow: column;
     text-align: center;
   }
+  
+  body {
+    overflow-x: hidden;
+    position: relative;
+    width: 100%;
+  }
+  
+  /* Fix SVG positioning */
+  svg {
+    max-width: 100%;
+    height: auto;
+    position: relative;
+    left: 0;
+    right: 0;
+  }
+  
+  /* Ensure all containers respect viewport width */
+  .container, 
+  section,
+  .box-container,
+  .header {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
 }
 
 @media (max-width: 450px) {
@@ -1006,24 +1056,13 @@ section {
 }
 
 @media (max-width: 450px) {
-  html {
-    font-size: 50%;
+  .modal h3 {
+    font-size: 2rem;
   }
 
-  .hero-video {
-    height: 40vh;
-  }
-
-  .hero-video .hero-text h1 {
-    font-size: 2.5rem;
-  }
-
-  .hero-video .hero-text p {
-    font-size: 1rem;
-  }
-
-  .typewriter h2 {
-    font-size: 1.8rem;
+  .floating-button .btn {
+    padding: 1rem 1.8rem;
+    font-size: 1.4rem;
   }
 }
 
@@ -1318,4 +1357,20 @@ section {
   .pricing .price-box.featured {
     order: -1;
   }
+}
+
+/* Responsive media handling */
+img,
+video,
+svg,
+iframe {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Ensure content boxes don't overflow */
+.box {
+  max-width: 100%;
+  overflow: hidden;
 }
