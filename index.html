@@ -124,6 +124,50 @@
    <!-- Favicon -->
    <link rel="icon" type="image/png" href="images2/OMEGATEK ICON ONLY.png">
    
+   <!-- Prevent horizontal scrolling and ensure proper alignment -->
+   <style>
+      html, body {
+         overflow-x: hidden;
+         width: 100%;
+         margin: 0;
+         padding: 0;
+         position: relative;
+      }
+      
+      * {
+         box-sizing: border-box;
+         max-width: 100%;
+      }
+
+      img, video, iframe {
+         max-width: 100%;
+         height: auto;
+      }
+
+      .container, .box-container, section {
+         width: 100%;
+         max-width: 100%;
+         padding-left: 1rem;
+         padding-right: 1rem;
+         margin-left: auto;
+         margin-right: auto;
+      }
+
+      @media (max-width: 768px) {
+         .row, .grid {
+            flex-direction: column;
+         }
+         
+         .box-container {
+            padding: 0 1rem;
+         }
+         
+         iframe.map {
+            width: 100% !important;
+         }
+      }
+   </style>
+
    <!-- Chatway widget -->
    <script id="chatway" async="true" src="https://cdn.chatway.app/widget.js?id=ZZTU6jAkfm7u"></script>
    
