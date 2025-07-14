@@ -1,6 +1,82 @@
 document.addEventListener("DOMContentLoaded", function() {
+    // Mobile navigation toggle functionality
+    const navToggle = document.querySelector(".blog-nav-toggle");
+    const categoryList = document.querySelector(".blog-category-list");
+    
+    if (navToggle && categoryList) {
+        navToggle.addEventListener("click", function() {
+            const isExpanded = categoryList.classList.contains("active");
+            categoryList.classList.toggle("active");
+            this.classList.toggle("active");
+            
+            // Update ARIA attributes
+            this.setAttribute("aria-expanded", !isExpanded);
+            
+            // Focus on first category if opening menu
+            if (!isExpanded) {
+                const firstCategory = categoryList.querySelector("li a");
+                if (firstCategory) {
+                    setTimeout(() => {
+                        firstCategory.focus();
+                    }, 100);
+                }
+            }
+        });
+    }
+    
+    // Handle search functionality for both mobile and desktop
+    const searchInputDesktop = document.getElementById("blog-search");
+    const searchInputMobile = document.getElementById("blog-search-mobile");
+    
+    function handleSearch(searchTerm) {
+        const posts = document.querySelectorAll(".post-card");
+        const featuredPost = document.querySelector(".featured-post");
+        
+        // Search in featured post
+        if (featuredPost) {
+            const title = featuredPost.querySelector("h2").textContent.toLowerCase();
+            const content = featuredPost.querySelector("p").textContent.toLowerCase();
+            const category = featuredPost.querySelector(".category").textContent.toLowerCase();
+            
+            if (title.includes(searchTerm) || content.includes(searchTerm) || category.includes(searchTerm)) {
+                featuredPost.style.display = "block";
+            } else {
+                featuredPost.style.display = searchTerm === "" ? "block" : "none";
+            }
+        }
+        
+        // Search in regular posts
+        posts.forEach(post => {
+            const title = post.querySelector("h3").textContent.toLowerCase();
+            const content = post.querySelector("p").textContent.toLowerCase();
+            const category = post.querySelector(".category").textContent.toLowerCase();
+            
+            if (title.includes(searchTerm) || content.includes(searchTerm) || category.includes(searchTerm)) {
+                post.style.display = "block";
+            } else {
+                post.style.display = searchTerm === "" ? "block" : "none";
+            }
+        });
+    }
+    
+    if (searchInputDesktop) {
+        searchInputDesktop.addEventListener("input", function() {
+            const searchTerm = this.value.toLowerCase();
+            handleSearch(searchTerm);
+            if (searchInputMobile) searchInputMobile.value = searchTerm;
+        });
+    }
+    
+    if (searchInputMobile) {
+        searchInputMobile.addEventListener("input", function() {
+            const searchTerm = this.value.toLowerCase();
+            handleSearch(searchTerm);
+            if (searchInputDesktop) searchInputDesktop.value = searchTerm;
+        });
+    }
+    
     // Category navigation functionality
-    const categoryLinks = document.querySelectorAll(".blog-categories ul li a");
+    const categoryLinks = document.querySelectorAll(".blog-category-list li a");
     
     categoryLinks.forEach(link => {
         link.addEventListener("click", function(e) {
@@ -16,6 +92,12 @@ document.addEventListener("DOMContentLoaded", function() {
             
             // Get the category ID from href attribute
             const category = this.getAttribute("href").substring(1);
+            
+            // Close mobile menu after selecting a category
+            if (categoryList.classList.contains("active") && window.innerWidth <= 768) {
+                categoryList.classList.remove("active");
+                if (navToggle) navToggle.classList.remove("active");
+            }
             
             // Filter posts based on category
             if (category === "all") {
@@ -51,41 +133,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // Search functionality
-    const searchInput = document.getElementById("blog-search");
-    if (searchInput) {
-        searchInput.addEventListener("input", function() {
-            const searchTerm = this.value.toLowerCase();
-            const posts = document.querySelectorAll(".post-card");
-            const featuredPost = document.querySelector(".featured-post");
-            
-            // Search in featured post
-            if (featuredPost) {
-                const title = featuredPost.querySelector("h2").textContent.toLowerCase();
-                const content = featuredPost.querySelector("p").textContent.toLowerCase();
-                const category = featuredPost.querySelector(".category").textContent.toLowerCase();
-                
-                if (title.includes(searchTerm) || content.includes(searchTerm) || category.includes(searchTerm)) {
-                    featuredPost.style.display = "block";
-                } else {
-                    featuredPost.style.display = searchTerm === "" ? "block" : "none";
-                }
-            }
-            
-            // Search in regular posts
-            posts.forEach(post => {
-                const title = post.querySelector("h3").textContent.toLowerCase();
-                const content = post.querySelector("p").textContent.toLowerCase();
-                const category = post.querySelector(".category").textContent.toLowerCase();
-                
-                if (title.includes(searchTerm) || content.includes(searchTerm) || category.includes(searchTerm)) {
-                    post.style.display = "block";
-                } else {
-                    post.style.display = searchTerm === "" ? "block" : "none";
-                }
-            });
-        });
-    }
+    // We've already handled search functionality in the updated code above
 
     // Newsletter form submission
     const newsletterForm = document.querySelector(".newsletter-form");
@@ -311,4 +359,41 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }, 300);
     }
+
+    // Handle browser back button and URL hash changes
+    window.addEventListener('hashchange', function() {
+        const hash = window.location.hash;
+        if (hash) {
+            const targetCategoryLink = document.querySelector(`.blog-category-list li a[href="${hash}"]`);
+            if (targetCategoryLink) {
+                // Simulate click on the category link
+                targetCategoryLink.click();
+            }
+        }
+    });
+
+    // Check if there's a hash in URL on page load
+    window.addEventListener('load', function() {
+        const hash = window.location.hash;
+        if (hash) {
+            const targetCategoryLink = document.querySelector(`.blog-category-list li a[href="${hash}"]`);
+            if (targetCategoryLink) {
+                // Simulate click on the category link
+                targetCategoryLink.click();
+            }
+        }
+    });
+
+    // Handle window resize to fix navigation visibility issues
+    window.addEventListener('resize', function() {
+        const categoryList = document.querySelector(".blog-category-list");
+        if (window.innerWidth > 768 && categoryList) {
+            categoryList.classList.add("active");
+        } else if (window.innerWidth <= 768 && categoryList) {
+            const navToggle = document.querySelector(".blog-nav-toggle");
+            if (!navToggle || !navToggle.classList.contains("active")) {
+                categoryList.classList.remove("active");
+            }
+        }
+    });
 });

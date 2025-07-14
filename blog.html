@@ -104,16 +104,26 @@
 <div class="blog-categories">
     <div class="container">
         <div class="blog-nav-content">
-            <ul>
-                <li class="active"><a href="#all">All Posts</a></li>
-                <li><a href="#computers">Computers</a></li>
-                <li><a href="#smartphones">Smartphones</a></li>
-                <li><a href="#maintenance">Maintenance</a></li>
-                <li><a href="#diy">DIY Repairs</a></li>
-                <li><a href="#tech-news">Tech News</a></li>
+            <div class="blog-nav-mobile-header">
+                <button class="blog-nav-toggle" aria-expanded="false" aria-controls="blog-category-list" aria-label="Toggle categories menu">
+                    <span class="category-label">Categories</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="blog-search blog-search-mobile">
+                    <input type="text" id="blog-search-mobile" placeholder="Search articles..." aria-label="Search blog articles">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+            <ul class="blog-category-list" id="blog-category-list" role="menu">
+                <li class="active" role="menuitem"><a href="#all">All Posts</a></li>
+                <li role="menuitem"><a href="#computers">Computers</a></li>
+                <li role="menuitem"><a href="#smartphones">Smartphones</a></li>
+                <li role="menuitem"><a href="#maintenance">Maintenance</a></li>
+                <li role="menuitem"><a href="#diy">DIY Repairs</a></li>
+                <li role="menuitem"><a href="#tech-news">Tech News</a></li>
             </ul>
-            <div class="blog-search">
-                <input type="text" id="blog-search" placeholder="Search articles...">
+            <div class="blog-search blog-search-desktop">
+                <input type="text" id="blog-search" placeholder="Search articles..." aria-label="Search blog articles">
                 <i class="fas fa-search"></i>
             </div>
         </div>
