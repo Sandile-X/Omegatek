@@ -954,7 +954,7 @@ section {
   overflow: hidden;
 }
 
-/* Typewriter Effect - Fix */
+/* Typewriter Effect - Enhanced */
 .typewriter h2 {
   display: inline-block;
   overflow: hidden;
@@ -962,29 +962,40 @@ section {
   border-right: 4px solid #b30ce6; /* Cursor effect - slightly thicker */
   width: 0;
   font-size: 3.5rem; /* Bigger text */
-  animation: 
-    blink 0.7s step-end infinite alternate;
   position: relative;
   background: transparent;
+  max-width: 100%; /* Ensure it doesn't overflow container */
+  text-overflow: ellipsis; /* Add ellipsis for overflow text */
+  margin: 0 auto;
 }
 
 /* Animation container to handle the loop */
 .typewriter {
   position: relative;
   overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 1rem 0;
 }
 
-/* Typing Animation */
+/* Improved Typing Animation - slower and more natural */
 @keyframes typing {
   from { width: 0; }
   to { width: 100%; }
 }
 
-/* New reset animation with proper timing */
-@keyframes resetTypewriter {
-  0%, 19.9% { width: 0; }
-  20%, 80% { width: 100%; } /* Stay at 100% for 8 seconds (60% of total animation time) */
-  80.1%, 100% { width: 0; }
+/* Erasing Animation - with natural speed */
+@keyframes erasing {
+  from { width: 100%; }
+  to { width: 0; }
+}
+
+/* Cursor Blinking Animation - more realistic */
+@keyframes blinkCursor {
+  from, to { border-color: #b30ce6; }
+  50% { border-color: transparent; }
 }
 
 /* Cursor Blinking Effect */
@@ -1014,6 +1025,11 @@ section {
 
   .typewriter h2 {
     font-size: 2rem;
+    white-space: normal; /* Allow wrapping on medium screens */
+    width: 100%;
+    border-right: none;
+    text-align: center;
+    animation: none;
   }
 }
 
@@ -1036,6 +1052,11 @@ section {
 
   .typewriter h2 {
     font-size: 1.8rem;
+    white-space: normal;
+    width: 100%;
+    padding: 0 5px;
+    border-right: none;
+    text-align: center;
   }
 }
 

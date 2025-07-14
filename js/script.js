@@ -89,19 +89,43 @@ document.addEventListener("DOMContentLoaded", function() {
 function initTypewriter() {
     const typewriterElement = document.querySelector(".typewriter h2");
     if (typewriterElement) {
-        // Function to start the typing animation
-        function startTyping() {
+        // Get text content for animation
+        const text = typewriterElement.textContent;
+        const textLength = text.length;
+        
+        // Calculate typing speed based on text length (more natural)
+        const typingDuration = Math.max(3.5, textLength * 0.15); // Slower typing (about 7 chars per second)
+        const erasingDuration = typingDuration * 0.6; // Erasing is faster than typing
+        const pauseDuration = 2000; // Pause at full text (2 seconds)
+        
+        // Function to handle the complete animation cycle
+        function animateTypewriter() {
+            // 1. Typing animation
             typewriterElement.style.width = '0';
-            typewriterElement.style.animation = 'typing 3s steps(30, end) forwards, blink 0.7s step-end infinite alternate';
+            typewriterElement.style.animation = `typing ${typingDuration}s steps(${textLength}, end) forwards, blinkCursor 0.75s step-end infinite`;
             
-            // After typing completes (3s), wait 8s before restarting
+            // 2. Pause at full text
             setTimeout(() => {
-                startTyping(); // Restart the cycle
-            }, 11000); // 3s typing + 8s pause
+                // Keep width at 100% but change animation to just cursor blinking
+                typewriterElement.style.width = '100%';
+                typewriterElement.style.animation = 'blinkCursor 0.75s step-end infinite';
+                
+                // 3. Start erasing after pause
+                setTimeout(() => {
+                    // Erasing animation
+                    typewriterElement.style.animation = `erasing ${erasingDuration}s steps(${textLength}, end) forwards, blinkCursor 0.75s step-end infinite`;
+                    
+                    // 4. Restart cycle after erasing completes
+                    setTimeout(() => {
+                        animateTypewriter();
+                    }, erasingDuration * 1000 + 500); // Add small delay after erasing
+                    
+                }, pauseDuration);
+            }, typingDuration * 1000);
         }
         
-        // Start the first animation
-        startTyping();
+        // Start the animation cycle
+        animateTypewriter();
     }
 }
 
