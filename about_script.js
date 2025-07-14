@@ -28,17 +28,24 @@ document.addEventListener('DOMContentLoaded', function() {
     // Trigger once on page load
     animateOnScroll();
     
-    // Mobile menu toggle (reusing the main site functionality)
+    // Mobile menu toggle (aligning with the main site functionality)
     let menu = document.querySelector('#menu-btn');
-    let navbar = document.querySelector('.header .navbar .links');
+    let navbarLinks = document.querySelector('.header .navbar .links');
     
     menu.onclick = () => {
         menu.classList.toggle('fa-times');
-        navbar.classList.toggle('active');
+        navbarLinks.classList.toggle('active');
     };
     
     window.onscroll = () => {
         menu.classList.remove('fa-times');
-        navbar.classList.remove('active');
+        navbarLinks.classList.remove('active');
+        
+        // Make navbar sticky
+        if(window.scrollY > 60){
+            document.querySelector('.header .navbar').classList.add('active');
+        } else {
+            document.querySelector('.header .navbar').classList.remove('active');
+        }
     };
 });

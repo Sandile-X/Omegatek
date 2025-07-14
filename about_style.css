@@ -1,132 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600&display=swap");
-* {
-  font-family: 'Montserrat', sans-serif;
-  margin: 0;
-  padding: 0;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
-  outline: none;
-  border: none;
-  text-decoration: none;
-  -webkit-transition: all .2s linear;
-  transition: all .2s linear;
-}
-
-html {
-  font-size: 62.5%;
-  overflow-x: hidden;
-  scroll-behavior: smooth;
-  scroll-padding-top: 6rem;
-}
-
-html::-webkit-scrollbar {
-  width: 1rem;
-}
-
-html::-webkit-scrollbar-track {
-  background: #fff;
-}
-
-html::-webkit-scrollbar-thumb {
-  background: #b30ce6;
-  border-radius: 5rem;
-}
-
-section {
-  padding: 5rem 10%;
-}
-
-section {
-  padding: 5rem 10%;
-}
-
-.heading {
-  text-align: center;
-  margin-bottom: 3rem;
-  font-size: 4rem;
-  text-transform: capitalize;
-  color: #334;
-}
-
-.heading span {
-  color: #b30ce6;
-}
-
-.btn {
-  display: inline-block;
-  margin-top: 1rem;
-  padding: 1rem 3rem;
-  cursor: pointer;
-  background: #fff;
-  font-size: 1.7rem;
-  text-transform: capitalize;
-  color: #334;
-  border: 0.2rem solid #334;
-}
-
-.btn:hover {
-  background: #b30ce6;
-  border-color: #b30ce6;
-  color: #fff;
-}
-
-.header .contact-info {
-  padding: 2rem 10%;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-  background: #b30ce6;
-}
-
-.header .contact-info p {
-  font-size: 1.5rem;
-  color: #fff;
-}
-
-.header .contact-info p i {
-  padding-right: .5rem;
-  color: yellow;
-}
-
-.header .navbar {
-  padding: 2rem 10%;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-  background: #fff;
-  border-bottom: 0.2rem solid #334;
-  position: relative;
-  z-index: 1000;
-  height: 70px;
-}
-
-.header .navbar.active {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  border-bottom: none;
-  -webkit-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-          box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-}
-
-.header .navbar .logo img {
-  width: 200px; /* Adjust the size of your logo */
-  height: auto; /* Maintain aspect ratio */
-  cursor: pointer; /* Changes cursor to pointer on hover */
-}
+/* About page specific styles */
 
 /* General Styles */
 body {
@@ -306,6 +178,24 @@ body {
     background: #fff;
 }
 
+.about-page {
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Ensure consistent section styling */
+.about-page .about-container {
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Remove any unwanted shadow effects */
+.about-content h1,
+.about-content p,
+.about-title,
+.about-text h2,
+.about-text p {
+    text-shadow: none;
+}
+
 .about-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -316,6 +206,9 @@ body {
     font-size: 4rem;
     color: #334;
     margin-bottom: 3rem;
+    text-transform: capitalize;
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
 }
 
 .about-title span {
@@ -349,8 +242,31 @@ body {
 
 .about-text h2 {
     font-size: 2.5rem;
-    color: #b30ce6;
+    color: #334;
     margin-bottom: 1.5rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 0.5rem;
+}
+
+.about-text h2 span {
+    color: #b30ce6;
+}
+
+.about-text h2::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background-color: #b30ce6;
+}
+
+.about-text h2 span {
+    color: #b30ce6;
 }
 
 .about-text p {
@@ -358,6 +274,8 @@ body {
     color: #777;
     line-height: 1.8;
     margin-bottom: 2rem;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
 }
 
 /* Timeline Styles */
@@ -370,6 +288,26 @@ body {
     color: #334;
     text-align: center;
     margin-bottom: 3rem;
+    font-family: 'Montserrat', sans-serif;
+    text-shadow: none;
+    font-weight: 600;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 0.5rem;
+}
+
+.timeline h2::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background-color: #b30ce6;
+}
+
+.timeline h2 span {
+    color: #b30ce6;
 }
 
 .timeline-container {
@@ -478,16 +416,16 @@ body {
 /* About Banner Styles */
 .about-banner {
     position: relative;
-    height: 50vh;
-    background: url('../images2/A2.avif') center/cover no-repeat;
-    background-attachment: fixed;
+    height: 350px;
+    background-image: url('images2/A2.avif');
+    background-size: cover;
+    background-position: center;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
     color: #fff;
-    margin-bottom: 2rem;
-    font-family: 'Montserrat', sans-serif;
+    margin-bottom: 4rem;
 }
 
 .about-overlay {
@@ -496,7 +434,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(179, 12, 230, 0.4));
+    background: rgba(0, 0, 0, 0.6);
 }
 
 .about-content {
@@ -506,21 +444,34 @@ body {
 }
 
 .about-content h1 {
-    font-size: 4rem;
+    font-size: 4.5rem;
     font-weight: 600;
     margin-bottom: 1.5rem;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    text-transform: capitalize;
+    font-family: 'Montserrat', sans-serif;
+    color: #fff;
 }
 
 .about-content p {
-    font-size: 1.6rem;
-    max-width: 600px;
+    font-size: 1.8rem;
+    max-width: 800px;
     margin: 0 auto;
-    letter-spacing: 1px;
     line-height: 1.6;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    font-family: 'Montserrat', sans-serif;
+    color: #fff;
+}
+
+/* Fix for about-content within about-page section to have black text */
+.about-page .about-content h1,
+.about-page .about-content h2,
+.about-page .about-content p {
+    color: #333; /* Dark gray/black text */
+}
+
+/* Additional specificity for the about-banner content to ensure it stays white */
+.about-banner .about-content h1,
+.about-banner .about-content p {
+    color: #fff; /* White text for the hero banner */
 }
 
 /* Responsive Design */
@@ -630,6 +581,18 @@ body {
         font-size: 1.4rem;
         font-family: 'Montserrat', sans-serif;
         letter-spacing: 1px;
+    }
+    
+    .about-banner {
+        height: 250px;
+    }
+    
+    .about-content h1 {
+        font-size: 3.2rem;
+    }
+    
+    .about-content p {
+        font-size: 1.6rem;
     }
 }
 
