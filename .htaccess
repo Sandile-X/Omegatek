@@ -1,0 +1,354 @@
+# ======================================
+# Omegatek Solutions - Apache Configuration
+# Performance, Security & SEO Optimization
+# ======================================
+
+# ======================================
+# Directory listing — always off
+# ======================================
+Options -Indexes
+
+# ---------------------------------------
+# HTTPS Redirect
+# ---------------------------------------
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# ---------------------------------------
+# WWW to non-WWW (or vice versa)
+# ---------------------------------------
+# Redirect www to non-www
+RewriteEngine On
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
+# ---------------------------------------
+# GZIP Compression
+# ---------------------------------------
+<IfModule mod_deflate.c>
+    # Compress HTML, CSS, JavaScript, Text, XML and fonts
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/json
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+    AddOutputFilterByType DEFLATE application/x-font-opentype
+    AddOutputFilterByType DEFLATE application/x-font-truetype
+    AddOutputFilterByType DEFLATE application/x-font-ttf
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE font/eot
+    AddOutputFilterByType DEFLATE font/opentype
+    AddOutputFilterByType DEFLATE font/otf
+    AddOutputFilterByType DEFLATE font/ttf
+    AddOutputFilterByType DEFLATE image/svg+xml
+    AddOutputFilterByType DEFLATE image/x-icon
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/xml
+    
+    # Remove browser bugs (only needed for really old browsers)
+    BrowserMatch ^Mozilla/4 gzip-only-text/html
+    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+    BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+    Header append Vary User-Agent
+</IfModule>
+
+# ---------------------------------------
+# Browser Caching
+# ---------------------------------------
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # Default expiration: 1 month
+    ExpiresDefault "access plus 1 month"
+    
+    # HTML (1 day)
+    ExpiresByType text/html "access plus 1 day"
+    
+    # Images (1 year)
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/avif "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+    
+    # CSS, JavaScript (1 month)
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType application/x-javascript "access plus 1 month"
+    
+    # Fonts (1 year)
+    ExpiresByType font/ttf "access plus 1 year"
+    ExpiresByType font/otf "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType application/font-woff "access plus 1 year"
+    
+    # JSON (1 week)
+    ExpiresByType application/json "access plus 1 week"
+    
+    # PDF (1 month)
+    ExpiresByType application/pdf "access plus 1 month"
+    
+    # Video (1 month)
+    ExpiresByType video/mp4 "access plus 1 month"
+    ExpiresByType video/webm "access plus 1 month"
+</IfModule>
+
+# Cache-Control Headers
+<IfModule mod_headers.c>
+    # 1 YEAR - Static assets
+    <FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|webp|avif|svg|js|css|swf|woff|woff2|ttf|eot)$">
+        Header set Cache-Control "max-age=31536000, public"
+    </FilesMatch>
+    
+    # 1 WEEK - HTML, JSON
+    <FilesMatch "\.(html|htm|json)$">
+        Header set Cache-Control "max-age=604800, public, must-revalidate"
+    </FilesMatch>
+    
+    # No cache for dynamic content
+    <FilesMatch "\.(php)$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires 0
+    </FilesMatch>
+</IfModule>
+
+# ---------------------------------------
+# Security Headers
+# ---------------------------------------
+<IfModule mod_headers.c>
+    # Prevent clickjacking
+    Header always set X-Frame-Options "SAMEORIGIN"
+    
+    # Prevent MIME type sniffing
+    Header always set X-Content-Type-Options "nosniff"
+    
+    # XSS Protection
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Referrer Policy
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # HSTS — force HTTPS for 1 year (including subdomains)
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    
+    # Content Security Policy
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://cdn.chatway.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://unpkg.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: blob: https:; media-src 'self' blob:; connect-src 'self' https://*.supabase.co https://openrouter.ai; frame-src https://www.google.com https://www.youtube.com https://player.vimeo.com; frame-ancestors 'self'; object-src 'none'; base-uri 'self';"
+    
+    # Permissions Policy
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=(self)"
+    
+    # Remove Server/PHP signatures
+    Header always unset Server
+    Header always unset X-Powered-By
+</IfModule>
+
+# Hide server signature
+ServerSignature Off
+
+# ---------------------------------------
+# Error Pages
+# ---------------------------------------
+ErrorDocument 404 /404.html
+ErrorDocument 403 /404.html
+ErrorDocument 500 /404.html
+
+# ---------------------------------------
+# File Access Restrictions
+# ---------------------------------------
+# Deny access to hidden files
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Deny access to sensitive files
+<FilesMatch "(^#.*#|\.(bak|conf|dist|fla|in[ci]|log|orig|psd|sh|sql|sw[op])|~)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# CRITICAL: Block .env files from being served publicly
+<FilesMatch "^\.env">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Block config and template files
+<FilesMatch "(secure-config\.php|database\.php|database\.template\.php)$">
+    Order allow,deny
+    Deny from all
+    Satisfy all
+</FilesMatch>
+
+# Protect configuration files
+<FilesMatch "^(readme|license|changelog|\.htaccess|\.htpasswd)">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Deny access to specific directories
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(newsletter_data|order_data|dev|config|logs)/.*$ - [F,L]
+    # Block direct access to APK files outside the secure download API
+    RewriteRule ^downloads/apks/.*\.apk$ - [F,L]
+</IfModule>
+
+# ---------------------------------------
+# Performance Optimizations
+# ---------------------------------------
+# Enable Keep-Alive
+<IfModule mod_headers.c>
+    Header set Connection keep-alive
+</IfModule>
+
+# Reduce server overhead by enabling output buffering
+php_flag output_buffering On
+
+# Increase PHP limits (adjust as needed)
+php_value max_execution_time 300
+php_value max_input_time 300
+php_value memory_limit 256M
+php_value upload_max_filesize 10M
+php_value post_max_size 10M
+
+# ---------------------------------------
+# Clean URLs — remove .html extension
+# ---------------------------------------
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # 1. Redirect /page.html → /page
+    #    Uses %{THE_REQUEST} (raw HTTP request line) to prevent redirect loops.
+    #    Change R=302 to R=301 only after testing — browsers cache 301 permanently.
+    RewriteCond %{THE_REQUEST} \s/(.+?)\.html[\s?] [NC]
+    RewriteRule ^ /%1 [R=302,L]
+
+    # 2. Internal rewrite /page → page.html
+    #    Checks: file doesn't already exist, directory with same name doesn't exist,
+    #    and page.html actually exists — prevents conflicts (e.g. blog/ directory vs blog.html).
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}.html -f
+    RewriteRule ^(.+?)/?$ $1.html [L]
+</IfModule>
+
+# ---------------------------------------
+# MIME Types
+# ---------------------------------------
+<IfModule mod_mime.c>
+    # Web fonts
+    AddType font/ttf .ttf
+    AddType font/otf .otf
+    AddType font/woff .woff
+    AddType font/woff2 .woff2
+    AddType application/vnd.ms-fontobject .eot
+    
+    # Modern image formats
+    AddType image/webp .webp
+    AddType image/avif .avif
+    
+    # SVG
+    AddType image/svg+xml .svg .svgz
+    AddEncoding gzip .svgz
+    
+    # Video formats
+    AddType video/mp4 .mp4 .m4v
+    AddType video/webm .webm
+    AddType video/ogg .ogv
+    
+    # Audio formats
+    AddType audio/mp3 .mp3
+    AddType audio/ogg .ogg
+    AddType audio/wav .wav
+    
+    # JSON
+    AddType application/json .json
+    
+    # Android APK — allows secure download of APK files
+    AddType application/vnd.android.package-archive .apk
+    
+    # RSS
+    AddType application/rss+xml .rss
+</IfModule>
+
+# ---------------------------------------
+# Character Encoding
+# ---------------------------------------
+AddDefaultCharset UTF-8
+<IfModule mod_mime.c>
+    AddCharset UTF-8 .html .css .js .xml .json .rss .atom
+</IfModule>
+
+# ---------------------------------------
+# Disable Directory Browsing
+# ---------------------------------------
+Options -Indexes
+
+# ---------------------------------------
+# Follow Symbolic Links
+# ---------------------------------------
+Options +FollowSymLinks
+
+# ======================================
+# END OF CONFIGURATION
+# ======================================
+
+# ---------------------------------------
+# Security Hardening
+# ---------------------------------------
+
+# Deny access to .env and other sensitive config files
+<Files ".env">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "*.sql">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "BACKEND-SUMMARY.txt">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Block ALL JSON data files from direct web access
+<FilesMatch "\.json$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Block access to config/ directory
+<IfModule mod_rewrite.c>
+    RewriteRule ^config/.*$ - [F,L]
+    RewriteRule ^logs/.*$ - [F,L]
+    RewriteRule ^admin/order_data/.*$ - [F,L]
+    RewriteRule ^admin/test-.*\.php$ - [F,L]
+    RewriteRule ^admin/setup\.html$ - [F,L]
+    RewriteRule ^admin/setup-verify\.php$ - [F,L]
+    RewriteRule ^config/database\.php$ - [F,L]
+    RewriteRule ^config/secure-config\.php$ - [F,L]
+</IfModule>
+
+# Security Headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+

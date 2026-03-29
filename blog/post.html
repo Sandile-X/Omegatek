@@ -1,0 +1,351 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta name="description" content="">
+   <meta name="author" content="Omegatek Solutions">
+   <meta property="og:type" content="website">
+   <title>Blog Post | Omegatek Solutions</title>
+
+   <!-- Tailwind CSS -->
+   <script src="https://cdn.tailwindcss.com"></script>
+   <script>
+      tailwind.config = {
+         corePlugins: { preflight: false },
+         theme: {
+            extend: {
+               colors: {
+                  primary: '#b30ce6',
+                  secondary: '#7c2d92',
+                  accent: '#e74c3c',
+                  dark: '#1a1a1a',
+                  light: '#f8f9fa'
+               },
+               animation: {
+                  'pulse-glow': 'pulse-glow 2s ease-in-out infinite alternate',
+                  'float': 'float 3s ease-in-out infinite',
+                  'shimmer': 'shimmer 2s linear infinite',
+                  'bounce-soft': 'bounce-soft 2s infinite',
+               },
+               keyframes: {
+                  'pulse-glow': {
+                     '0%': { boxShadow: '0 0 20px rgba(179, 12, 230, 0.5)' },
+                     '100%': { boxShadow: '0 0 40px rgba(179, 12, 230, 0.8)' }
+                  },
+                  'float': {
+                     '0%, 100%': { transform: 'translateY(0px)' },
+                     '50%': { transform: 'translateY(-20px)' }
+                  },
+                  'shimmer': {
+                     '0%': { backgroundPosition: '-200% 0' },
+                     '100%': { backgroundPosition: '200% 0' }
+                  },
+                  'bounce-soft': {
+                     '0%, 100%': { transform: 'translateY(0)' },
+                     '50%': { transform: 'translateY(-10px)' }
+                  }
+               }
+            }
+         }
+      }
+   </script>
+
+   <!-- AOS Animation Library -->
+   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+   <!-- Font Awesome -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+   <!-- Custom CSS -->
+   <link rel="stylesheet" href="../css/style.css">
+   <link rel="stylesheet" href="../css/blog_style.css">
+   <link rel="stylesheet" href="../css/auth.css">
+   <link rel="stylesheet" href="../css/cookie-consent.css">
+
+   <!-- Favicon -->
+   <link rel="icon" type="image/png" href="../images2/favicon.png">
+
+   <!-- Chatway & Supabase -->
+   <script id="chatway" async="true" src="https://cdn.chatway.app/widget.js?id=ZZTU6jAkfm7u"></script>
+   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+</head>
+<body>
+
+<!-- Header section starts -->
+<header class="header">
+   <div class="contact-info">
+      <p><i class="fas fa-map"></i> Midrand, Gauteng, South Africa</p>
+      <p><i class="fas fa-envelope"></i> sales@omegatek.co.za</p>
+      <p><i class="fas fa-phone"></i> 073 653 8207</p>
+   </div>
+   <nav class="navbar">
+      <div class="logo">
+         <a href="/">
+            <img src="../images2/OMEGATEK_SOLUTIONS_9-NO BG.png" alt="Omegatek Solutions Logo" loading="lazy">
+         </a>
+      </div>
+      <div class="links">
+         <a href="/">home</a>
+         <a href="/pages/about">about</a>
+         <a href="/pages/services">services</a>
+         <a href="/pages/webdev">Web/App Dev</a>
+         <a href="../blog.html" class="active">blog</a>
+         <a href="../index.html#contact">contact</a>
+         <a href="../products.html">products</a>
+      </div>
+      <div id="menu-btn" class="fa fa-bars"></div>
+   </nav>
+</header>
+<!-- Header section ends -->
+
+<!-- Reading progress bar -->
+<div class="reading-progress-container">
+   <div class="reading-progress"></div>
+</div>
+
+<!-- Blog Single Post -->
+<section class="blog-single">
+   <div class="container">
+
+      <!-- Loading state -->
+      <div id="loadingState" style="text-align:center;padding:5rem 0;">
+         <i class="fas fa-spinner fa-spin" style="color:#b30ce6;font-size:2.5rem;"></i>
+         <p style="margin-top:1.5rem;color:#666;font-size:1.6rem;">Loading post&hellip;</p>
+      </div>
+
+      <!-- Post content (hidden until loaded) -->
+      <div id="postWrapper" style="display:none;">
+
+         <div class="post-header">
+            <a href="../blog.html" style="color:#b30ce6;display:inline-flex;align-items:center;gap:.5rem;margin-bottom:1.5rem;font-size:1.4rem;text-decoration:none;">
+               <i class="fas fa-arrow-left"></i> Back to Blog
+            </a>
+            <h1 id="postTitle"></h1>
+            <div class="post-meta" id="postMeta"></div>
+            <div class="post-image" id="postImage"></div>
+         </div>
+
+         <div class="post-content" id="postBody"></div>
+
+         <div class="post-author" id="postAuthor">
+            <div class="author-info">
+               <h4>About the Author</h4>
+               <p><strong>Sandile Milanzi</strong> is the founder of Omegatek Solutions and a certified repair specialist with years of experience in IT support, data recovery, and tech education. Based in Midrand, Johannesburg.</p>
+            </div>
+         </div>
+
+         <!-- Social Share -->
+         <div class="social-share">
+            <h4>Share this article:</h4>
+            <div class="share-buttons">
+               <a href="#" class="share-btn facebook" onclick="shareOnFacebook()"><i class="fab fa-facebook-f"></i> Facebook</a>
+               <a href="#" class="share-btn twitter" onclick="shareOnTwitter()"><i class="fab fa-twitter"></i> Twitter</a>
+               <a href="#" class="share-btn linkedin" onclick="shareOnLinkedIn()"><i class="fab fa-linkedin"></i> LinkedIn</a>
+               <a href="#" class="share-btn whatsapp" onclick="shareOnWhatsApp()"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+            </div>
+         </div>
+
+         <!-- Related Posts -->
+         <div class="related-posts">
+            <h3>Related Articles</h3>
+            <div class="related-posts-grid">
+               <div class="related-post">
+                  <a href="blog-post-maintenance-tips">
+                     <img src="../images2/A1.avif" alt="Device Maintenance Tips">
+                     <h4>5 Essential Maintenance Tips to Double Your Device Lifespan</h4>
+                  </a>
+               </div>
+               <div class="related-post">
+                  <a href="blog-post-laptop-overheating">
+                     <img src="../images2/blog/Solving Overheating Issues.jpg" alt="Solving Overheating Issues in Laptops">
+                     <h4>Solving Overheating Issues in Laptops: A Comprehensive Guide</h4>
+                  </a>
+               </div>
+            </div>
+         </div>
+
+      </div><!-- /#postWrapper -->
+
+      <!-- Error state -->
+      <div id="errorState" style="display:none;text-align:center;padding:5rem 0;">
+         <i class="fas fa-exclamation-circle" style="color:#e74c3c;font-size:3rem;"></i>
+         <p id="errorMessage" style="margin-top:1.5rem;color:#e74c3c;font-size:1.6rem;"></p>
+         <a href="../blog.html" class="btn" style="display:inline-block;margin-top:2rem;">&larr; Back to Blog</a>
+      </div>
+
+   </div>
+</section>
+
+<!-- Logo carousel section starts -->
+<section class="logo-carousel-section">
+   <div class="logo-carousel">
+      <div class="logo-track">
+         <img src="../images2/corousel/samsung.png" alt="Samsung">
+         <img src="../images2/corousel/apple.png" alt="Apple">
+         <img src="../images2/corousel/huawei.png" alt="Huawei">
+         <img src="../images2/corousel/lg.png" alt="LG">
+         <img src="../images2/corousel/lenovo.png" alt="Lenovo">
+         <img src="../images2/corousel/sony.png" alt="Sony">
+         <img src="../images2/corousel/samsung.png" alt="Samsung">
+         <img src="../images2/corousel/apple.png" alt="Apple">
+         <img src="../images2/corousel/huawei.png" alt="Huawei">
+         <img src="../images2/corousel/lg.png" alt="LG">
+         <img src="../images2/corousel/lenovo.png" alt="Lenovo">
+         <img src="../images2/corousel/sony.png" alt="Sony">
+      </div>
+   </div>
+</section>
+<!-- Logo carousel section ends -->
+
+<!-- Footer section starts -->
+<section class="footer">
+   <div class="box-container">
+      <div class="box">
+         <h3>our services</h3>
+         <a href="/pages/services" class="link"><i class="fas fa-angle-right"></i> computer repair</a>
+         <a href="/pages/services" class="link"><i class="fas fa-angle-right"></i> laptop repair</a>
+         <a href="/pages/services" class="link"><i class="fas fa-angle-right"></i> smartphone repair</a>
+         <a href="/pages/services" class="link"><i class="fas fa-angle-right"></i> tablet repair</a>
+         <a href="/pages/services" class="link"><i class="fas fa-angle-right"></i> data recovery</a>
+         <a href="/pages/services" class="link"><i class="fas fa-angle-right"></i> game console repair</a>
+      </div>
+      <div class="box">
+         <h3>quick links</h3>
+         <a href="/" class="link"><i class="fas fa-angle-right"></i> home</a>
+         <a href="/pages/about" class="link"><i class="fas fa-angle-right"></i> about</a>
+         <a href="/pages/services" class="link"><i class="fas fa-angle-right"></i> services</a>
+         <a href="/pages/blog" class="link"><i class="fas fa-angle-right"></i> blog</a>
+         <a href="/pages/webdev" class="link"><i class="fas fa-angle-right"></i> web development</a>
+         <a href="../index.html#contact" class="link"><i class="fas fa-angle-right"></i> contact</a>
+      </div>
+      <div class="box">
+         <h3>contact info</h3>
+         <p><i class="fas fa-map"></i> Midrand, Gauteng, South Africa</p>
+         <p><i class="fas fa-envelope"></i> sales@omegatek.co.za</p>
+         <p><i class="fas fa-phone"></i> 073 653 8207</p>
+         <p><i class="fas fa-clock"></i> Monday - Friday: 8am - 5pm</p>
+         <p><i class="fas fa-clock"></i> Saturday: 9am - 2pm</p>
+      </div>
+      <div class="box">
+         <h3>follow us</h3>
+         <p>stay connected for the latest updates</p>
+         <form action="">
+            <input type="email" placeholder="enter your email" class="email">
+            <input type="submit" value="subscribe" class="btn">
+         </form>
+         <div class="share">
+            <a href="https://www.facebook.com/sandile.milanzi.10" class="fab fa-facebook-f"></a>
+            <a href="#" class="fab fa-twitter"></a>
+            <a href="https://www.instagram.com/djx015/" class="fab fa-instagram"></a>
+            <a href="https://www.linkedin.com/in/sandile-milanzi-235692276/" class="fab fa-linkedin"></a>
+         </div>
+      </div>
+   </div>
+   <span class="text-gray-400 text-sm" style="font-family:'Lucida Console',monospace;">created by <a href="https://www.facebook.com/sandile.milanzi.10" style="color:#b30ce6;">Sandile Milanzi</a> (Omegatek Solutions)&trade; | all rights reserved!&copy;</span>
+</section>
+<!-- Footer section ends -->
+
+<!-- Back to top button -->
+<div class="back-to-top">
+   <i class="fas fa-arrow-up"></i>
+</div>
+
+<!-- Scripts -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="../js/script.js"></script>
+<script src="../js/blog_script.js"></script>
+<script src="../js/enhanced-ui.js"></script>
+<script src="../js/cookie-consent.js"></script>
+
+<script>
+AOS.init({ duration: 1000, once: true, offset: 100 });
+
+// Social sharing
+function shareOnFacebook() {
+   window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(location.href), '_blank', 'width=600,height=400');
+}
+function shareOnTwitter() {
+   window.open('https://twitter.com/intent/tweet?url=' + encodeURIComponent(location.href) + '&text=' + encodeURIComponent(document.title), '_blank', 'width=600,height=400');
+}
+function shareOnLinkedIn() {
+   window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(location.href), '_blank', 'width=600,height=400');
+}
+function shareOnWhatsApp() {
+   window.open('https://wa.me/?text=' + encodeURIComponent(document.title + ' ' + location.href), '_blank');
+}
+
+// Load post from Supabase
+var SURL = 'https://pefjkiijqratjixskmdx.supabase.co';
+var SKEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZmpraWlqcXJhdGppeHNrbWR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MzkwNDQsImV4cCI6MjA4ODAxNTA0NH0.x6s38k7avvoszJATabbUcp2zv9kjUVYRjKPT7n-pQJA';
+
+async function loadPost() {
+   var slug = new URLSearchParams(location.search).get('slug');
+
+   function showError(msg) {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('errorMessage').textContent = msg;
+      document.getElementById('errorState').style.display = 'block';
+   }
+
+   if (!slug) { showError('No post specified.'); return; }
+
+   try {
+      var res   = await fetch(SURL + '/rest/v1/blog_posts?slug=eq.' + encodeURIComponent(slug) + '&published=eq.true&limit=1',
+                              { headers: { apikey: SKEY, Authorization: 'Bearer ' + SKEY } });
+      var posts = await res.json();
+
+      if (!Array.isArray(posts) || posts.length === 0) { showError('Post not found.'); return; }
+
+      var p = posts[0];
+      document.title = p.title + ' | Omegatek Solutions';
+
+      // Cover image
+      var img = p.cover_image || '';
+      if (img && !img.startsWith('http') && !img.startsWith('/')) img = '../' + img;
+
+      // Date
+      var date = new Date(p.created_at).toLocaleDateString('en-ZA', { year: 'numeric', month: 'long', day: 'numeric' });
+
+      // Body — wrap plain text paragraphs in <p> tags
+      var body = p.content || '';
+      if (body && !/<[a-z]/i.test(body)) {
+         body = body.split(/\n\n+/).map(function(b){ return '<p>' + b.replace(/\n/g, '<br>') + '</p>'; }).join('');
+      }
+      if (!body) body = '<p>' + (p.excerpt || '') + '</p>';
+
+      // Inject title
+      document.getElementById('postTitle').textContent = p.title;
+
+      // Inject meta
+      document.getElementById('postMeta').innerHTML =
+         '<span><i class="fas fa-user"></i> Sandile Milanzi</span>' +
+         '<span><i class="fas fa-calendar"></i> ' + date + '</span>' +
+         '<span><i class="fas fa-folder"></i> ' + (p.category || 'General') + '</span>';
+
+      // Inject cover image
+      if (img) {
+         document.getElementById('postImage').innerHTML =
+            '<img src="' + img + '" alt="' + p.title.replace(/"/g, '&quot;') + '">';
+      } else {
+         document.getElementById('postImage').style.display = 'none';
+      }
+
+      // Inject body
+      document.getElementById('postBody').innerHTML = body;
+
+      // Show post, hide loader
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('postWrapper').style.display = 'block';
+
+   } catch(e) {
+      showError('Failed to load post. Please try again later.');
+   }
+}
+
+loadPost();
+</script>
+<script type="module" src="../js/auth.js"></script>
+</body>
+</html>

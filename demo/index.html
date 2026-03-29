@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Omegatek Solutions — Phone Repair Experts</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Archivo:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent: #b30ce6;
+      --accent-glow: rgba(179,12,230,0.35);
+      --bg: #07080d;
+      --surface: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.08);
+      --text: #f0f0f5;
+      --muted: rgba(240,240,245,0.55);
+    }
+
+    html { scroll-behavior: auto; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Archivo', sans-serif;
+      overflow-x: hidden;
+    }
+
+    ::selection { background: var(--accent); color: #fff; }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #111; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(var(--accent), #7209b7); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { box-shadow: 0 0 8px var(--accent); }
+
+    /* ── LOADER ─────────────────────────────────────────── */
+    #loader {
+      position: fixed; inset: 0; z-index: 9999;
+      background: var(--bg);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 2rem;
+      transition: opacity 0.5s ease;
+    }
+    #loader.hidden { opacity: 0; pointer-events: none; }
+    .loader-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.2rem; font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    .loader-logo span { color: var(--accent); }
+    .loader-track {
+      width: 240px; height: 3px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px; overflow: hidden;
+    }
+    .loader-bar {
+      height: 100%; width: 0;
+      background: linear-gradient(90deg, var(--accent), #e040fb);
+      border-radius: 2px;
+      transition: width 0.12s ease;
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+    .loader-text {
+      font-size: 1.2rem; color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── SCROLL PROGRESS ────────────────────────────────── */
+    #scroll-progress {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: 3px; z-index: 999;
+      background: linear-gradient(90deg, var(--accent), #e040fb);
+      transform-origin: left;
+      transform: scaleX(0);
+      transition: transform 0.05s linear;
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    /* ── STARSCAPE ──────────────────────────────────────── */
+    #stars {
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none; opacity: 0.6;
+    }
+
+    /* ── NAVBAR ─────────────────────────────────────────── */
+    #navbar {
+      position: fixed; top: 1.5rem; left: 0; right: 0;
+      z-index: 900;
+      display: flex; justify-content: center;
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; max-width: 1300px;
+      padding: 0.9rem 2.5rem;
+      transition: all 0.4s cubic-bezier(0.4,0,0.2,1);
+      border-radius: 0;
+    }
+    .nav-inner.pill {
+      max-width: 840px;
+      background: rgba(7,8,13,0.75);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.75rem 2rem;
+    }
+    .nav-brand {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.6rem; font-weight: 700;
+      text-decoration: none; color: var(--text);
+    }
+    .nav-brand span { color: var(--accent); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none;
+      font-size: 1rem; font-weight: 500;
+      transition: color 0.25s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: var(--accent);
+      color: #fff; border: none;
+      padding: 0.6rem 1.5rem;
+      border-radius: 999px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.95rem; font-weight: 600;
+      cursor: pointer;
+      transition: box-shadow 0.25s, transform 0.2s;
+      text-decoration: none;
+    }
+    .nav-cta:hover {
+      box-shadow: 0 0 20px var(--accent-glow);
+      transform: translateY(-1px);
+    }
+
+    /* ── HERO ───────────────────────────────────────────── */
+    #hero {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 12rem 2rem 6rem;
+      overflow: hidden;
+    }
+    .hero-orb {
+      position: absolute; border-radius: 50%;
+      filter: blur(80px); pointer-events: none;
+    }
+    .hero-orb-1 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(179,12,230,0.18) 0%, transparent 70%);
+      top: 10%; left: -10%;
+    }
+    .hero-orb-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(114,9,183,0.15) 0%, transparent 70%);
+      bottom: 10%; right: -5%;
+    }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(179,12,230,0.12);
+      border: 1px solid rgba(179,12,230,0.3);
+      color: #d966ff;
+      padding: 0.4rem 1.2rem;
+      border-radius: 999px;
+      font-size: 0.9rem; font-weight: 500;
+      margin-bottom: 2rem;
+      letter-spacing: 0.04em;
+    }
+    .hero-badge::before { content: '●'; font-size: 0.6rem; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .hero-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(3.5rem, 7vw, 7.5rem);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      margin-bottom: 1.5rem;
+    }
+    .hero-title .accent { color: var(--accent); }
+    .hero-sub {
+      font-size: clamp(1.1rem, 2vw, 1.4rem);
+      color: var(--muted);
+      max-width: 600px;
+      line-height: 1.7;
+      margin-bottom: 3rem;
+    }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff; border: none;
+      padding: 1rem 2.5rem;
+      border-radius: 999px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem; font-weight: 600;
+      cursor: pointer;
+      transition: box-shadow 0.25s, transform 0.2s;
+      text-decoration: none;
+    }
+    .btn-primary:hover {
+      box-shadow: 0 0 30px var(--accent-glow);
+      transform: translateY(-2px);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 1rem 2.5rem;
+      border-radius: 999px;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1rem; font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.25s, background 0.25s;
+      text-decoration: none;
+    }
+    .btn-secondary:hover {
+      border-color: var(--accent);
+      background: rgba(179,12,230,0.08);
+    }
+    .scroll-hint {
+      position: absolute; bottom: 3rem;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 0.6rem;
+      color: var(--muted); font-size: 0.85rem;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      animation: bounce 2.5s infinite;
+    }
+    .scroll-hint-arrow {
+      width: 20px; height: 20px;
+      border-right: 2px solid var(--muted);
+      border-bottom: 2px solid var(--muted);
+      transform: rotate(45deg);
+    }
+    @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(8px)} }
+
+    /* ── SCROLL ANIMATION SECTION ───────────────────────── */
+    #scroll-section {
+      position: relative; z-index: 1;
+      height: 500vh;
+    }
+    #canvas-sticky {
+      position: sticky; top: 0;
+      width: 100%; height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    #scroll-canvas {
+      display: block;
+      max-width: 100%;
+      border-radius: 6px;
+      box-shadow: 0 8px 60px rgba(0,0,0,0.5);
+    }
+
+    /* Annotation cards */
+    .ann-card {
+      position: absolute;
+      background: rgba(7,8,13,0.75);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.4rem 1.8rem;
+      max-width: 280px;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      pointer-events: none;
+    }
+    .ann-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .ann-card .ann-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .ann-card .ann-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.05rem; font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.3rem;
+    }
+    .ann-card .ann-desc {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .ann-card .ann-stat {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.8rem; font-weight: 700;
+      color: var(--accent);
+      margin-top: 0.6rem;
+    }
+    .ann-card .ann-stat-label {
+      font-size: 0.8rem; color: var(--muted);
+    }
+
+    /* card positions */
+    #card-1 { bottom: 20%; left: 5%; }
+    #card-2 { top: 20%; right: 5%; }
+    #card-3 { bottom: 20%; right: 5%; }
+    #card-4 { top: 20%; left: 5%; }
+
+    /* scroll section label */
+    #scroll-label {
+      position: absolute; top: 2rem; left: 50%;
+      transform: translateX(-50%);
+      background: rgba(179,12,230,0.12);
+      border: 1px solid rgba(179,12,230,0.3);
+      color: #d966ff;
+      padding: 0.35rem 1.2rem;
+      border-radius: 999px;
+      font-size: 0.85rem; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    #scroll-label.visible { opacity: 1; }
+
+    /* ── SPECS ──────────────────────────────────────────── */
+    #specs {
+      position: relative; z-index: 1;
+      padding: 8rem 2rem;
+      text-align: center;
+    }
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 3rem;
+      max-width: 1000px;
+      margin: 4rem auto 0;
+    }
+    .spec-item { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+    .spec-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 4rem; font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      transition: text-shadow 0.3s;
+    }
+    .spec-num.counting { text-shadow: 0 0 30px var(--accent-glow); }
+    .spec-label { font-size: 1rem; color: var(--muted); }
+    .section-label {
+      display: inline-block;
+      background: rgba(179,12,230,0.12);
+      border: 1px solid rgba(179,12,230,0.3);
+      color: #d966ff;
+      padding: 0.35rem 1.2rem;
+      border-radius: 999px;
+      font-size: 0.85rem; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 700;
+      letter-spacing: -1px;
+    }
+    .section-title .accent { color: var(--accent); }
+
+    /* ── FEATURES ───────────────────────────────────────── */
+    #features {
+      position: relative; z-index: 1;
+      padding: 4rem 2rem 8rem;
+      text-align: center;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      max-width: 1100px;
+      margin: 4rem auto 0;
+    }
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      text-align: left;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+    .feature-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(179,12,230,0.12);
+    }
+    .feature-icon {
+      font-size: 2.2rem;
+      margin-bottom: 1.2rem;
+      display: block;
+    }
+    .feature-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.2rem; font-weight: 600;
+      margin-bottom: 0.6rem;
+    }
+    .feature-desc { font-size: 0.95rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── CTA ────────────────────────────────────────────── */
+    #cta {
+      position: relative; z-index: 1;
+      padding: 8rem 2rem;
+      text-align: center;
+      overflow: hidden;
+    }
+    .cta-orb {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 50%, rgba(179,12,230,0.12) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .cta-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 5rem);
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      margin-bottom: 1.5rem;
+    }
+    .cta-title .accent { color: var(--accent); }
+    .cta-sub { font-size: 1.2rem; color: var(--muted); margin-bottom: 3rem; }
+
+    /* ── FOOTER ─────────────────────────────────────────── */
+    footer {
+      position: relative; z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* ── MOBILE ─────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      #scroll-section { height: 300vh; }
+      .ann-card { max-width: 160px; padding: 0.8rem 1rem; }
+      .ann-card .ann-desc, .ann-card .ann-stat, .ann-card .ann-stat-label { display: none; }
+      .ann-card .ann-title { font-size: 0.85rem; }
+      #card-1 { bottom: 2vh; left: 2%; }
+      #card-2 { top: 8vh; right: 2%; }
+      #card-3 { bottom: 2vh; right: 2%; }
+      #card-4 { top: 8vh; left: 2%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo">Omega<span>tek</span></div>
+  <div class="loader-track"><div class="loader-bar" id="loader-bar"></div></div>
+  <div class="loader-text" id="loader-text">Loading frames…</div>
+</div>
+
+<!-- SCROLL PROGRESS -->
+<div id="scroll-progress"></div>
+
+<!-- STARSCAPE -->
+<canvas id="stars"></canvas>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div class="nav-inner" id="nav-inner">
+    <a href="#" class="nav-brand">Omega<span>tek</span></a>
+    <ul class="nav-links">
+      <li><a href="#specs">Stats</a></li>
+      <li><a href="#features">Services</a></li>
+      <li><a href="#cta">Contact</a></li>
+    </ul>
+    <a href="#cta" class="nav-cta">Book Repair</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-badge">Expert Phone Repair</div>
+  <h1 class="hero-title">We Know<br>Every <span class="accent">Component.</span></h1>
+  <p class="hero-sub">From shattered screens to dead motherboards — scroll down and watch us take it apart. Then trust us to put it back together.</p>
+  <div class="hero-btns">
+    <a href="#scroll-section" class="btn-primary">See Inside The Phone</a>
+    <a href="#features" class="btn-secondary">Our Services</a>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll to explore</span>
+    <div class="scroll-hint-arrow"></div>
+  </div>
+</section>
+
+<!-- SCROLL ANIMATION -->
+<div id="scroll-section">
+  <div id="canvas-sticky">
+    <canvas id="scroll-canvas"></canvas>
+    <div id="scroll-label">Scroll to Deconstruct</div>
+
+    <div class="ann-card" id="card-1" data-show="0.10" data-hide="0.35">
+      <div class="ann-num">01 — Screen</div>
+      <div class="ann-title">Cracked Display</div>
+      <div class="ann-desc">OLED/LCD panels replaced with OEM-grade parts. Restored in under 45 minutes.</div>
+      <div class="ann-stat">45<span style="font-size:1.2rem">min</span></div>
+      <div class="ann-stat-label">Average repair time</div>
+    </div>
+
+    <div class="ann-card" id="card-2" data-show="0.30" data-hide="0.55">
+      <div class="ann-num">02 — Battery</div>
+      <div class="ann-title">Power Cell</div>
+      <div class="ann-desc">Genuine capacity batteries. 0–100% health back, no memory degradation.</div>
+      <div class="ann-stat">100<span style="font-size:1.2rem">%</span></div>
+      <div class="ann-stat-label">Battery health restored</div>
+    </div>
+
+    <div class="ann-card" id="card-3" data-show="0.52" data-hide="0.75">
+      <div class="ann-num">03 — Logic Board</div>
+      <div class="ann-title">Motherboard</div>
+      <div class="ann-desc">Micro-soldering repairs for water damage, no-power faults, and data recovery.</div>
+      <div class="ann-stat">98<span style="font-size:1.2rem">%</span></div>
+      <div class="ann-stat-label">Board save rate</div>
+    </div>
+
+    <div class="ann-card" id="card-4" data-show="0.72" data-hide="0.95">
+      <div class="ann-num">04 — Cameras</div>
+      <div class="ann-title">Optics Module</div>
+      <div class="ann-desc">All lenses, sensors and OIS actuators restored. Crystal-clear shots guaranteed.</div>
+      <div class="ann-stat">4K</div>
+      <div class="ann-stat-label">Quality restored</div>
+    </div>
+  </div>
+</div>
+
+<!-- SPECS -->
+<section id="specs">
+  <div class="section-label">By The Numbers</div>
+  <h2 class="section-title">Proven Results.<br><span class="accent">Every Time.</span></h2>
+  <div class="specs-grid">
+    <div class="spec-item">
+      <div class="spec-num" data-target="5000">0</div>
+      <div class="spec-label">Devices Repaired</div>
+    </div>
+    <div class="spec-item">
+      <div class="spec-num" data-target="98">0</div>
+      <div class="spec-label">% Success Rate</div>
+    </div>
+    <div class="spec-item">
+      <div class="spec-num" data-target="45">0</div>
+      <div class="spec-label">Min Avg Repair</div>
+    </div>
+    <div class="spec-item">
+      <div class="spec-num" data-target="7">0</div>
+      <div class="spec-label">Years Experience</div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-label">What We Fix</div>
+  <h2 class="section-title">Every Component.<br><span class="accent">Every Brand.</span></h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <span class="feature-icon">📱</span>
+      <div class="feature-title">Screen Replacement</div>
+      <div class="feature-desc">OLED, LCD, AMOLED — we replace cracked and unresponsive displays with OEM-grade parts and a warranty.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🔋</span>
+      <div class="feature-title">Battery Replacement</div>
+      <div class="feature-desc">Genuine-capacity cells that restore your phone to full-day battery life. No more 20% anxiety.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">💧</span>
+      <div class="feature-title">Water Damage Recovery</div>
+      <div class="feature-desc">Ultrasonic cleaning and micro-soldering to revive phones that took a swim. Data recovery included.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📸</span>
+      <div class="feature-title">Camera Repair</div>
+      <div class="feature-desc">Blurry, dark, or cracked camera lenses replaced. Full optical and stabilization function restored.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🔌</span>
+      <div class="feature-title">Charging Port Repair</div>
+      <div class="feature-desc">USB-C and Lightning ports cleaned or replaced. No more wiggling the cable.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🧠</span>
+      <div class="feature-title">Motherboard Repair</div>
+      <div class="feature-desc">Micro-soldering for no-power, no-boot, and data-locked logic boards. We save what others can't.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-orb"></div>
+  <div class="section-label">Get Started</div>
+  <h2 class="cta-title">Your Phone<br>Deserves to Be <span class="accent">Fixed.</span></h2>
+  <p class="cta-sub">Walk in or book online. Same-day service available on most repairs.</p>
+  <div class="hero-btns">
+    <a href="#" class="btn-primary">Book a Repair</a>
+    <a href="#" class="btn-secondary">WhatsApp Us</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 <a href="#">Omegatek Solutions</a>. All rights reserved. | Expert Device Repair</p>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ─────────────────────────────────────────────────────────
+     STARSCAPE
+  ─────────────────────────────────────────────────────────── */
+  const starsCanvas = document.getElementById('stars');
+  const sCtx = starsCanvas.getContext('2d');
+  const STAR_COUNT = 180;
+  let stars = [];
+
+  function resizeStars() {
+    starsCanvas.width = window.innerWidth;
+    starsCanvas.height = window.innerHeight;
+  }
+
+  function initStars() {
+    stars = Array.from({ length: STAR_COUNT }, () => ({
+      x: Math.random() * starsCanvas.width,
+      y: Math.random() * starsCanvas.height,
+      r: Math.random() * 1.5 + 0.3,
+      dx: (Math.random() - 0.5) * 0.08,
+      dy: (Math.random() - 0.5) * 0.08,
+      twinkleSpeed: Math.random() * 0.02 + 0.005,
+      twinklePhase: Math.random() * Math.PI * 2,
+      opacity: Math.random() * 0.6 + 0.2,
+    }));
+  }
+
+  let starT = 0;
+  function drawStars() {
+    sCtx.clearRect(0, 0, starsCanvas.width, starsCanvas.height);
+    starT += 0.016;
+    stars.forEach(s => {
+      s.x += s.dx; s.y += s.dy;
+      if (s.x < 0) s.x = starsCanvas.width;
+      if (s.x > starsCanvas.width) s.x = 0;
+      if (s.y < 0) s.y = starsCanvas.height;
+      if (s.y > starsCanvas.height) s.y = 0;
+      const tw = s.opacity * (0.5 + 0.5 * Math.sin(starT * s.twinkleSpeed * 60 + s.twinklePhase));
+      sCtx.beginPath();
+      sCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      sCtx.fillStyle = `rgba(255,255,255,${tw})`;
+      sCtx.fill();
+    });
+    requestAnimationFrame(drawStars);
+  }
+
+  resizeStars(); initStars(); drawStars();
+  window.addEventListener('resize', () => { resizeStars(); initStars(); }, { passive: true });
+
+
+  /* ─────────────────────────────────────────────────────────
+     FRAME PRELOAD
+  ─────────────────────────────────────────────────────────── */
+  const FRAME_COUNT = 96;
+  const frames = new Array(FRAME_COUNT);
+  let loadedCount = 0;
+  const loaderBar = document.getElementById('loader-bar');
+  const loaderText = document.getElementById('loader-text');
+  const loader = document.getElementById('loader');
+
+  function onAllLoaded() {
+    loaderText.textContent = 'Ready.';
+    loaderBar.style.width = '100%';
+    setTimeout(() => {
+      loader.classList.add('hidden');
+      document.getElementById('scroll-label').classList.add('visible');
+    }, 400);
+    drawFrame(0);
+  }
+
+  for (let i = 0; i < FRAME_COUNT; i++) {
+    const img = new Image();
+    const num = String(i + 1).padStart(4, '0');
+    img.src = `frames/frame_${num}.jpg`;
+    img.onload = () => {
+      frames[i] = img;
+      loadedCount++;
+      const pct = Math.round((loadedCount / FRAME_COUNT) * 100);
+      loaderBar.style.width = pct + '%';
+      loaderText.textContent = `Loading ${pct}%`;
+      if (loadedCount === FRAME_COUNT) onAllLoaded();
+    };
+    img.onerror = () => {
+      loadedCount++;
+      if (loadedCount === FRAME_COUNT) onAllLoaded();
+    };
+  }
+
+
+  /* ─────────────────────────────────────────────────────────
+     SCROLL CANVAS
+  ─────────────────────────────────────────────────────────── */
+  const canvas = document.getElementById('scroll-canvas');
+  const ctx = canvas.getContext('2d');
+  let canvasW, canvasH;
+  let currentFrame = 0;
+
+  // Cap at frame native width (1280px) — prevents blurry upscaling and sluggishness
+  function resizeCanvas() {
+    canvasW = Math.min(window.innerWidth * 0.92, 1280);
+    canvasH = Math.round(canvasW * 720 / 1280);
+    canvas.width = canvasW;
+    canvas.height = canvasH;
+    canvas.style.width = canvasW + 'px';
+    canvas.style.height = canvasH + 'px';
+    drawFrame(currentFrame);
+  }
+
+  function drawFrame(index) {
+    const img = frames[index];
+    if (!img) return;
+    ctx.clearRect(0, 0, canvasW, canvasH);
+    ctx.drawImage(img, 0, 0, canvasW, canvasH);
+  }
+
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas, { passive: true });
+
+
+  /* ─────────────────────────────────────────────────────────
+     SCROLL LOGIC
+  ─────────────────────────────────────────────────────────── */
+  const scrollSection = document.getElementById('scroll-section');
+  const annCards = document.querySelectorAll('.ann-card');
+  const navInner = document.getElementById('nav-inner');
+  const scrollProgress = document.getElementById('scroll-progress');
+
+  let rafPending = false;
+  let scrollProgress_val = 0;
+
+  // Snap-stop state
+  const SNAP_ZONE = 0.025;
+  const HOLD_DURATION = 550;
+  let snapping = false;
+  let snapPoints = [];
+  let lastTriggeredSnap = -1;
+
+  // Build snap points from card data-show
+  annCards.forEach(card => {
+    snapPoints.push(parseFloat(card.dataset.show) + 0.01);
+  });
+
+  function onScroll() {
+    const rect = scrollSection.getBoundingClientRect();
+    const sectionH = scrollSection.offsetHeight - window.innerHeight;
+    const raw = -rect.top;
+    const progress = Math.max(0, Math.min(1, raw / sectionH));
+    scrollProgress_val = progress;
+
+    // global scroll progress bar
+    const docH = document.documentElement.scrollHeight - window.innerHeight;
+    const globalP = window.scrollY / docH;
+    scrollProgress.style.transform = `scaleX(${globalP})`;
+
+    // navbar pill
+    if (window.scrollY > 80) navInner.classList.add('pill');
+    else navInner.classList.remove('pill');
+
+    if (!rafPending) {
+      rafPending = true;
+      requestAnimationFrame(render);
+    }
+  }
+
+  function render() {
+    rafPending = false;
+    const p = scrollProgress_val;
+    const frameIdx = Math.min(FRAME_COUNT - 1, Math.floor(p * FRAME_COUNT));
+
+    if (frameIdx !== currentFrame) {
+      currentFrame = frameIdx;
+      drawFrame(currentFrame);
+    }
+
+    // annotation cards
+    annCards.forEach(card => {
+      const show = parseFloat(card.dataset.show);
+      const hide = parseFloat(card.dataset.hide);
+      if (p >= show && p < hide) card.classList.add('visible');
+      else card.classList.remove('visible');
+    });
+
+    // snap-stop
+    if (!snapping) {
+      for (let i = 0; i < snapPoints.length; i++) {
+        if (i === lastTriggeredSnap) continue;
+        const sp = snapPoints[i];
+        if (Math.abs(p - sp) < SNAP_ZONE && p > 0.01 && p < 0.99) {
+          lastTriggeredSnap = i;
+          triggerSnap(sp);
+          break;
+        }
+      }
+    }
+
+    // reset snap trigger when moved away
+    if (lastTriggeredSnap >= 0) {
+      const sp = snapPoints[lastTriggeredSnap];
+      if (Math.abs(p - sp) > SNAP_ZONE * 3) lastTriggeredSnap = -1;
+    }
+  }
+
+  function triggerSnap(targetProgress) {
+    snapping = true;
+    const sectionH = scrollSection.offsetHeight - window.innerHeight;
+    const sectionTop = scrollSection.offsetTop;
+    const targetScroll = sectionTop + targetProgress * sectionH;
+
+    window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+    document.body.style.overflow = 'hidden';
+
+    setTimeout(() => {
+      document.body.style.overflow = '';
+      snapping = false;
+    }, HOLD_DURATION);
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+
+  /* ─────────────────────────────────────────────────────────
+     COUNT-UP (SPECS)
+  ─────────────────────────────────────────────────────────── */
+  const specNums = document.querySelectorAll('.spec-num[data-target]');
+  let countedUp = false;
+
+  function easeOutExpo(t) { return t === 1 ? 1 : 1 - Math.pow(2, -10 * t); }
+
+  function runCountUp() {
+    if (countedUp) return;
+    countedUp = true;
+    specNums.forEach((el, i) => {
+      const target = parseInt(el.dataset.target, 10);
+      const duration = 1800;
+      const delay = i * 200;
+      const start = performance.now() + delay;
+      el.classList.add('counting');
+
+      function step(now) {
+        const elapsed = Math.max(0, now - start);
+        const t = Math.min(1, elapsed / duration);
+        el.textContent = Math.round(easeOutExpo(t) * target);
+        if (t < 1) requestAnimationFrame(step);
+        else { el.textContent = target; el.classList.remove('counting'); }
+      }
+      requestAnimationFrame(step);
+    });
+  }
+
+  const specsIO = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) runCountUp();
+  }, { threshold: 0.3 });
+  specsIO.observe(document.getElementById('specs'));
+
+})();
+</script>
+</body>
+</html>

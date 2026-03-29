@@ -1,0 +1,671 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+   
+   <!-- 2026 Blog SEO Enhancements -->
+   <meta name="theme-color" content="#b30ce6">
+   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+   <meta name="article:publisher" content="Omegatek Solutions">
+   <meta name="article:author" content="Sandile Milanzi">
+   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+   
+   <!-- SEO Meta Tags -->
+   <meta name="description" content="Tech repair tips, electronics maintenance advice, and tech insights from Omegatek Solutions - Your Midrand electronics repair experts.">
+   <meta name="keywords" content="tech tips, electronics repair, computer maintenance, smartphone repair, Midrand, tech advice">
+   <meta name="author" content="Omegatek Solutions">
+   <meta name="robots" content="index, follow">
+   
+   <!-- Open Graph Meta Tags -->
+   <meta property="og:title" content="Tech Blog | Repair Tips & Advice | Omegatek Solutions" />
+   <meta property="og:description" content="Tech repair tips, electronics maintenance advice, and tech insights from Omegatek Solutions - Your Midrand electronics repair experts." />
+   <meta property="og:type" content="website" />
+   <meta property="og:url" content="https://omegatek.co.za/blog.html" />
+   <meta property="og:image" content="https://omegatek.co.za/images2/OMEGATEK_SOLUTIONS_9-NO BG.png" />
+
+   <!-- Twitter Card Meta Tags -->
+   <meta name="twitter:card" content="summary_large_image" />
+   <meta name="twitter:title" content="Tech Blog | Repair Tips & Advice | Omegatek Solutions" />
+   <meta name="twitter:description" content="Tech repair tips, electronics maintenance advice, and tech insights from Omegatek Solutions - Your Midrand electronics repair experts." />
+   <meta name="twitter:image" content="https://omegatek.co.za/images2/OMEGATEK_SOLUTIONS_9-NO BG.png" />
+
+   <!-- Canonical Tag -->
+   <link rel="canonical" href="https://omegatek.co.za/blog.html" />
+
+   <!-- Structured Data: Blog -->
+   <script type="application/ld+json">
+   {
+     "@context": "https://schema.org",
+     "@type": "Blog",
+     "name": "Omegatek Solutions Blog",
+     "url": "https://omegatek.co.za/blog.html",
+     "description": "Tech repair tips, electronics maintenance advice, and tech insights from Omegatek Solutions.",
+     "publisher": {
+       "@type": "Organization",
+       "name": "Omegatek Solutions",
+       "logo": {
+         "@type": "ImageObject",
+         "url": "https://omegatek.co.za/images2/OMEGATEK_SOLUTIONS_9-NO BG.png"
+       }
+     }
+   }
+   </script>
+   
+   <title>Tech Blog | Repair Tips & Advice | Omegatek Solutions</title>
+
+   <!-- Font awesome cdn link  -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+   <!-- AOS Animation Library -->
+   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+   <!-- Tailwind CSS CDN -->
+   <script src="https://cdn.tailwindcss.com"></script>
+   <script>
+     tailwind.config = {
+       theme: {
+         extend: {
+           colors: {
+             primary: '#b30ce6',      // Your purple brand color
+             secondary: '#334',       // Your dark text color
+             accent: '#fff',          // White
+             light: '#f5f5f5',       // Light background
+             dark: '#777'             // Light text color
+           },
+           backdropBlur: {
+             xs: '2px',
+           },
+           animation: {
+             'pulse-glow': 'pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+             'float': 'float 3s ease-in-out infinite',
+             'shimmer': 'shimmer 2s linear infinite',
+             'bounce-soft': 'bounce-soft 1s ease-in-out infinite',
+           },
+           keyframes: {
+             'pulse-glow': {
+               '0%, 100%': { 
+                 boxShadow: '0 0 20px rgba(179, 12, 230, 0.4)' 
+               },
+               '50%': { 
+                 boxShadow: '0 0 40px rgba(179, 12, 230, 0.8), 0 0 60px rgba(179, 12, 230, 0.4)' 
+               },
+             },
+             'float': {
+               '0%, 100%': { transform: 'translateY(0px)' },
+               '50%': { transform: 'translateY(-10px)' },
+             },
+             'shimmer': {
+               '0%': { transform: 'translateX(-100%)' },
+               '100%': { transform: 'translateX(100%)' },
+             },
+             'bounce-soft': {
+               '0%, 100%': { transform: 'translateY(0)' },
+               '50%': { transform: 'translateY(-5px)' },
+             },
+           }
+         }
+       }
+     }
+   </script>
+   
+   <!-- Favicon -->
+   <link rel="icon" type="image/png" href="../images2/favicon.png">
+   
+   <!-- Chatway widget -->
+   <script id="chatway" async="true" src="https://cdn.chatway.app/widget.js?id=ZZTU6jAkfm7u"></script>
+   
+   <!-- Accessibility: Skip Navigation Link -->
+   <a href="#main-content" class="skip-nav" aria-label="Skip to main content">Skip to main content</a>
+
+   <!-- Accessibility styles -->
+   <style>
+      .skip-nav {
+         position: absolute;
+         top: -40px;
+         left: 6px;
+         background: #b30ce6;
+         color: white;
+         padding: 8px;
+         text-decoration: none;
+         border-radius: 4px;
+         z-index: 1000;
+         font-size: 14px;
+      }
+      
+      .skip-nav:focus {
+         top: 6px;
+      }
+      
+      /* Improve focus indicators */
+      button:focus, a:focus, input:focus, textarea:focus, select:focus {
+         outline: 3px solid #b30ce6;
+         outline-offset: 2px;
+      }
+      
+      /* Ensure proper color contrast */
+      .btn:focus {
+         outline: 3px solid #fff;
+         outline-offset: 2px;
+      }
+   </style>
+
+   <!-- Custom css file links  -->
+   <link rel="stylesheet" href="../css/style.css">
+   <link rel="stylesheet" href="../css/blog_style.css">
+   <!-- Auth Styles -->
+   <link rel="stylesheet" href="../css/auth.css">
+</head>
+<body>
+   
+<!-- Header section starts  -->
+<header class="header">
+
+   <div class="contact-info">
+      <p> <i class="fas fa-map"></i> Midrand, Gauteng, South Africa </p>
+      <p> <i class="fas fa-envelope"></i> sales@omegateksolutions.co.za </p>
+      <p> <i class="fas fa-phone"></i> 073 653 8207 </p>
+   </div>
+
+   <nav class="navbar">
+      <div class="logo">
+         <a href="/">
+           <img src="../images2/OMEGATEK_SOLUTIONS_9-NO BG.png" alt="Omegatek Solutions Logo" loading="lazy">
+         </a>
+      </div>
+
+      <div class="links">
+         <a href="../index.html#hero">home</a>
+         <a href="about">about</a>
+         <a href="services">services</a>
+         <a href="webdev">Web/App Dev</a>
+         <a href="blog" class="active">blog</a>
+         <!-- <a href="../index.html#team">team</a> -->
+         <a href="../index.html#contact">contact</a>
+         <a href="products">products</a>
+      </div>
+
+      <div id="menu-btn" class="fa fa-bars"></div>
+   </nav>
+
+</header>
+<!-- Header section ends -->
+
+<!-- Blog banner section -->
+<section class="blog-banner">
+    <div class="blog-overlay"></div>
+    <div class="blog-content">
+        <h1>
+            <span class="title-line">Tech Tips & Repair</span>
+            <span class="title-line featured">Advice</span>
+        </h1>
+        <p>Expert insights to help you get the most from your devices</p>
+    </div>
+</section>
+
+<!-- Blog category navigation -->
+<div class="blog-categories">
+    <div class="container">
+        <div class="blog-nav-content">
+            <div class="blog-nav-mobile-header">
+                <button class="blog-nav-toggle" aria-expanded="false" aria-controls="blog-category-list" aria-label="Toggle categories menu">
+                    <span class="category-label">Categories</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="blog-search blog-search-mobile">
+                    <input type="text" id="blog-search-mobile" placeholder="Search articles..." aria-label="Search blog articles">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
+            <ul class="blog-category-list" id="blog-category-list" role="menu">
+                <li class="active" role="menuitem"><a href="#all">All Posts</a></li>
+                <li role="menuitem"><a href="#computers">Computers</a></li>
+                <li role="menuitem"><a href="#smartphones">Smartphones</a></li>
+                <li role="menuitem"><a href="#maintenance">Maintenance</a></li>
+                <li role="menuitem"><a href="#diy">DIY Repairs</a></li>
+                <li role="menuitem"><a href="#tech-news">Tech News</a></li>
+            </ul>
+            <div class="blog-search blog-search-desktop">
+                <input type="text" id="blog-search" placeholder="Search articles..." aria-label="Search blog articles">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Blog posts section -->
+<section class="blog-posts" id="all">
+    <div class="container" id="blogPostsContainer">
+        <div class="featured-post">
+            <div class="post-image">
+                <img src="../images2/A1.avif" alt="Device Maintenance Tips" loading="lazy">
+                <div class="post-date">
+                    <span class="day">06</span>
+                    <span class="month">May</span>
+                    <span class="year">2025</span>
+                </div>
+            </div>
+            <div class="post-content">
+                <div class="post-meta">
+                    <span class="category">Maintenance</span>
+                    <span class="author"><i class="fas fa-user"></i> Sandile Milanzi</span>
+                </div>
+                <h2>5 Essential Maintenance Tips to Double Your Device Lifespan</h2>
+                <p>Most electronic devices fail prematurely due to inadequate maintenance. Our repair experts share five simple but highly effective practices that can extend the life of your devices from the typical 2-3 years to 5-6 years or longer.</p>
+                <a href="../blog/blog-post-maintenance-tips.html" class="btn read-more">Read More</a>
+            </div>
+        </div>
+
+        <div class="posts-grid">
+            <div class="post-card" id="computers">
+                <div class="post-image">
+                    <img src="../images2/blog/Solving Overheating Issues.jpg" alt="Solving Overheating Issues in Laptops" loading="lazy">
+                    <div class="post-date">
+                        <span class="day">29</span>
+                        <span class="month">Apr</span>
+                        <span class="year">2025</span>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <div class="post-meta">
+                        <span class="category">Computers</span>
+                        <span class="read-time"><i class="fas fa-clock"></i> 8 min read</span>
+                    </div>
+                    <h3>Solving Overheating Issues in Laptops: A Comprehensive Guide</h3>
+                    <p>Is your laptop running hot or suddenly shutting down? Overheating is a common issue that can permanently damage components. Learn the causes and step-by-step solutions to keep your computer cool.</p>
+                    <a href="../blog/blog-post-laptop-overheating.html" class="btn read-more">Read More</a>
+                </div>
+            </div>
+
+            <div class="post-card" id="smartphones">
+                <div class="post-image">
+                    <img src="../images2/blog/10 Proven Ways.jpg" alt="10 Proven Ways to Extend Your Smartphone's Battery Life" loading="lazy">
+                    <div class="post-date">
+                        <span class="day">22</span>
+                        <span class="month">Apr</span>
+                        <span class="year">2025</span>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <div class="post-meta">
+                        <span class="category">Smartphones</span>
+                        <span class="read-time"><i class="fas fa-clock"></i> 6 min read</span>
+                    </div>
+                    <h3>10 Proven Ways to Extend Your Smartphone's Battery Life</h3>
+                    <p>Frustrated with your phone dying before the day ends? These practical battery-saving techniques go beyond the obvious tips, focusing on the settings and habits that have the biggest impact on battery longevity.</p>
+                    <a href="../blog/blog-post-smartphone-battery.html" class="btn read-more">Read More</a>
+                </div>
+            </div>
+
+            <div class="post-card" id="diy">
+                <div class="post-image">
+                    <img src="../images2/blog/DIY RAM Upgrade.jpg" alt="DIY RAM Upgrade" loading="lazy">
+                    <div class="post-date">
+                        <span class="day">15</span>
+                        <span class="month">Apr</span>
+                        <span class="year">2025</span>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <div class="post-meta">
+                        <span class="category">DIY Repairs</span>
+                        <span class="read-time"><i class="fas fa-clock"></i> 12 min read</span>
+                    </div>
+                    <h3>DIY RAM Upgrade: A Step-by-Step Guide for All Computer Types</h3>
+                    <p>Adding RAM is one of the most cost-effective upgrades for improving computer performance. We break down the process for desktops, laptops, and even some tablets, with model-specific considerations.</p>
+                    <a href="../blog/blog-post-diy-ram-upgrade.html" class="btn read-more">Read More</a>
+                </div>
+            </div>
+
+            <div class="post-card" id="maintenance">
+                <div class="post-image">
+                    <img src="../images2/blog/321 backup strat.jpg" alt="The 3-2-1 Backup Strategy" loading="lazy">
+                    <div class="post-date">
+                        <span class="day">08</span>
+                        <span class="month">Apr</span>
+                        <span class="year">2025</span>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <div class="post-meta">
+                        <span class="category">Data Management</span>
+                        <span class="read-time"><i class="fas fa-clock"></i> 9 min read</span>
+                    </div>
+                    <h3>The 3-2-1 Backup Strategy: Protecting Your Digital Life</h3>
+                    <p>Data loss can be devastating and permanent. Learn how to implement the 3-2-1 backup strategy recommended by data recovery experts, using both local and cloud solutions for comprehensive protection.</p>
+                    <a href="../blog/blog-post-backup-strategy.html" class="btn read-more">Read More</a>
+                </div>
+            </div>
+
+            <div class="post-card" id="tech-news">
+                <div class="post-image">
+                    <img src="../images2/blog/Smart Home Security Vulnerabilities.jpg" alt="Smart Home Security Vulnerabilities" loading="lazy">
+                    <div class="post-date">
+                        <span class="day">01</span>
+                        <span class="month">Apr</span>
+                        <span class="year">2025</span>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <div class="post-meta">
+                        <span class="category">Tech News</span>
+                        <span class="read-time"><i class="fas fa-clock"></i> 7 min read</span>
+                    </div>
+                    <h3>Smart Home Security Vulnerabilities: What You Need to Know</h3>
+                    <p>The convenience of connected devices comes with security risks. We examine the most common smart home security flaws and provide practical steps to protect your privacy and security without sacrificing functionality.</p>
+                    <a href="../blog/blog-post-smart-home-security.html" class="btn read-more">Read More</a>
+                </div>
+            </div>
+
+            <div class="post-card">
+                <div class="post-image">
+                    <img src="../images2/blog/Common Gaming Console Problems.jpg" alt="Common Gaming Console Problems and How to Fix Them" loading="lazy">
+                    <div class="post-date">
+                        <span class="day">25</span>
+                        <span class="month">Mar</span>
+                        <span class="year">2025</span>
+                    </div>
+                </div>
+                <div class="post-content">
+                    <div class="post-meta">
+                        <span class="category">Gaming</span>
+                        <span class="read-time"><i class="fas fa-clock"></i> 10 min read</span>
+                    </div>
+                    <h3>Common Gaming Console Problems and How to Fix Them</h3>
+                    <p>Gaming consoles often develop specific issues that can be resolved without professional help. From overheating to disc reading problems, we cover troubleshooting for PlayStation, Xbox, and Nintendo systems.</p>
+                    <a href="../blog/blog-post-gaming-console-problems.html" class="btn read-more">Read More</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="blog-pagination">
+            <a href="../blog.html" class="active">1</a>
+            <a href="../blog/blog-page2.html">2</a>
+            <a href="../blog/blog-page3.html">3</a>
+            <a href="../blog/blog-page2.html" class="next-page"><i class="fas fa-chevron-right"></i></a>
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter section -->
+<section class="blog-newsletter">
+    <div class="container">
+        <div class="newsletter-content">
+            <div class="newsletter-text">
+                <h3>Subscribe to Our Newsletter</h3>
+                <p>Get the latest repair tips, tech advice, and exclusive offers delivered directly to your inbox.</p>
+            </div>
+            <form class="newsletter-form" id="blogNewsletterForm">
+                <input type="email" id="blogNewsletterEmail" placeholder="Your Email Address" required>
+                <button type="submit" class="btn">Subscribe</button>
+            </form>
+            <div id="blogNewsletterMessage" style="margin-top: 1rem; font-size: 1.5rem; display: none; text-align: center;"></div>
+        </div>
+    </div>
+</section>
+
+<!-- logo carousel section starts -->
+
+<section class="logo-carousel-section">
+   <div class="logo-carousel">
+      <div class="logo-track">
+         <!-- Set 1: Original Logos -->
+         <img src="../images2/corousel/samsung.png" alt="Samsung">
+         <img src="../images2/corousel/apple.png" alt="Apple">
+         <img src="../images2/corousel/huawei.png" alt="Huawei">
+         <img src="../images2/corousel/lg.png" alt="LG">
+         <img src="../images2/corousel/lenovo.png" alt="Lenovo">
+         <img src="../images2/corousel/sony.png" alt="Sony">
+         
+         <!-- Set 2: Exact Duplicates for seamless loop -->
+         <img src="../images2/corousel/samsung.png" alt="Samsung">
+         <img src="../images2/corousel/apple.png" alt="Apple">
+         <img src="../images2/corousel/huawei.png" alt="Huawei">
+         <img src="../images2/corousel/lg.png" alt="LG">
+         <img src="../images2/corousel/lenovo.png" alt="Lenovo">
+         <img src="../images2/corousel/sony.png" alt="Sony">
+      </div>
+   </div>
+</section>
+
+<!-- logo carousel section ends -->
+
+<!-- Footer section starts  -->
+<section class="footer">
+   <div class="box-container">
+      <div class="box">
+         <h3>quick links</h3>
+         <a class="link" href="/"> <i class="fas fa-angle-right"></i> home</a>
+         <a class="link" href="about"> <i class="fas fa-angle-right"></i> about</a>
+         <a class="link" href="services"> <i class="fas fa-angle-right"></i> services</a>
+         <a class="link" href="blog"> <i class="fas fa-angle-right"></i> blog</a>
+         <a class="link" href="webdev"> <i class="fas fa-angle-right"></i> Web/App Dev</a>
+         <a class="link" href="../index.html#reviews"> <i class="fas fa-angle-right"></i> reviews</a>
+         <a class="link" href="../index.html#contact"> <i class="fas fa-angle-right"></i> contact</a>
+      </div>
+
+      <div class="box">
+         <h3>opening hours</h3>
+         <p> <span>monday :</span> 09:00am to 07:00pm </p>
+         <p> <span>tuesday :</span> 09:00am to 07:00pm </p>
+         <p> <span>wednesday :</span> 09:00am to 07:00pm </p>
+         <p> <span>thursday :</span> 09:00am to 07:00pm </p>
+         <p> <span>friday :</span> 09:00am to 07:00pm </p>
+         <p> <span>saturday :</span> 09:00am to 07:00pm </p>
+         <p> <span>sunday :</span> closed </p>
+      </div>
+
+      <div class="box">
+         <h3>contact info</h3>
+         <a href="../index.html#contact" class="link"> <i class="fas fa-phone"></i> 073 653 8207 </a>
+         <a href="../index.html#contact" class="link"> <i class="fas fa-envelope"></i> sales@omegateksolutions.co.za </a>
+         <a href="../index.html#contact" class="link"> <i class="fas fa-map"></i> kaalfontein, Midrand, Gauteng, South Africa </a>
+      </div>
+
+      <div class="box">
+         <h3>newsletter</h3>
+         <p>subscribe for latest updates</p>
+         <form action="">
+            <input type="email" name="" placeholder="enter your email" id="" class="email">
+            <input type="submit" value="subscribe" class="btn">
+         </form>
+         <div class="share">
+            <a href="https://www.facebook.com/sandile.milanzi.10" class="fab fa-facebook-f"></a>
+            <a href="#" class="fab fa-twitter"></a>
+            <a href="https://www.instagram.com/djx015/" class="fab fa-instagram"></a>
+            <a href="https://www.linkedin.com/in/sandile-milanzi-235692276/" class="fab fa-linkedin"></a>
+         </div>
+      </div>
+   </div>
+
+   <span class="text-gray-400 text-sm" style="font-family: 'Lucida Console', monospace;">created by <a href="https://www.facebook.com/sandile.milanzi.10" class="hover:text-secondary transition-colors" style="color: #b30ce6;">Sandile Milanzi</a> (Omegatek Solutions)™ | all rights reserved!©</span>
+</section>
+<!-- Footer section ends -->
+
+<!-- Back to top button -->
+<div class="back-to-top">
+    <i class="fas fa-arrow-up"></i>
+</div>
+
+<!-- AOS Animation Library -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+<!-- Custom js file link  -->
+<script src="../js/script.js"></script>
+<script src="../js/blog_script.js"></script>
+<!-- Phase 1: Enhanced UI & Typography -->
+<script src="../js/enhanced-ui.js"></script>
+<!-- Phase 2: Cookie Consent -->
+<script src="../js/cookie-consent.js"></script>
+
+<script>
+   // Initialize AOS
+   AOS.init({
+     duration: 800,
+     easing: 'ease-out-cubic',
+     once: true,
+     offset: 100
+   });
+   
+   // Newsletter subscription handler for blog page
+   const blogNewsletterForm = document.getElementById('blogNewsletterForm');
+   if (blogNewsletterForm) {
+     blogNewsletterForm.addEventListener('submit', async (e) => {
+       e.preventDefault();
+       
+       const email = document.getElementById('blogNewsletterEmail').value;
+       const messageDiv = document.getElementById('blogNewsletterMessage');
+       const submitBtn = blogNewsletterForm.querySelector('button[type="submit"]');
+       
+       // Disable button and show loading
+       submitBtn.disabled = true;
+       submitBtn.textContent = 'Subscribing...';
+       
+       const phpBase = (location.protocol === 'file:' || ((location.hostname === '127.0.0.1' || location.hostname === 'localhost') && location.port !== '8000')) ? 'http://127.0.0.1:8000' : '';
+       try {
+         const response = await fetch(phpBase + '/admin/newsletter-api.php?action=subscribe', {
+           method: 'POST',
+           headers: { 'Content-Type': 'application/json' },
+           body: JSON.stringify({ email, name: '' })
+         });
+         
+         const data = await response.json();
+         
+         messageDiv.style.display = 'block';
+         if (data.success) {
+           messageDiv.style.color = '#28a745';
+           messageDiv.textContent = '✅ ' + data.message;
+           blogNewsletterForm.reset();
+         } else {
+           messageDiv.style.color = '#dc3545';
+           messageDiv.textContent = '❌ ' + data.message;
+         }
+       } catch (error) {
+         messageDiv.style.display = 'block';
+         messageDiv.style.color = '#dc3545';
+         messageDiv.textContent = '❌ Server error. Please try again later.';
+       } finally {
+         submitBtn.disabled = false;
+         submitBtn.textContent = 'Subscribe';
+         
+         // Hide message after 5 seconds
+         setTimeout(() => {
+           messageDiv.style.display = 'none';
+         }, 5000);
+       }
+     });
+   }
+</script>
+
+   <!-- Auth Module -->
+   <script type="module" src="../js/auth.js"></script>
+
+   <!-- Supabase dynamic blog loader -->
+   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+   <script>
+   (function() {
+      const SUPABASE_URL      = 'https://pefjkiijqratjixskmdx.supabase.co';
+      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZmpraWlqcXJhdGppeHNrbWR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MzkwNDQsImV4cCI6MjA4ODAxNTA0NH0.x6s38k7avvoszJATabbUcp2zv9kjUVYRjKPT7n-pQJA';
+      const CACHE_KEY = 'omegatek_blog_posts_v1';
+      const CACHE_TTL = 60 * 60 * 1000;
+
+      function escH(s) {
+         return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      }
+      function fmtDate(iso) {
+         const d = new Date(iso);
+         return { day: d.getDate().toString().padStart(2,'0'), month: d.toLocaleString('en',{month:'short'}), year: d.getFullYear() };
+      }
+      function postLink(post) {
+         const statics = ['blog-post-maintenance-tips','blog-post-laptop-overheating','blog-post-smartphone-battery',
+            'blog-post-diy-ram-upgrade','blog-post-backup-strategy','blog-post-smart-home-security','blog-post-gaming-console-problems'];
+         return statics.includes(post.slug)
+            ? `../blog/${post.slug}.html`
+            : `../blog/post.html?slug=${encodeURIComponent(post.slug)}`;
+      }
+      function imgSrc(path) {
+         if (!path) return '../images2/A1.avif';
+         if (path.startsWith('http') || path.startsWith('../')) return path;
+         return '../' + path;
+      }
+
+      function renderPosts(posts) {
+         if (!posts || posts.length === 0) return;
+         const container = document.getElementById('blogPostsContainer');
+         if (!container) return;
+         const featured = posts[0];
+         const rest     = posts.slice(1);
+         const fd       = fmtDate(featured.created_at);
+         let html = `
+            <div class="featured-post">
+               <div class="post-image">
+                  <img src="${imgSrc(featured.cover_image)}" alt="${escH(featured.title)}" loading="lazy">
+                  <div class="post-date"><span class="day">${fd.day}</span><span class="month">${fd.month}</span><span class="year">${fd.year}</span></div>
+               </div>
+               <div class="post-content">
+                  <div class="post-meta"><span class="category">${escH(featured.category||'General')}</span><span class="author"><i class="fas fa-user"></i> Sandile Milanzi</span></div>
+                  <h2>${escH(featured.title)}</h2>
+                  <p>${escH(featured.excerpt||'')}</p>
+                  <a href="${postLink(featured)}" class="btn read-more">Read More</a>
+               </div>
+            </div>`;
+         if (rest.length > 0) {
+            html += '<div class="posts-grid">';
+            rest.forEach(p => {
+               const d = fmtDate(p.created_at);
+               html += `
+                  <div class="post-card">
+                     <div class="post-image">
+                        <img src="${imgSrc(p.cover_image)}" alt="${escH(p.title)}" loading="lazy">
+                        <div class="post-date"><span class="day">${d.day}</span><span class="month">${d.month}</span><span class="year">${d.year}</span></div>
+                     </div>
+                     <div class="post-content">
+                        <div class="post-meta"><span class="category">${escH(p.category||'General')}</span><span class="read-time"><i class="fas fa-clock"></i> 5 min read</span></div>
+                        <h3>${escH(p.title)}</h3>
+                        <p>${escH(p.excerpt||'')}</p>
+                        <a href="${postLink(p)}" class="btn read-more">Read More</a>
+                     </div>
+                  </div>`;
+            });
+            html += '</div>';
+         }
+         html += `
+            <div class="blog-pagination">
+               <a href="../blog.html">1</a>
+               <a href="../blog/blog-page2.html">2</a>
+               <a href="../blog/blog-page3.html">3</a>
+               <a href="../blog/blog-page2.html" class="next-page"><i class="fas fa-chevron-right"></i></a>
+            </div>`;
+         container.innerHTML = html;
+      }
+
+      async function loadBlogPosts() {
+         try {
+            const raw = localStorage.getItem(CACHE_KEY);
+            if (raw) {
+               const { posts, ts } = JSON.parse(raw);
+               if (Date.now() - ts < CACHE_TTL && posts.length > 0) { renderPosts(posts); return; }
+            }
+         } catch(e) {}
+         try {
+            const url = `${SUPABASE_URL}/rest/v1/blog_posts?select=id,title,slug,excerpt,category,cover_image,created_at&published=eq.true&order=created_at.desc`;
+            const res = await fetch(url, { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY } });
+            if (res.ok) {
+               const posts = await res.json();
+               if (Array.isArray(posts) && posts.length > 0) {
+                  try { localStorage.setItem(CACHE_KEY, JSON.stringify({ posts, ts: Date.now() })); } catch(e) {}
+                  renderPosts(posts);
+               }
+            }
+         } catch(e) {}
+      }
+
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', loadBlogPosts);
+      else loadBlogPosts();
+   })();
+   </script>
+</body>
+</html>
+

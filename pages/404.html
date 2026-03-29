@@ -1,0 +1,249 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="The page you're looking for doesn't exist. Return to Omegatek Solutions homepage or contact us for assistance.">
+    <meta name="keywords" content="404 error, page not found, Omegatek Solutions">
+    <meta name="author" content="Omegatek Solutions">
+    <meta property="og:title" content="Page Not Found | Omegatek Solutions">
+    <meta property="og:description" content="The page you're looking for doesn't exist. Return to Omegatek Solutions homepage or contact us for assistance.">
+    <meta property="og:type" content="website">
+    
+    <title>Page Not Found | Omegatek Solutions</title>
+
+    <!-- Modern CSS Frameworks -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+       tailwind.config = {
+          theme: {
+             extend: {
+                colors: {
+                   primary: '#b30ce6',
+                   secondary: '#7c2d92',
+                   accent: '#e74c3c',
+                   dark: '#1a1a1a',
+                   light: '#f8f9fa'
+                },
+                animation: {
+                   'pulse-glow': 'pulse-glow 2s ease-in-out infinite alternate',
+                   'float': 'float 3s ease-in-out infinite',
+                   'shimmer': 'shimmer 2s linear infinite',
+                   'bounce-soft': 'bounce-soft 2s infinite',
+                },
+                keyframes: {
+                   'pulse-glow': {
+                      '0%': { boxShadow: '0 0 20px rgba(179, 12, 230, 0.5)' },
+                      '100%': { boxShadow: '0 0 40px rgba(179, 12, 230, 0.8)' }
+                   },
+                   'float': {
+                      '0%, 100%': { transform: 'translateY(0px)' },
+                      '50%': { transform: 'translateY(-20px)' }
+                   },
+                   'shimmer': {
+                      '0%': { backgroundPosition: '-200% 0' },
+                      '100%': { backgroundPosition: '200% 0' }
+                   },
+                   'bounce-soft': {
+                      '0%, 100%': { transform: 'translateY(0)' },
+                      '50%': { transform: 'translateY(-10px)' }
+                   }
+                }
+             }
+          }
+       }
+    </script>
+    
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Font awesome cdn link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom css file link -->
+    <link rel="stylesheet" href="../css/style.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../images2/favicon.png">
+    
+    <style>
+        .error-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .error-content {
+            background: white;
+            padding: 4rem 3rem;
+            border-radius: 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .error-code {
+            font-size: 8rem;
+            font-weight: bold;
+            color: #b30ce6;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .error-title {
+            font-size: 3rem;
+            color: #334;
+            margin-bottom: 1.5rem;
+        }
+        
+        .error-message {
+            font-size: 1.6rem;
+            color: #777;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+        }
+        
+        .error-actions {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .error-btn {
+            display: inline-block;
+            padding: 1.2rem 2.5rem;
+            font-size: 1.6rem;
+            text-decoration: none;
+            border-radius: 5rem;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .btn-primary {
+            background: #b30ce6;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #9a0bb8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(179, 12, 230, 0.4);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: #b30ce6;
+            border: 2px solid #b30ce6;
+        }
+        
+        .btn-secondary:hover {
+            background: #b30ce6;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .error-icon {
+            font-size: 4rem;
+            color: #b30ce6;
+            margin-bottom: 2rem;
+            opacity: 0.7;
+        }
+        
+        @media (max-width: 768px) {
+            .error-content {
+                padding: 3rem 2rem;
+            }
+            
+            .error-code {
+                font-size: 6rem;
+            }
+            
+            .error-title {
+                font-size: 2.5rem;
+            }
+            
+            .error-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .error-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-content">
+            <div class="error-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            
+            <div class="error-code">404</div>
+            
+            <h1 class="error-title">Page Not Found</h1>
+            
+            <p class="error-message">
+                Oops! The page you're looking for seems to have disappeared. 
+                Don't worry, our electronics repair experts can fix broken devices, 
+                but this broken link needs a different kind of help!
+            </p>
+            
+            <div class="error-actions">
+                <a href="/" class="error-btn btn-primary">
+                    <i class="fas fa-home"></i> Back to Homepage
+                </a>
+                <a href="services" class="error-btn btn-secondary">
+                    <i class="fas fa-tools"></i> Our Services
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Back to homepage after 10 seconds -->
+    <script>
+        // Auto-redirect after 30 seconds with countdown
+        let countdown = 30;
+        const countdownElement = document.createElement('p');
+        countdownElement.style.marginTop = '2rem';
+        countdownElement.style.fontSize = '1.4rem';
+        countdownElement.style.color = '#777';
+        document.querySelector('.error-content').appendChild(countdownElement);
+        
+        const updateCountdown = () => {
+            countdownElement.textContent = `Redirecting to homepage in ${countdown} seconds...`;
+            countdown--;
+            
+            if (countdown < 0) {
+                window.location.href = 'index.html';
+            }
+        };
+        
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
+
+    <!-- AOS Animation Library JavaScript -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+       // Initialize AOS
+       AOS.init({
+          duration: 1000,
+          once: true,
+          offset: 100
+       });
+    </script>
+</body>
+</html>
+
+

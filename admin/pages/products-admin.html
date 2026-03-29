@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products Management | Omegatek Solutions</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+       tailwind.config = {
+          theme: {
+             extend: {
+                colors: {
+                   primary: '#b30ce6'
+                }
+             }
+          }
+       }
+    </script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="icon" type="image/png" href="../../images2/favicon.png">
+    
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s;
+        }
+        
+        .product-card:hover {
+            border-color: #b30ce6;
+            box-shadow: 0 8px 24px rgba(179, 12, 230, 0.2);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <a href="admin-dashboard.html" class="inline-flex items-center gap-2 text-white hover:text-yellow-300 transition-colors mb-4">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+                <h1 class="text-5xl font-bold text-white drop-shadow-lg">
+                    <i class="fas fa-boxes"></i> Products Management
+                </h1>
+                <p class="text-xl text-white opacity-90 mt-2">Manage your product catalog</p>
+            </div>
+            <button onclick="downloadProducts()" 
+                    class="bg-green-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all">
+                <i class="fas fa-download mr-2"></i> Download JSON
+            </button>
+        </div>
+        
+        <!-- Upload Section -->
+        <div class="bg-white bg-opacity-95 backdrop-blur rounded-3xl p-8 mb-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">
+                <i class="fas fa-upload mr-3"></i>Upload Updated Products
+            </h2>
+            <div class="bg-yellow-50 border-2 border-yellow-300 rounded-xl p-6 mb-6">
+                <div class="flex gap-4">
+                    <i class="fas fa-exclamation-triangle text-3xl text-yellow-600"></i>
+                    <div>
+                        <h3 class="font-bold text-yellow-900 mb-2">Important Instructions</h3>
+                        <ol class="list-decimal list-inside text-yellow-800 space-y-1">
+                            <li>Download current products.json first as backup</li>
+                            <li>Edit the JSON file with your changes</li>
+                            <li>Validate JSON syntax (use jsonlint.com)</li>
+                            <li>Upload the modified file below</li>
+                            <li>Products will update immediately on the website</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex gap-4">
+                <input type="file" id="productFileInput" accept=".json" 
+                       class="flex-1 px-4 py-3 border-2 border-gray-300 rounded-xl">
+                <button onclick="uploadProducts()" 
+                        class="bg-gradient-to-r from-primary to-purple-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all">
+                    <i class="fas fa-upload mr-2"></i> Upload & Update
+                </button>
+            </div>
+            
+            <div id="uploadMessage" class="mt-4 hidden"></div>
+        </div>
+        
+        <!-- Stats -->
+        <div class="grid md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white bg-opacity-95 backdrop-blur rounded-xl p-6">
+                <div class="flex items-center gap-4">
+                    <div class="bg-gradient-to-r from-primary to-purple-600 text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl">
+                        <i class="fas fa-box"></i>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Total Products</p>
+                        <p class="text-3xl font-bold text-gray-800" id="totalProducts">0</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white bg-opacity-95 backdrop-blur rounded-xl p-6">
+                <div class="flex items-center gap-4">
+                    <div class="bg-green-500 text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">In Stock</p>
+                        <p class="text-3xl font-bold text-gray-800" id="inStockCount">0</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white bg-opacity-95 backdrop-blur rounded-xl p-6">
+                <div class="flex items-center gap-4">
+                    <div class="bg-yellow-500 text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">On Sale</p>
+                        <p class="text-3xl font-bold text-gray-800" id="onSaleCount">0</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white bg-opacity-95 backdrop-blur rounded-xl p-6">
+                <div class="flex items-center gap-4">
+                    <div class="bg-blue-500 text-white w-16 h-16 rounded-full flex items-center justify-center text-2xl">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <div>
+                        <p class="text-gray-600">Categories</p>
+                        <p class="text-3xl font-bold text-gray-800" id="categoriesCount">0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Filters -->
+        <div class="bg-white bg-opacity-95 backdrop-blur rounded-3xl p-6 mb-8">
+            <div class="flex flex-wrap gap-4">
+                <input type="text" id="searchProducts" placeholder="Search products..." 
+                       onkeyup="filterProducts()"
+                       class="flex-1 min-w-[300px] px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-primary focus:outline-none">
+                
+                <select id="categoryFilter" onchange="filterProducts()" 
+                        class="px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-primary focus:outline-none">
+                    <option value="all">All Categories</option>
+                </select>
+                
+                <select id="stockFilter" onchange="filterProducts()" 
+                        class="px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-primary focus:outline-none">
+                    <option value="all">All Stock Status</option>
+                    <option value="inStock">In Stock Only</option>
+                    <option value="outOfStock">Out of Stock</option>
+                </select>
+                
+                <button onclick="exportToCSV()" 
+                        class="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all">
+                    <i class="fas fa-file-csv mr-2"></i> Export CSV
+                </button>
+            </div>
+        </div>
+        
+        <!-- Products Grid -->
+        <div class="bg-white bg-opacity-95 backdrop-blur rounded-3xl p-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Product Catalog</h2>
+            <div id="productsGrid" class="grid md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div class="col-span-full text-center p-12">
+                    <div class="animate-spin text-6xl text-primary mb-4">
+                        <i class="fas fa-spinner"></i>
+                    </div>
+                    <p class="text-xl text-gray-600">Loading products...</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Instructions Panel -->
+        <div class="bg-blue-50 bg-opacity-95 backdrop-blur border-3 border-blue-300 rounded-3xl p-8 mt-8">
+            <h2 class="text-3xl font-bold text-blue-900 mb-4">
+                <i class="fas fa-info-circle mr-3"></i>How to Edit Products
+            </h2>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-semibold text-blue-800 text-xl mb-3">Option 1: JSON File</h3>
+                    <ol class="list-decimal list-inside text-blue-700 space-y-2">
+                        <li>Click "Download JSON" to get current products.json</li>
+                        <li>Open in text editor (VS Code, Notepad++, etc.)</li>
+                        <li>Edit product details (name, price, description, etc.)</li>
+                        <li>Validate JSON syntax at jsonlint.com</li>
+                        <li>Upload the modified file using form above</li>
+                    </ol>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-blue-800 text-xl mb-3">Option 2: CSV Import</h3>
+                    <ol class="list-decimal list-inside text-blue-700 space-y-2">
+                        <li>Click "Export CSV" to get current products</li>
+                        <li>Open in Excel or Google Sheets</li>
+                        <li>Edit products in spreadsheet</li>
+                        <li>Save as CSV file</li>
+                        <li>Convert CSV to JSON using provided script</li>
+                        <li>Upload JSON file</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="mt-6 bg-white rounded-xl p-6">
+                <h3 class="font-semibold text-gray-800 mb-3">Product JSON Structure:</h3>
+                <pre class="bg-gray-100 p-4 rounded-lg overflow-x-auto text-sm"><code>{
+  "id": "prod_001",
+  "name": "Product Name",
+  "description": "Product description",
+  "price": 99.99,
+  "originalPrice": 149.99,
+  "image": "products/image.png",
+  "category": "Category Name",
+  "rating": 4.5,
+  "reviews": 25,
+  "inStock": true,
+  "stockQuantity": 50,
+  "onSale": true,
+  "featured": false,
+  "tags": ["tag1", "tag2"],
+  "specifications": {
+    "spec1": "value1"
+  }
+}</code></pre>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let products = [];
+        let allCategories = [];
+        
+        // Load products
+        async function loadProducts() {
+            try {
+                const response = await fetch('products.json');
+                products = await response.json();
+                
+                // Extract unique categories
+                allCategories = [...new Set(products.map(p => p.category))].filter(Boolean);
+                
+                updateStats();
+                populateCategoryFilter();
+                renderProducts();
+            } catch (error) {
+                console.error('Error loading products:', error);
+                document.getElementById('productsGrid').innerHTML = `
+                    <div class="col-span-full text-center p-12">
+                        <i class="fas fa-exclamation-circle text-6xl text-red-500 mb-4"></i>
+                        <p class="text-xl text-red-600">Error loading products</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Update stats
+        function updateStats() {
+            document.getElementById('totalProducts').textContent = products.length;
+            document.getElementById('inStockCount').textContent = products.filter(p => p.inStock !== false).length;
+            document.getElementById('onSaleCount').textContent = products.filter(p => p.onSale).length;
+            document.getElementById('categoriesCount').textContent = allCategories.length;
+        }
+        
+        // Populate category filter
+        function populateCategoryFilter() {
+            const select = document.getElementById('categoryFilter');
+            select.innerHTML = '<option value="all">All Categories</option>';
+            allCategories.forEach(cat => {
+                select.innerHTML += `<option value="${cat}">${cat}</option>`;
+            });
+        }
+        
+        // Render products
+        function renderProducts() {
+            const search = document.getElementById('searchProducts').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const stockFilter = document.getElementById('stockFilter').value;
+            
+            const filtered = products.filter(product => {
+                const matchesSearch = product.name.toLowerCase().includes(search) || 
+                                     (product.description && product.description.toLowerCase().includes(search));
+                const matchesCategory = categoryFilter === 'all' || product.category === categoryFilter;
+                const matchesStock = stockFilter === 'all' || 
+                                    (stockFilter === 'inStock' && product.inStock !== false) ||
+                                    (stockFilter === 'outOfStock' && product.inStock === false);
+                
+                return matchesSearch && matchesCategory && matchesStock;
+            });
+            
+            const html = filtered.map(product => `
+                <div class="product-card">
+                    <img src="${product.image}" alt="${product.name}" class="product-image" 
+                         onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27200%27 height=%27200%27 viewBox=%270 0 200 200%27%3E%3Crect width=%27200%27 height=%27200%27 fill=%27%23f3f4f6%27/%3E%3Cpath d=%27M65 70h70a10 10 0 0110 10v60a10 10 0 01-10 10H65a10 10 0 01-10-10V80a10 10 0 0110-10z%27 fill=%27none%27 stroke=%27%23d1d5db%27 stroke-width=%273%27/%3E%3Ccircle cx=%27100%27 cy=%27105%27 r=%2718%27 fill=%27none%27 stroke=%27%23d1d5db%27 stroke-width=%273%27/%3E%3C/svg%3E'">
+                    <div class="mt-4">
+                        <h3 class="font-semibold text-gray-800 text-lg mb-2 line-clamp-2">${product.name}</h3>
+                        <p class="text-sm text-gray-600 mb-2">${product.category || 'Uncategorized'}</p>
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-2xl font-bold text-primary">R${product.price}</span>
+                            ${product.originalPrice ? `<span class="text-sm text-gray-500 line-through">R${product.originalPrice}</span>` : ''}
+                        </div>
+                        <div class="flex gap-2 flex-wrap mb-3">
+                            ${product.inStock !== false ? '<span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-lg font-semibold">In Stock</span>' : '<span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-lg font-semibold">Out of Stock</span>'}
+                            ${product.onSale ? '<span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-lg font-semibold">On Sale</span>' : ''}
+                            ${product.featured ? '<span class="px-2 py-1 bg-purple-100 text-purple-800 text-xs rounded-lg font-semibold">Featured</span>' : ''}
+                        </div>
+                        <p class="text-xs text-gray-500">ID: ${product.id}</p>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('productsGrid').innerHTML = html || 
+                '<div class="col-span-full text-center p-12 text-gray-500">No products match your filters</div>';
+        }
+        
+        // Filter products
+        function filterProducts() {
+            renderProducts();
+        }
+        
+        // Download products JSON
+        function downloadProducts() {
+            const dataStr = JSON.stringify(products, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'products.json';
+            link.click();
+        }
+        
+        // Upload products - Client-side only (for download/edit workflow)
+        function uploadProducts() {
+            const fileInput = document.getElementById('productFileInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showMessage('Please select a JSON file to upload', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const newProducts = JSON.parse(e.target.result);
+                    
+                    // Validate structure
+                    if (!Array.isArray(newProducts)) {
+                        throw new Error('JSON must be an array of products');
+                    }
+                    
+                    showMessage(`File validated successfully! ${newProducts.length} products found.`, 'success');
+                    showMessage('IMPORTANT: To actually update the website, you must manually replace products.json on your server via cPanel File Manager or FTP.', 'info');
+                    
+                    // Offer to download the validated file
+                    const dataStr = JSON.stringify(newProducts, null, 2);
+                    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                    const url = URL.createObjectURL(dataBlob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'products-validated.json';
+                    link.click();
+                    
+                } catch (error) {
+                    showMessage('Error: Invalid JSON format - ' + error.message, 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+        
+        // Show message
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('uploadMessage');
+            const colors = {
+                success: 'bg-green-100 border-green-300 text-green-800',
+                error: 'bg-red-100 border-red-300 text-red-800',
+                info: 'bg-blue-100 border-blue-300 text-blue-800'
+            };
+            
+            messageDiv.className = `mt-4 p-4 rounded-xl border-2 ${colors[type]}`;
+            messageDiv.textContent = message;
+            messageDiv.classList.remove('hidden');
+            
+            setTimeout(() => messageDiv.classList.add('hidden'), 8000);
+        }
+        
+        // Export to CSV
+        function exportToCSV() {
+            const headers = ['ID', 'Name', 'Price', 'Original Price', 'Category', 'In Stock', 'Stock Quantity', 'On Sale', 'Featured', 'Rating', 'Reviews'];
+            const rows = products.map(p => [
+                p.id,
+                p.name,
+                p.price,
+                p.originalPrice || '',
+                p.category || '',
+                p.inStock !== false ? 'Yes' : 'No',
+                p.stockQuantity || 0,
+                p.onSale ? 'Yes' : 'No',
+                p.featured ? 'Yes' : 'No',
+                p.rating || 0,
+                p.reviews || 0
+            ]);
+            
+            const csvContent = [headers, ...rows].map(row => row.map(cell => `"${cell}"`).join(',')).join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'products.csv';
+            link.click();
+        }
+        
+        // Initialize
+        loadProducts();
+    </script>
+    
+</body>
+</html>
+

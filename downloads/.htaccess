@@ -1,0 +1,20 @@
+# ============================================================
+# Omegatek Solutions — Downloads Folder Security
+# APK files are served ONLY through api/apk-download.php
+# Direct access to .apk files is blocked here.
+# ============================================================
+
+# Block ALL direct requests to APK files
+<FilesMatch "\.apk$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Block directory listing
+Options -Indexes
+
+# Block access to any hidden files or configs in this folder
+<FilesMatch "^\.">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>

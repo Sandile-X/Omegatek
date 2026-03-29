@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders Management | Omegatek Solutions</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+       tailwind.config = {
+          theme: {
+             extend: {
+                colors: {
+                   primary: '#b30ce6'
+                }
+             }
+          }
+       }
+    </script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="icon" type="image/png" href="../../images2/favicon.png">
+    
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .dashboard {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #b30ce6, #9333ea);
+            color: white;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-confirmed { background: #d1ecf1; color: #0c5460; }
+        .status-processing { background: #e7d4f7; color: #6b288b; }
+        .status-dispatched { background: #cce5ff; color: #004085; }
+        .status-delivered { background: #d4edda; color: #155724; }
+        .status-cancelled { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    
+    <!-- Login Screen -->
+    <div id="loginScreen" class="flex items-center justify-center min-h-screen">
+        <div class="card max-w-md w-full text-center">
+            <h1 class="text-4xl font-bold text-primary mb-4">
+                <i class="fas fa-shopping-cart"></i> Orders Management
+            </h1>
+            <p class="text-gray-600 mb-8">Omegatek Solutions Admin Dashboard</p>
+            
+            <div id="loginAlert"></div>
+            
+            <form id="loginForm">
+                <div class="mb-6 text-left">
+                    <label class="block text-gray-700 font-semibold mb-2">Password</label>
+                    <input type="password" id="password" 
+                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-primary focus:outline-none text-lg" 
+                           placeholder="Enter admin password" required>
+                </div>
+                <button type="submit" 
+                        class="w-full bg-gradient-to-r from-primary to-purple-600 text-white px-6 py-4 rounded-xl font-semibold text-lg hover:shadow-lg transition-all">
+                    <i class="fas fa-sign-in-alt mr-2"></i> Login
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="dashboard hidden">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-5xl font-bold text-white drop-shadow-lg">
+                <i class="fas fa-shopping-cart"></i> Orders Management
+            </h1>
+            <button onclick="logout()" 
+                    class="bg-white text-gray-800 px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all">
+                <i class="fas fa-sign-out-alt mr-2"></i> Logout
+            </button>
+        </div>
+        
+        <!-- Stats Cards -->
+        <div class="grid md:grid-cols-4 gap-6 mb-8">
+            <div class="stat-card">
+                <div class="text-5xl mb-3"><i class="fas fa-shopping-bag"></i></div>
+                <div class="text-3xl font-bold" id="totalOrders">0</div>
+                <div class="text-lg opacity-90">Total Orders</div>
+            </div>
+            <div class="stat-card">
+                <div class="text-5xl mb-3"><i class="fas fa-clock"></i></div>
+                <div class="text-3xl font-bold" id="pendingOrders">0</div>
+                <div class="text-lg opacity-90">Pending</div>
+            </div>
+            <div class="stat-card">
+                <div class="text-5xl mb-3"><i class="fas fa-shipping-fast"></i></div>
+                <div class="text-3xl font-bold" id="dispatchedOrders">0</div>
+                <div class="text-lg opacity-90">Dispatched</div>
+            </div>
+            <div class="stat-card">
+                <div class="text-5xl mb-3"><i class="fas fa-dollar-sign"></i></div>
+                <div class="text-3xl font-bold" id="totalRevenue">R0</div>
+                <div class="text-lg opacity-90">Total Revenue</div>
+            </div>
+        </div>
+        
+        <!-- Filters -->
+        <div class="card">
+            <div class="flex flex-wrap gap-4 mb-6">
+                <select id="statusFilter" onchange="applyFilter()" 
+                        class="px-4 py-2 border-2 border-gray-300 rounded-xl focus:border-primary focus:outline-none">
+                    <option value="all">All Statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="processing">Processing</option>
+                    <option value="dispatched">Dispatched</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+                
+                <input type="text" id="searchInput" onkeyup="applyFilter()" 
+                       placeholder="Search orders..."
+                       class="flex-1 min-w-[300px] px-4 py-2 border-2 border-gray-300 rounded-xl focus:border-primary focus:outline-none">
+            </div>
+            
+            <!-- Orders Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b-2 border-gray-300">
+                            <th class="text-left p-4">Order ID</th>
+                            <th class="text-left p-4">Customer</th>
+                            <th class="text-left p-4">Date</th>
+                            <th class="text-left p-4">Items</th>
+                            <th class="text-left p-4">Total</th>
+                            <th class="text-left p-4">Status</th>
+                            <th class="text-left p-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTable">
+                        <tr>
+                            <td colspan="7" class="text-center p-8 text-gray-500">Loading orders...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Order Details Modal -->
+    <div id="orderModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm hidden items-center justify-center z-50">
+        <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto m-4">
+            <div class="sticky top-0 bg-white border-b-2 border-gray-300 p-6 flex justify-between items-center">
+                <h2 class="text-3xl font-bold text-gray-800">Order Details</h2>
+                <button onclick="closeModal()" class="text-4xl text-gray-500 hover:text-gray-800">
+                    &times;
+                </button>
+            </div>
+            <div class="p-8" id="modalContent">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let allOrders = [];
+        
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            
+            try {
+                const res = await fetch('../orders-api.php?action=login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    document.getElementById('loginScreen').classList.add('hidden');
+                    document.getElementById('adminDashboard').classList.remove('hidden');
+                    loadOrders();
+                } else {
+                    document.getElementById('loginAlert').innerHTML = 
+                        '<div class="bg-red-100 border-2 border-red-300 text-red-800 p-4 rounded-xl mb-4">' + data.message + '</div>';
+                }
+            } catch (error) {
+                document.getElementById('loginAlert').innerHTML = 
+                    '<div class="bg-red-100 border-2 border-red-300 text-red-800 p-4 rounded-xl mb-4">Server error</div>';
+            }
+        });
+        
+        // Logout
+        async function logout() {
+            await fetch('../orders-api.php?action=logout');
+            location.reload();
+        }
+        
+        // Load orders
+        async function loadOrders() {
+            try {
+                const res = await fetch('../orders-api.php?action=get_orders');
+                const data = await res.json();
+                
+                if (data.success) {
+                    allOrders = data.orders;
+                    updateStats();
+                    renderOrders();
+                }
+            } catch (error) {
+                console.error('Error loading orders:', error);
+            }
+        }
+        
+        // Update stats
+        function updateStats() {
+            document.getElementById('totalOrders').textContent = allOrders.length;
+            document.getElementById('pendingOrders').textContent = allOrders.filter(o => o.status === 'pending').length;
+            document.getElementById('dispatchedOrders').textContent = allOrders.filter(o => o.status === 'dispatched').length;
+            
+            const revenue = allOrders.reduce((sum, o) => sum + o.total, 0);
+            document.getElementById('totalRevenue').textContent = `R${revenue.toFixed(2)}`;
+        }
+        
+        // Render orders
+        function renderOrders() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            const filtered = allOrders.filter(order => {
+                const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
+                const matchesSearch = order.orderId.toLowerCase().includes(searchTerm) || 
+                                     order.customer.fullName.toLowerCase().includes(searchTerm) ||
+                                     order.customer.email.toLowerCase().includes(searchTerm);
+                return matchesStatus && matchesSearch;
+            });
+            
+            const html = filtered.map(order => `
+                <tr class="border-b border-gray-200 hover:bg-gray-50">
+                    <td class="p-4">
+                        <span class="font-mono font-semibold text-primary">${order.orderId}</span>
+                    </td>
+                    <td class="p-4">
+                        <div class="font-semibold">${order.customer.fullName}</div>
+                        <div class="text-sm text-gray-600">${order.customer.email}</div>
+                        <div class="text-sm text-gray-600">${order.customer.phone}</div>
+                    </td>
+                    <td class="p-4">
+                        ${new Date(order.orderDate).toLocaleDateString('en-ZA', { 
+                            year: 'numeric', 
+                            month: 'short', 
+                            day: 'numeric' 
+                        })}
+                    </td>
+                    <td class="p-4">${order.items.length} items</td>
+                    <td class="p-4">
+                        <span class="font-bold text-lg">R${order.total.toFixed(2)}</span>
+                    </td>
+                    <td class="p-4">
+                        <span class="status-badge status-${order.status}">${order.status}</span>
+                    </td>
+                    <td class="p-4">
+                        <button onclick='viewOrder(${JSON.stringify(order).replace(/'/g, "&apos;")})' 
+                                class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                            <i class="fas fa-eye mr-2"></i> View
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+            
+            document.getElementById('ordersTable').innerHTML = html || 
+                '<tr><td colspan="7" class="text-center p-8 text-gray-500">No orders found</td></tr>';
+        }
+        
+        // Apply filter
+        function applyFilter() {
+            renderOrders();
+        }
+        
+        // View order
+        function viewOrder(order) {
+            const itemsHtml = order.items.map(item => `
+                <div class="flex gap-4 p-4 border-2 border-gray-200 rounded-xl mb-3">
+                    <img src="${item.image}" alt="${item.name}" class="w-20 h-20 object-cover rounded-lg" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27200%27 height=%27200%27 viewBox=%270 0 200 200%27%3E%3Crect width=%27200%27 height=%27200%27 fill=%27%23f3f4f6%27/%3E%3Cpath d=%27M65 70h70a10 10 0 0110 10v60a10 10 0 01-10 10H65a10 10 0 01-10-10V80a10 10 0 0110-10z%27 fill=%27none%27 stroke=%27%23d1d5db%27 stroke-width=%273%27/%3E%3Ccircle cx=%27100%27 cy=%27105%27 r=%2718%27 fill=%27none%27 stroke=%27%23d1d5db%27 stroke-width=%273%27/%3E%3C/svg%3E'">
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-lg">${item.name}</h4>
+                        <p class="text-gray-600">Qty: ${item.quantity} × R${item.price.toFixed(2)}</p>
+                    </div>
+                    <div class="text-right font-bold text-primary text-xl">
+                        R${(item.price * item.quantity).toFixed(2)}
+                    </div>
+                </div>
+            `).join('');
+            
+            const modalContent = `
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4">Order Information</h3>
+                        <div class="space-y-3 text-lg">
+                            <div><strong>Order ID:</strong> <span class="font-mono">${order.orderId}</span></div>
+                            <div><strong>Date:</strong> ${new Date(order.orderDate).toLocaleString('en-ZA')}</div>
+                            <div><strong>Payment:</strong> ${order.paymentMethod.replace('_', ' ')}</div>
+                            ${order.notes ? `<div><strong>Notes:</strong> ${order.notes}</div>` : ''}
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4">Delivery Address</h3>
+                        <div class="bg-gray-50 p-4 rounded-xl text-lg">
+                            <p class="font-semibold">${order.customer.fullName}</p>
+                            <p>${order.address.street}</p>
+                            <p>${order.address.suburb}, ${order.address.city}</p>
+                            <p>${order.address.province}, ${order.address.postalCode}</p>
+                            <p class="mt-3"><i class="fas fa-phone mr-2"></i>${order.customer.phone}</p>
+                            <p><i class="fas fa-envelope mr-2"></i>${order.customer.email}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3 class="text-2xl font-bold mb-4">Order Items</h3>
+                ${itemsHtml}
+                
+                <div class="border-t-2 border-gray-300 pt-4 mt-6 text-xl">
+                    <div class="flex justify-between mb-2">
+                        <span>Subtotal:</span>
+                        <span>R${order.subtotal.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between mb-4">
+                        <span>Delivery Fee:</span>
+                        <span>R${order.deliveryFee.toFixed(2)}</span>
+                    </div>
+                    <div class="flex justify-between text-3xl font-bold text-primary border-t-2 border-primary pt-4">
+                        <span>Total:</span>
+                        <span>R${order.total.toFixed(2)}</span>
+                    </div>
+                </div>
+                
+                <h3 class="text-2xl font-bold mb-4 mt-8">Update Status</h3>
+                <div class="flex flex-wrap gap-4">
+                    <select id="newStatus" class="flex-1 px-4 py-3 border-2 border-gray-300 rounded-xl text-lg">
+                        <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                        <option value="confirmed" ${order.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
+                        <option value="processing" ${order.status === 'processing' ? 'selected' : ''}>Processing</option>
+                        <option value="dispatched" ${order.status === 'dispatched' ? 'selected' : ''}>Dispatched</option>
+                        <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
+                        <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                    </select>
+                    <input type="text" id="statusNote" placeholder="Add note (optional)" 
+                           class="flex-1 px-4 py-3 border-2 border-gray-300 rounded-xl text-lg">
+                    <button onclick="updateStatus('${order.orderId}')" 
+                            class="bg-gradient-to-r from-primary to-purple-600 text-white px-8 py-3 rounded-xl font-semibold hover:shadow-lg transition-all">
+                        <i class="fas fa-save mr-2"></i> Update Status
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('modalContent').innerHTML = modalContent;
+            document.getElementById('orderModal').classList.remove('hidden');
+            document.getElementById('orderModal').classList.add('flex');
+        }
+        
+        // Close modal
+        function closeModal() {
+            document.getElementById('orderModal').classList.add('hidden');
+            document.getElementById('orderModal').classList.remove('flex');
+        }
+        
+        // Update status
+        async function updateStatus(orderId) {
+            const newStatus = document.getElementById('newStatus').value;
+            const note = document.getElementById('statusNote').value;
+            
+            try {
+                const res = await fetch('../orders-api.php?action=update_order_status', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ orderId, status: newStatus, note })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    alert('Status updated successfully! Customer has been notified.');
+                    closeModal();
+                    loadOrders();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                alert('Server error');
+            }
+        }
+    </script>
+    
+</body>
+</html>
+

@@ -1,0 +1,3191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Omegatek Solutions</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+       tailwind.config = {
+          theme: {
+             extend: {
+                colors: {
+                   primary: '#b30ce6',
+                   secondary: '#ff6b9d'
+                }
+             }
+          }
+       }
+    </script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="icon" type="image/png" href="../images2/favicon.png">
+    <!-- Supabase UMD (browser global) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <!-- SheetJS for CSV + XLSX parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: #f8fafc;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #b30ce6 0%, #9333ea 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar {
+            background: white;
+            border-right: 1px solid #e2e8f0;
+            height: calc(100vh - 80px);
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            padding: 1rem 1.5rem;
+            border-left: 4px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #64748b;
+        }
+
+        .nav-item:hover {
+            background: #f1f5f9;
+            color: #b30ce6;
+        }
+
+        .nav-item.active {
+            border-left-color: #b30ce6;
+            background: #f3e8ff;
+            color: #b30ce6;
+            font-weight: 600;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 4px 12px rgba(179, 12, 230, 0.1);
+            border-color: #b30ce6;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #b30ce6;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #b30ce6 0%, #9333ea 100%);
+            color: white;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(179, 12, 230, 0.3);
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 50;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* ── AI Chat Panel ──────────────────────────────────────── */
+        .ai-qa-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0.7rem 0.8rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            cursor: pointer;
+            transition: all 0.18s;
+            text-align: left;
+            width: 100%;
+        }
+        .ai-qa-btn:hover {
+            border-color: #b30ce6;
+            box-shadow: 0 2px 10px rgba(179,12,230,0.12);
+            transform: translateX(2px);
+        }
+        .ai-bubble-user {
+            background: linear-gradient(135deg, #b30ce6 0%, #7c3aed 100%);
+            color: white;
+            padding: 0.7rem 1rem;
+            border-radius: 18px 18px 4px 18px;
+            font-size: 0.875rem;
+            line-height: 1.55;
+            word-break: break-word;
+            box-shadow: 0 2px 10px rgba(179,12,230,0.28);
+        }
+        .ai-bubble-ai {
+            background: white;
+            border: 1px solid #e2e8f0;
+            color: #1e293b;
+            padding: 0.85rem 1.1rem;
+            border-radius: 4px 18px 18px 18px;
+            font-size: 0.875rem;
+            line-height: 1.7;
+            word-break: break-word;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .ai-bubble-ai strong { color: #7c3aed; }
+        .ai-bubble-error {
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            color: #9f1239;
+            padding: 0.7rem 1rem;
+            border-radius: 4px 18px 18px 18px;
+            font-size: 0.875rem;
+            line-height: 1.55;
+        }
+        .ai-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 999px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            white-space: nowrap;
+        }
+        .ai-status-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+        .ai-status-idle  { background:#f1f5f9; color:#64748b; }
+        .ai-status-idle  .ai-status-dot { background:#94a3b8; }
+        .ai-status-ready { background:#dcfce7; color:#15803d; }
+        .ai-status-ready .ai-status-dot { background:#16a34a; box-shadow:0 0 0 3px rgba(22,163,74,.2); animation:pulse-dot 2s infinite; }
+        .ai-status-busy  { background:#fef3c7; color:#92400e; }
+        .ai-status-busy  .ai-status-dot { background:#f59e0b; animation:pulse-dot 0.8s infinite; }
+        .ai-status-error { background:#fee2e2; color:#991b1b; }
+        .ai-status-error .ai-status-dot { background:#ef4444; }
+        @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:.35} }
+        @keyframes bounce-anim { 0%,80%,100%{transform:translateY(0)} 40%{transform:translateY(-6px)} }
+        .dot-bounce { animation:bounce-anim 1.2s ease-in-out infinite; }
+        /* full-height mode when AI tab is active */
+        .main-ai-mode { overflow: hidden !important; }
+        .wrap-ai-mode { padding: 1rem 1.25rem !important; height: calc(100vh - 80px); display: flex; flex-direction: column; box-sizing: border-box; }
+        #gemini-ai.ai-fullheight { flex: 1; min-height: 0; }
+        /* CRITICAL: override content-section.active{display:block} — must stay flex for scroll chain */
+        #gemini-ai.active { display: flex !important; flex-direction: column; }
+        /* every flex ancestor in the chat tree needs min-height:0 */
+        #gemini-ai .flex.gap-5 { min-height: 0; flex: 1; }
+        #aiMessages { min-height: 420px; }
+        #gemini-ai.ai-fullheight .chat-body    { min-height: 0; }
+        #gemini-ai.ai-fullheight .chat-wrapper { min-height: 0; }
+
+        /* Section accent borders */
+        .section-header {
+            display: flex; align-items: center;
+            border-left: 4px solid currentColor;
+            padding-left: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+        #orders .section-header   { color: #f59e0b; }
+        #products .section-header { color: #10b981; }
+        #blog .section-header     { color: #3b82f6; }
+        #newsletter .section-header { color: #ec4899; }
+        #jobs .section-header     { color: #0ea5e9; }
+        #gemini-ai .section-header { color: #b30ce6; }
+
+        /* Job status badges */
+        .badge-received  { background:#dbeafe; color:#1d4ed8; }
+        .badge-diagnosed { background:#fef3c7; color:#92400e; }
+        .badge-in_progress { background:#e0e7ff; color:#4338ca; }
+        .badge-ready     { background:#dcfce7; color:#166534; }
+        .badge-collected { background:#f3f4f6; color:#6b7280; }
+
+        /* Sidebar section dividers */
+        .sidebar-label {
+            padding: 1rem 1.5rem 0.4rem;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: #94a3b8;
+            text-transform: uppercase;
+        }
+
+        /* Rich text editor toolbar buttons */
+        .editor-btn {
+            padding: 0.2rem 0.55rem;
+            border-radius: 5px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            font-size: 0.8rem;
+            cursor: pointer;
+            color: #374151;
+            transition: all 0.1s;
+        }
+        .editor-btn:hover { background: #f3e8ff; border-color: #b30ce6; color: #7c3aed; }
+        #blogEditor { line-height: 1.75; }
+        #blogEditor h2 { font-size: 1.1rem; font-weight: 700; color: #1e293b; margin: 0.8rem 0 0.3rem; }
+        #blogEditor h3 { font-size: 1rem; font-weight: 600; color: #334155; margin: 0.6rem 0 0.25rem; }
+        #blogEditor ul { list-style: disc; padding-left: 1.3rem; margin: 0.4rem 0; }
+        #blogEditor p  { margin: 0.3rem 0; }
+
+        /* Typewriter cursor */
+        .tw-cursor {
+            display: inline-block;
+            width: 2px; height: 1.1em;
+            background: #7c3aed;
+            margin-left: 1px;
+            vertical-align: text-bottom;
+            border-radius: 1px;
+            animation: tw-blink 0.65s steps(1) infinite;
+        }
+        @keyframes tw-blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+        /* ── Chat History Sidebar ────────────────────────────────── */
+        .hist-new-btn {
+            display: flex; align-items: center; gap: 0.5rem;
+            width: 100%; padding: 0.6rem 0.75rem;
+            border-radius: 10px; border: 1.5px dashed #b30ce6;
+            background: transparent; color: #7c3aed;
+            font-size: 0.8rem; font-weight: 700; cursor: pointer;
+            transition: all 0.18s;
+        }
+        .hist-new-btn:hover { background: #f3e8ff; border-style: solid; }
+        .hist-item {
+            display: flex; align-items: center; gap: 0.4rem;
+            padding: 0.5rem 0.65rem; border-radius: 9px;
+            cursor: pointer; transition: all 0.15s;
+            border: 1px solid transparent;
+            position: relative;
+        }
+        .hist-item:hover { background: #f1f5f9; border-color: #e2e8f0; }
+        .hist-item.active { background: #f3e8ff; border-color: #d8b4fe; }
+        .hist-item-title {
+            font-size: 0.75rem; color: #374151; font-weight: 500;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            flex: 1; min-width: 0;
+        }
+        .hist-item.active .hist-item-title { color: #7c3aed; font-weight: 600; }
+        .hist-del-btn {
+            opacity: 0; font-size: 0.65rem; color: #94a3b8;
+            background: none; border: none; cursor: pointer;
+            padding: 0.1rem 0.25rem; border-radius: 4px; flex-shrink: 0;
+            transition: all 0.1s;
+        }
+        .hist-item:hover .hist-del-btn { opacity: 1; }
+        .hist-del-btn:hover { background: #fee2e2; color: #ef4444; }
+        .hist-section-lbl {
+            font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em;
+            color: #94a3b8; text-transform: uppercase; padding: 0.6rem 0.2rem 0.25rem;
+        }
+        /* ── Store sub-tabs ── */
+        .store-tab {
+            background: none; border: none; color: #6b7280; cursor: pointer;
+            padding: 0.5rem 1rem; font-size: 0.875rem; font-weight: 500;
+            border-bottom: 2px solid transparent; transition: all 0.2s;
+        }
+        .store-tab:hover { color: #7c3aed; }
+        .store-tab-active { color: #7c3aed !important; border-bottom-color: #7c3aed; font-weight: 600; }
+        /* ── Import drop zone ── */
+        .import-drop-zone {
+            border: 2px dashed #d8b4fe; border-radius: 12px;
+            padding: 3rem 2rem; text-align: center; cursor: pointer;
+            background: #faf5ff; transition: all 0.2s;
+        }
+        .import-drop-zone:hover, .import-drop-zone.drag-over {
+            background: #f3e8ff; border-color: #b30ce6;
+        }
+        /* ── Import preview table ── */
+        .import-table-wrap {
+            overflow-x: auto; overflow-y: auto; max-height: 420px;
+            border: 1px solid #e5e7eb; border-radius: 8px;
+        }
+        .import-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+        .import-table th {
+            background: #f8f9fa; position: sticky; top: 0; z-index: 1;
+            padding: 8px 10px; text-align: left; font-weight: 700;
+            color: #374151; border-bottom: 2px solid #e5e7eb; white-space: nowrap;
+        }
+        .import-table td { padding: 4px 6px; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
+        .import-table tr:hover td { background: #faf5ff; }
+        .import-table td input, .import-table td select {
+            width: 100%; border: 1px solid transparent; background: none;
+            padding: 2px 4px; border-radius: 4px; font-size: 0.78rem; outline: none;
+            min-width: 55px;
+        }
+        .import-table td input:focus, .import-table td select:focus {
+            border-color: #b30ce6; background: #fff;
+        }
+        .import-table td.del-col { text-align: center; width: 28px; }
+        .import-table td.del-col button {
+            background: none; border: none; color: #ef4444; cursor: pointer;
+            font-size: 0.7rem; opacity: 0.4; transition: opacity 0.1s; padding: 2px 4px;
+        }
+        .import-table tr:hover .del-col button { opacity: 1; }
+        /* ── Product card chips ── */
+        .variant-chip {
+            display: inline-block; padding: 1px 8px; border-radius: 999px;
+            font-size: 0.63rem; font-weight: 600; background: #f3e8ff; color: #7c3aed;
+        }
+        .new-badge {
+            display: inline-block; padding: 1px 6px; border-radius: 999px;
+            font-size: 0.6rem; font-weight: 800; background: #dcfce7; color: #15803d;
+            letter-spacing: 0.05em;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Navbar -->
+    <nav class="navbar text-white sticky top-0 z-40">
+        <div class="flex items-center justify-between px-6 py-4">
+            <div class="flex items-center gap-3">
+                <img src="../images2/favicon.png" alt="Logo" class="w-8 h-8">
+                <h1 class="text-2xl font-bold">Omegatek Admin</h1>
+            </div>
+            <button onclick="logout()" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg transition-colors">
+                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="flex h-[calc(100vh-80px)]">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 sidebar">
+            <div class="p-4 border-b border-gray-200">
+                <h2 class="text-lg font-bold text-gray-800 mb-4">Management</h2>
+            </div>
+            <nav class="space-y-1">
+                <p class="sidebar-label">Overview</p>
+                <div class="nav-item active" onclick="switchTab('dashboard')">
+                    <i class="fas fa-chart-line mr-3 w-5"></i>Dashboard
+                </div>
+
+                <p class="sidebar-label">Store</p>
+                <div class="nav-item" onclick="switchTab('orders')">
+                    <i class="fas fa-shopping-cart mr-3 w-5"></i>Orders
+                </div>
+                <div class="nav-item" onclick="switchTab('products')">
+                    <i class="fas fa-box mr-3 w-5"></i>Products
+                </div>
+
+                <p class="sidebar-label">Repairs</p>
+                <div class="nav-item" onclick="switchTab('jobs')">
+                    <i class="fas fa-tools mr-3 w-5"></i>Repair Jobs
+                </div>
+
+                <p class="sidebar-label">Content</p>
+                <div class="nav-item" onclick="switchTab('blog')">
+                    <i class="fas fa-blog mr-3 w-5"></i>Blog Posts
+                </div>
+                <div class="nav-item" onclick="switchTab('newsletter')">
+                    <i class="fas fa-newspaper mr-3 w-5"></i>Newsletter
+                </div>
+
+                <p class="sidebar-label">Intelligence</p>
+                <div class="nav-item" onclick="switchTab('gemini-ai')">
+                    <i class="fas fa-robot mr-3 w-5"></i>AI Command Centre
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main id="mainArea" class="flex-1 overflow-auto">
+            <div id="mainContentWrap" class="p-8">
+
+                <!-- Dashboard Section -->
+                <section id="dashboard" class="content-section active">
+                    <div class="mb-8">
+                        <h1 class="text-4xl font-bold text-gray-800 mb-2">Dashboard Overview</h1>
+                        <p class="text-gray-600">Welcome back! Here's your business at a glance.</p>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
+                        <div class="stat-card">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-gray-600 font-medium">Total Orders</h3>
+                                <i class="fas fa-shopping-cart text-2xl text-primary opacity-20"></i>
+                            </div>
+                            <div class="stat-value" id="totalOrders">0</div>
+                            <p class="text-sm text-gray-500 mt-2">All time</p>
+                        </div>
+                        <div class="stat-card">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-gray-600 font-medium">Total Products</h3>
+                                <i class="fas fa-box text-2xl text-orange-500 opacity-20"></i>
+                            </div>
+                            <div class="stat-value" id="totalProducts">0</div>
+                            <p class="text-sm text-gray-500 mt-2">In store</p>
+                        </div>
+                        <div class="stat-card">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-gray-600 font-medium">Blog Posts</h3>
+                                <i class="fas fa-blog text-2xl text-blue-500 opacity-20"></i>
+                            </div>
+                            <div class="stat-value" id="totalBlogPosts">0</div>
+                            <p class="text-sm text-gray-500 mt-2">Published</p>
+                        </div>
+                        <div class="stat-card">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-gray-600 font-medium">Subscribers</h3>
+                                <i class="fas fa-users text-2xl text-green-500 opacity-20"></i>
+                            </div>
+                            <div class="stat-value" id="totalSubscribers">0</div>
+                            <p class="text-sm text-gray-500 mt-2">Newsletter</p>
+                        </div>
+                        <div class="stat-card">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-gray-600 font-medium">Active Repairs</h3>
+                                <i class="fas fa-tools text-2xl text-sky-500 opacity-20"></i>
+                            </div>
+                            <div class="stat-value" id="totalRepairs" style="color:#0ea5e9">0</div>
+                            <p class="text-sm text-gray-500 mt-2">In progress</p>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-lg p-6 mb-8">
+                        <h2 class="text-xl font-bold text-gray-800 mb-4">Quick Actions</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <button onclick="switchTab('products'); showAddProductModal()" class="btn-primary text-left">
+                                <i class="fas fa-plus mr-2"></i>Add Product
+                            </button>
+                            <button onclick="switchTab('blog'); showAddBlogModal()" class="btn-primary text-left">
+                                <i class="fas fa-pen mr-2"></i>Write Blog Post
+                            </button>
+                            <button onclick="switchTab('orders')" class="btn-primary text-left">
+                                <i class="fas fa-box-open mr-2"></i>View Orders
+                            </button>
+                            <button onclick="switchTab('newsletter')" class="btn-primary text-left">
+                                <i class="fas fa-envelope mr-2"></i>Send Newsletter
+                            </button>
+                            <button onclick="switchTab('jobs'); showAddJobModal()" class="btn-primary text-left" style="background:linear-gradient(135deg,#0ea5e9,#0284c7)">
+                                <i class="fas fa-plus mr-2"></i>Log Repair Job
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="card">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">Recent Orders</h3>
+                            <div id="recentOrders" class="space-y-3">
+                                <p class="text-gray-500">No orders yet</p>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">Store Status</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                    <span class="font-medium text-gray-700">Store Status</span>
+                                    <span class="badge badge-success">Active</span>
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                    <span class="font-medium text-gray-700">Last Updated</span>
+                                    <span class="text-sm text-gray-600" id="lastUpdate">Now</span>
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                    <span class="font-medium text-gray-700">System Health</span>
+                                    <span class="text-green-600"><i class="fas fa-check-circle"></i> Good</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Jobs / Repairs Section -->
+                <section id="jobs" class="content-section">
+                    <div class="section-header flex items-center justify-between" style="border-left:4px solid #0ea5e9">
+                        <div>
+                            <h1 class="text-4xl font-bold text-gray-800">Repair Jobs</h1>
+                            <p class="text-sm text-gray-500 mt-1">Track device repairs &mdash; clients can check status from their account</p>
+                        </div>
+                        <button onclick="showAddJobModal()" class="btn-primary" style="background:linear-gradient(135deg,#0ea5e9,#0284c7)">
+                            <i class="fas fa-plus mr-2"></i>Log New Job
+                        </button>
+                    </div>
+
+                    <!-- Filter tabs -->
+                    <div class="flex gap-2 mb-4 flex-wrap">
+                        <button onclick="filterJobs('all')" id="jobFilter-all" class="job-filter-btn active-filter px-4 py-1.5 rounded-full text-sm font-medium border border-sky-400 bg-sky-50 text-sky-700">All</button>
+                        <button onclick="filterJobs('received')"    id="jobFilter-received"    class="job-filter-btn px-4 py-1.5 rounded-full text-sm font-medium border border-gray-200 text-gray-600 hover:border-sky-400">Received</button>
+                        <button onclick="filterJobs('diagnosed')"   id="jobFilter-diagnosed"   class="job-filter-btn px-4 py-1.5 rounded-full text-sm font-medium border border-gray-200 text-gray-600 hover:border-sky-400">Diagnosed</button>
+                        <button onclick="filterJobs('in_progress')" id="jobFilter-in_progress" class="job-filter-btn px-4 py-1.5 rounded-full text-sm font-medium border border-gray-200 text-gray-600 hover:border-sky-400">In Progress</button>
+                        <button onclick="filterJobs('ready')"       id="jobFilter-ready"       class="job-filter-btn px-4 py-1.5 rounded-full text-sm font-medium border border-gray-200 text-gray-600 hover:border-sky-400">Ready</button>
+                        <button onclick="filterJobs('collected')"   id="jobFilter-collected"   class="job-filter-btn px-4 py-1.5 rounded-full text-sm font-medium border border-gray-200 text-gray-600 hover:border-sky-400">Collected</button>
+                    </div>
+
+                    <div id="jobsContainer" class="space-y-3">
+                        <div class="card text-gray-500">Loading repair jobs&hellip;</div>
+                    </div>
+                </section>
+
+                <!-- Orders Section -->
+                <section id="orders" class="content-section">
+                    <div class="flex items-center justify-between mb-6">
+                        <h1 class="text-4xl font-bold text-gray-800">Orders Management</h1>
+                        <button onclick="location.href='pages/orders-admin.html'" class="btn-primary">
+                            <i class="fas fa-external-link-alt mr-2"></i>Full View
+                        </button>
+                    </div>
+                    <div class="card">
+                        <p class="text-gray-600">Loading orders...</p>
+                    </div>
+                </section>
+
+                <!-- Products Section -->
+                <section id="products" class="content-section">
+                    <div class="flex items-center justify-between mb-4">
+                        <h1 class="text-4xl font-bold text-gray-800">Store Management</h1>
+                        <button onclick="showAddProductModal()" class="btn-primary">
+                            <i class="fas fa-plus mr-2"></i>Add Product
+                        </button>
+                    </div>
+
+                    <!-- Sub-tabs -->
+                    <div class="flex gap-0 mb-5 border-b border-gray-200">
+                        <button id="storeTab-products" onclick="switchStoreTab('products')" class="store-tab store-tab-active">
+                            <i class="fas fa-th-large mr-2"></i>Products
+                        </button>
+                        <button id="storeTab-import" onclick="switchStoreTab('import')" class="store-tab">
+                            <i class="fas fa-file-upload mr-2"></i>Import CSV / XLSX
+                        </button>
+                        <button id="storeTab-images" onclick="switchStoreTab('images')" class="store-tab">
+                            <i class="fas fa-images mr-2"></i>Bulk Upload Images
+                        </button>
+                    </div>
+
+                    <!-- Products Grid Panel -->
+                    <div id="storePanel-products">
+                        <div id="productsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="card"><p class="text-gray-600">Loading products...</p></div>
+                        </div>
+                    </div>
+
+                    <!-- Import Panel -->
+                    <div id="storePanel-import" class="hidden">
+                        <p class="text-sm text-gray-500 mb-4">Upload your Astrum CSV or XLSX pricelist. Rows are auto-filled (blank Name/Model inherits from the row above). Edit before pushing.</p>
+                        <!-- Drop zone -->
+                        <div id="importDropZone" class="import-drop-zone" onclick="document.getElementById('importFileInput').click()" ondragover="_importDragOver(event)" ondragleave="_importDragLeave(event)" ondrop="_importDrop(event)">
+                            <i class="fas fa-cloud-upload-alt text-5xl text-purple-400 mb-3"></i>
+                            <p class="font-semibold text-gray-700 text-lg">Drop your Astrum CSV or XLSX here</p>
+                            <p class="text-sm text-gray-400 mt-1">or click to browse files</p>
+                            <p class="text-xs text-gray-400 mt-2">Supported: .csv &nbsp;&bull;&nbsp; .xlsx &nbsp;&bull;&nbsp; .xls</p>
+                            <input type="file" id="importFileInput" accept=".csv,.xlsx,.xls" class="hidden" onchange="_importFileSelected(event)">
+                        </div>
+                        <!-- Status bar -->
+                        <div id="importStatus" class="hidden mt-4 p-3 rounded-lg bg-purple-50 border border-purple-200 text-sm text-purple-700 flex items-center gap-2">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <span id="importStatusText">Parsing&hellip;</span>
+                        </div>
+                        <!-- Preview + controls -->
+                        <div id="importPreviewWrap" class="hidden mt-5">
+                            <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
+                                <div>
+                                    <span class="font-bold text-gray-800 text-lg" id="importRowCount">0</span>
+                                    <span class="text-sm text-gray-500 ml-1">product rows ready</span>
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <select id="importBulkCategory" class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg outline-none">
+                                        <option value="">-- Bulk set category --</option>
+                                        <option>Wearables</option>
+                                        <option>Networking</option>
+                                        <option>Laptop Bags</option>
+                                        <option>Accessories</option>
+                                        <option>Camera</option>
+                                        <option>Lighting</option>
+                                        <option>TV Mounts</option>
+                                        <option>Mobile Holders</option>
+                                        <option>Cable Management</option>
+                                        <option>Cleaning Kits</option>
+                                    </select>
+                                    <button onclick="_applyBulkCategory()" class="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-lg">Apply to All</button>
+                                    <button onclick="_pushImportToSupabase()" id="importPushBtn" class="btn-primary px-5 py-1.5 text-sm">
+                                        <i class="fas fa-database mr-2"></i>Push to Supabase
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="import-table-wrap">
+                                <table class="import-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Part No</th><th>Model No</th><th>Name</th>
+                                            <th>Colour</th><th>Cost&nbsp;R</th><th>SRP&nbsp;R</th>
+                                            <th>Warranty</th><th>New?</th><th>Category</th>
+                                            <th>Supplier</th><th>Stock</th><th>&times;</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="importPreviewBody"></tbody>
+                                </table>
+                            </div>
+                            <div id="importResult" class="hidden mt-3 p-3 rounded-lg text-sm font-medium"></div>
+                        </div>
+                    </div>
+                    <!-- Images Bulk Upload Panel -->
+                    <div id="storePanel-images" class="hidden">
+                        <div class="mb-4">
+                            <h3 class="font-bold text-gray-800 text-lg mb-1">Bulk Image Upload</h3>
+                            <p class="text-sm text-gray-500">Name your image files after their <strong>Part No</strong> (e.g. <code class="bg-gray-100 px-1 rounded">A61531-B.jpg</code>). Drop as many as you like — they auto-match and upload to Supabase Storage, then update the product’s image URL.</p>
+                        </div>
+                        <!-- Drop zone -->
+                        <div id="imgDropZone" class="import-drop-zone" onclick="document.getElementById('imgFileInput').click()" ondragover="_imgDragOver(event)" ondragleave="_imgDragLeave(event)" ondrop="_imgDrop(event)">
+                            <i class="fas fa-photo-video text-5xl text-pink-400 mb-3"></i>
+                            <p class="font-semibold text-gray-700 text-lg">Drop product images here</p>
+                            <p class="text-sm text-gray-400 mt-1">or click to browse &mdash; select multiple files at once</p>
+                            <p class="text-xs text-gray-400 mt-2">JPG &bull; PNG &bull; WEBP &bull; AVIF &bull; GIF &mdash; filename = Part No</p>
+                            <input type="file" id="imgFileInput" accept="image/*" multiple class="hidden" onchange="_imgFilesSelected(event)">
+                        </div>
+
+                        <!-- Bucket hint -->
+                        <div class="mt-3 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800 flex items-start gap-2">
+                            <i class="fas fa-info-circle mt-0.5 shrink-0"></i>
+                            <span>Images are uploaded to the <strong>product-images</strong> Supabase Storage bucket. Make sure it exists and is set to <strong>Public</strong> in Supabase &rarr; Storage. <a href="https://supabase.com/dashboard" target="_blank" class="underline">Open Supabase dashboard &rarr;</a></span>
+                        </div>
+
+                        <!-- Progress list -->
+                        <div id="imgUploadList" class="hidden mt-5 space-y-2"></div>
+
+                        <!-- Summary -->
+                        <div id="imgUploadSummary" class="hidden mt-3 p-3 rounded-lg text-sm font-medium"></div>
+                    </div>
+                </section>
+
+                <!-- Blog Section -->
+                <section id="blog" class="content-section">
+                    <div class="flex items-center justify-between mb-6">
+                        <h1 class="text-4xl font-bold text-gray-800">Blog Management</h1>
+                        <div class="flex gap-2">
+                            <a href="migrate-posts.html" class="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 text-sm transition-colors">
+                                <i class="fas fa-database mr-2"></i>Migrate Old Posts
+                            </a>
+                            <button onclick="showAddBlogModal()" class="btn-primary">
+                                <i class="fas fa-plus mr-2"></i>New Post
+                            </button>
+                        </div>
+                    </div>
+                    <div id="blogContainer" class="space-y-4">
+                        <div class="card">
+                            <p class="text-gray-600">No blog posts yet. Create your first post!</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Newsletter Section -->
+                <section id="newsletter" class="content-section">
+                    <div class="flex items-center justify-between mb-6">
+                        <h1 class="text-4xl font-bold text-gray-800">Newsletter Management</h1>
+                        <button onclick="showComposeModal()" class="btn-primary">
+                            <i class="fas fa-pen mr-2"></i>Compose & Send
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="stat-card">
+                            <h3 class="text-gray-600 font-medium mb-2">Total Subscribers</h3>
+                            <div class="stat-value text-3xl" id="nlTotal">-</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3 class="text-gray-600 font-medium mb-2">Active</h3>
+                            <div class="stat-value text-3xl" id="nlActive">-</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3 class="text-gray-600 font-medium mb-2">Newsletters Sent</h3>
+                            <div class="stat-value text-3xl" id="nlSent">-</div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="card">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4"><i class="fas fa-users mr-2 text-primary"></i>Subscribers</h3>
+                            <div id="subscribersList" class="space-y-2 max-h-96 overflow-y-auto">
+                                <p class="text-gray-500">Loading...</p>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4"><i class="fas fa-history mr-2 text-primary"></i>Send History</h3>
+                            <div id="newsletterHistory" class="space-y-3 max-h-96 overflow-y-auto">
+                                <p class="text-gray-500">No newsletters sent yet.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- AI Command Centre Section -->
+                <section id="gemini-ai" class="content-section">
+
+                    <!-- Header Row -->
+                    <div class="flex items-end justify-between mb-3 flex-shrink-0 gap-4 flex-wrap">
+                        <div>
+                            <h1 class="text-3xl font-bold text-gray-800 leading-tight">AI Command Centre</h1>
+                            <p class="text-sm text-gray-500 mt-1">Powered by OpenRouter &mdash; your intelligent business co-pilot</p>
+                        </div>
+                        <div class="flex items-end gap-3 flex-shrink-0 flex-wrap">
+                            <div class="flex flex-col gap-1">
+                                <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Model</label>
+                                <select id="aiModelSelect" class="px-3 py-2 border border-gray-300 rounded-xl text-sm focus:ring-2 focus:ring-primary outline-none bg-white shadow-sm" style="min-width:220px">
+                                    <option value="openai/gpt-4o-mini">⚡ GPT-4o Mini &mdash; Fast &amp; Efficient</option>
+                                    <option value="openai/gpt-4o">💎 GPT-4o &mdash; Most Capable</option>
+                                    <option value="anthropic/claude-3-haiku">🌿 Claude 3 Haiku &mdash; Balanced</option>
+                                    <option value="anthropic/claude-3.5-sonnet">🧠 Claude 3.5 Sonnet &mdash; Best Quality</option>
+                                    <option value="meta-llama/llama-3.1-8b-instruct:free">🆓 Llama 3.1 8B &mdash; Free Tier</option>
+                                    <option value="google/gemini-2.0-flash-exp:free">🆓 Gemini 2.0 Flash &mdash; Free Tier</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center gap-2 pb-0.5">
+                                <span id="aiStatus" class="ai-status-badge ai-status-idle">
+                                    <span class="ai-status-dot"></span>
+                                    <span id="aiStatusText">Connecting&hellip;</span>
+                                </span>
+                                <button onclick="runFullAutomation()" title="Run Full Automation" class="btn-primary flex items-center gap-2" style="padding:.5rem .85rem;font-size:.875rem">
+                                    <i class="fas fa-bolt"></i> Full Auto
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Body: History + Quick Actions (left) + Chat (right) -->
+                    <div class="flex gap-4 flex-1 min-h-0">
+
+                        <!-- Left Panel: History + Quick Actions -->
+                        <div class="flex-shrink-0 flex flex-col gap-1 min-h-0 overflow-hidden" style="width:215px">
+
+                            <!-- New Chat -->
+                            <button class="hist-new-btn" onclick="_hNew()">
+                                <i class="fas fa-plus"></i> New Chat
+                            </button>
+
+                            <!-- History list -->
+                            <div id="chatHistoryList" class="flex-1 overflow-y-auto min-h-0 space-y-0.5 pr-0.5">
+                                <!-- rendered by _hRender() -->
+                            </div>
+
+                            <!-- Quick Actions -->
+                            <div class="flex-shrink-0 border-t border-gray-200 pt-2 mt-1 space-y-1 overflow-y-auto" style="max-height:52%">
+                                <p class="hist-section-lbl">Quick Actions</p>
+                                <button class="ai-qa-btn" onclick="runAIAction('analyze_orders')">
+                                    <i class="fas fa-chart-bar text-purple-500" style="font-size:.8rem"></i>
+                                    <div>
+                                        <p class="font-semibold text-gray-700 text-xs leading-tight">Analyse Orders</p>
+                                        <p class="text-xs text-gray-400" style="font-size:.68rem">Priorities &amp; tasks</p>
+                                    </div>
+                                </button>
+                                <button class="ai-qa-btn" onclick="triggerBlogGeneration()">
+                                    <i class="fas fa-pen-nib text-blue-500" style="font-size:.8rem"></i>
+                                    <div>
+                                        <p class="font-semibold text-gray-700 text-xs leading-tight">Write Blog Post</p>
+                                        <p class="text-xs text-gray-400" style="font-size:.68rem">SEO-ready content</p>
+                                    </div>
+                                </button>
+                                <button class="ai-qa-btn" onclick="fillBlogFromAI()">
+                                    <i class="fas fa-upload text-green-500" style="font-size:.8rem"></i>
+                                    <div>
+                                        <p class="font-semibold text-gray-700 text-xs leading-tight">Publish AI Draft</p>
+                                        <p class="text-xs text-gray-400" style="font-size:.68rem">Push to blog editor</p>
+                                    </div>
+                                </button>
+                                <button class="ai-qa-btn" onclick="triggerNewsletterGeneration()">
+                                    <i class="fas fa-envelope-open-text text-pink-500" style="font-size:.8rem"></i>
+                                    <div>
+                                        <p class="font-semibold text-gray-700 text-xs leading-tight">Write Newsletter</p>
+                                        <p class="text-xs text-gray-400" style="font-size:.68rem">AI-crafted campaign</p>
+                                    </div>
+                                </button>
+                                <button class="ai-qa-btn" onclick="fillNewsletterFromAI()">
+                                    <i class="fas fa-paper-plane text-rose-500" style="font-size:.8rem"></i>
+                                    <div>
+                                        <p class="font-semibold text-gray-700 text-xs leading-tight">Send AI Drop</p>
+                                        <p class="text-xs text-gray-400" style="font-size:.68rem">Push draft to composer</p>
+                                    </div>
+                                </button>
+                                <button class="ai-qa-btn" onclick="runAIAction('analyze_customers')">
+                                    <i class="fas fa-users text-orange-500" style="font-size:.8rem"></i>
+                                    <div>
+                                        <p class="font-semibold text-gray-700 text-xs leading-tight">Customer Insights</p>
+                                        <p class="text-xs text-gray-400" style="font-size:.68rem">VIP &amp; re-engagement</p>
+                                    </div>
+                                </button>
+                                <button class="ai-qa-btn" onclick="runAIAction('send_reminders')">
+                                    <i class="fas fa-bell text-yellow-500" style="font-size:.8rem"></i>
+                                    <div>
+                                        <p class="font-semibold text-gray-700 text-xs leading-tight">Overdue Reminders</p>
+                                        <p class="text-xs text-gray-400" style="font-size:.68rem">Follow-up items</p>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Chat Interface -->
+                        <div class="flex-1 flex flex-col rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden min-h-0">
+
+                            <!-- Messages Area (only this scrolls) -->
+                            <div id="aiMessages" class="flex-1 overflow-y-auto p-5 space-y-5" style="background:#f8fafc">
+                                <!-- Messages injected here by JS -->
+                            </div>
+
+                            <!-- Typing Indicator -->
+                            <div id="aiTyping" class="hidden px-5 py-3 border-t border-gray-100 bg-white">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm" style="background:linear-gradient(135deg,#b30ce6,#7c3aed)">
+                                        <i class="fas fa-robot text-white" style="font-size:.7rem"></i>
+                                    </div>
+                                    <div class="flex gap-1.5 items-center bg-white rounded-2xl px-4 py-2.5 shadow-sm border border-gray-100">
+                                        <div class="dot-bounce w-2 h-2 bg-gray-400 rounded-full"></div>
+                                        <div class="dot-bounce w-2 h-2 bg-gray-400 rounded-full" style="animation-delay:.15s"></div>
+                                        <div class="dot-bounce w-2 h-2 bg-gray-400 rounded-full" style="animation-delay:.3s"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Input Bar -->
+                            <div class="flex-shrink-0 p-3 border-t border-gray-200 bg-white">
+                                <div class="flex items-end gap-2">
+                                    <textarea id="aiManualCommand" rows="1"
+                                        placeholder="Ask anything about your business &mdash; orders, blog posts, newsletters, customer insights&hellip;"
+                                        class="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary outline-none text-sm resize-none leading-snug"
+                                        style="max-height:8rem;overflow-y:auto"
+                                        onkeydown="handleAIInputKey(event)"
+                                        oninput="autoResizeTextarea(this)"></textarea>
+                                    <button onclick="sendManualAICommand()" id="aiSendBtn"
+                                        class="btn-primary flex items-center gap-2 rounded-xl flex-shrink-0"
+                                        style="padding:.75rem 1rem">
+                                        <i class="fas fa-paper-plane text-sm"></i>
+                                    </button>
+                                </div>
+                                <p class="text-xs text-gray-400 mt-1.5 ml-1">Enter to send &nbsp;&middot;&nbsp; Shift&thinsp;+&thinsp;Enter for new line</p>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Add / Edit Product Modal -->
+    <div id="addProductModal" class="modal">
+        <div class="modal-content" style="max-width:700px">
+            <div class="flex items-center justify-between mb-4">
+                <h2 id="productModalTitle" class="text-2xl font-bold text-gray-800">Add Product</h2>
+                <button onclick="closeModal('addProductModal')" class="text-gray-500 hover:text-gray-700 text-2xl"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="handleAddProduct(event)" class="space-y-3">
+                <input type="hidden" id="productEditPartNo">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Part No <span class="text-red-500">*</span></label>
+                        <input type="text" id="productPartNo" required placeholder="e.g. A61531-B" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Model No</label>
+                        <input type="text" id="productModelNo" placeholder="e.g. MT310" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Product Name <span class="text-red-500">*</span></label>
+                    <input type="text" id="productName" required placeholder="Smart Watch BT Calling..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                    <textarea id="productDescription" rows="2" placeholder="Full product specifications..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Colour / Variant</label>
+                        <input type="text" id="productColor" placeholder="Black, Blue, Silver..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                        <select id="productCategory" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm">
+                            <option value="">-- Select --</option>
+                            <option>Wearables</option><option>Networking</option><option>Laptop Bags</option>
+                            <option>Accessories</option><option>Camera</option><option>Lighting</option>
+                            <option>TV Mounts</option><option>Mobile Holders</option>
+                            <option>Cable Management</option><option>Cleaning Kits</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Cost Price (R)</label>
+                        <input type="number" id="productCostPrice" step="0.01" min="0" placeholder="0.00" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Sell Price / SRP (R) <span class="text-red-500">*</span></label>
+                        <input type="number" id="productPrice" required step="0.01" min="0" placeholder="0.00" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Stock</label>
+                        <input type="number" id="productStock" min="0" placeholder="0" value="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm">
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Warranty</label>
+                        <input type="text" id="productWarranty" placeholder="12 Months" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Supplier</label>
+                        <input type="text" id="productSupplier" value="Astrum" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+                    <input type="text" id="productImageUrl" placeholder="https://..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none text-sm">
+                </div>
+                <div class="flex items-center gap-6 py-1">
+                    <label class="flex items-center gap-2 text-sm cursor-pointer">
+                        <input type="checkbox" id="productIsNew" class="rounded"> Mark as New Arrival
+                    </label>
+                    <label class="flex items-center gap-2 text-sm cursor-pointer">
+                        <input type="checkbox" id="productFeatured" class="rounded"> Featured
+                    </label>
+                </div>
+                <div class="flex gap-3 pt-1">
+                    <button type="button" onclick="closeModal('addProductModal')" class="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50">Cancel</button>
+                    <button type="submit" id="productSubmitBtn" class="flex-1 btn-primary py-2">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Blog Post Modal -->
+    <div id="addBlogModal" class="modal">
+        <div class="modal-content">
+            <div class="flex items-center justify-between mb-4">
+                <h2 id="blogModalTitle" class="text-2xl font-bold text-gray-800">Write Blog Post</h2>
+                <button onclick="closeModal('addBlogModal')" class="text-gray-500 hover:text-gray-700 text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="blogForm" onsubmit="handleAddBlog(event)" class="space-y-4">
+                <input type="hidden" id="blogEditId">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Post Title</label>
+                    <input type="text" id="blogTitle" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                        <input type="text" id="blogCategory" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none" placeholder="General">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Excerpt <span class="text-xs text-gray-400">(optional)</span></label>
+                        <input type="text" id="blogExcerpt" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none" placeholder="Short summary...">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Cover Image URL <span class="text-xs text-gray-400">(optional)</span></label>
+                    <input type="url" id="blogCoverImage" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none" placeholder="https://... or images2/blog/filename.jpg">
+                    <div id="coverPreview" class="mt-2 hidden">
+                        <img id="coverPreviewImg" src="" alt="Cover preview" class="h-20 rounded-lg border border-gray-200 object-cover">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Content</label>
+                    <div class="border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-primary">
+                        <!-- Toolbar -->
+                        <div class="flex flex-wrap gap-1 p-2 bg-gray-50 border-b border-gray-200">
+                            <button type="button" onclick="blogFmt('bold')" title="Bold" class="editor-btn"><b>B</b></button>
+                            <button type="button" onclick="blogFmt('italic')" title="Italic" class="editor-btn"><i>I</i></button>
+                            <button type="button" onclick="blogFmt('h2')" title="Heading 2" class="editor-btn text-xs font-bold">H2</button>
+                            <button type="button" onclick="blogFmt('h3')" title="Heading 3" class="editor-btn text-xs font-bold">H3</button>
+                            <button type="button" onclick="blogFmt('ul')" title="Bullet List" class="editor-btn"><i class="fas fa-list-ul"></i></button>
+                            <button type="button" onclick="blogFmt('link')" title="Insert Link" class="editor-btn"><i class="fas fa-link"></i></button>
+                            <button type="button" onclick="blogInsertImage()" title="Insert Image" class="editor-btn"><i class="fas fa-image"></i></button>
+                            <div class="w-px bg-gray-200 mx-1"></div>
+                            <button type="button" onclick="importPlainText()" title="Paste plain text (ChatGPT output) and auto-format" class="editor-btn" style="color:#7c3aed;font-weight:600;font-size:.75rem">&#10022; Import Text</button>
+                        </div>
+                        <!-- Editable area -->
+                        <div id="blogEditor" contenteditable="true"
+                            class="min-h-48 max-h-64 overflow-y-auto p-3 outline-none"
+                            oninput="syncBlogContent()"
+                            onpaste="handleEditorPaste(event)"></div>
+                    </div>
+                    <textarea id="blogContent" class="hidden"></textarea>
+                    <p class="text-xs text-gray-400 mt-1.5">
+                        Type directly &nbsp;&bull;&nbsp; <strong>&#10022; Import Text</strong> to paste raw text (e.g. from ChatGPT) and auto-structure it &nbsp;&bull;&nbsp; Use <strong>AI Command Centre</strong> to generate a full post, then hit "Publish AI Draft"
+                    </p>
+                </div>
+                <div class="flex gap-3">
+                    <button type="button" onclick="saveBlogAsDraft()" class="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 transition-colors text-sm">Save as Draft</button>
+                    <button type="submit" id="blogSubmitBtn" class="flex-1 btn-primary py-2">Publish Post</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add / Edit Job Modal -->
+    <div id="addJobModal" class="modal">
+        <div class="modal-content" style="max-width:640px">
+            <div class="flex items-center justify-between mb-5">
+                <h2 id="jobModalTitle" class="text-2xl font-bold text-gray-800">Log Repair Job</h2>
+                <button onclick="closeModal('addJobModal')" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+            </div>
+            <form id="jobForm" onsubmit="handleJobSubmit(event)" class="space-y-4">
+                <input type="hidden" id="jobEditId">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Customer Name</label>
+                        <input type="text" id="jobCustomerName" required placeholder="Full name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Phone / WhatsApp</label>
+                        <input type="tel" id="jobPhone" placeholder="+27 ..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <input type="email" id="jobEmail" placeholder="customer@email.com" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Device Type</label>
+                        <select id="jobDeviceType" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none bg-white">
+                            <option>Laptop</option>
+                            <option>Desktop PC</option>
+                            <option>Smartphone</option>
+                            <option>Tablet</option>
+                            <option>Gaming Console</option>
+                            <option>Printer</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Device Model</label>
+                        <input type="text" id="jobDeviceModel" placeholder="e.g. HP Pavilion 15" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Problem Description</label>
+                    <textarea id="jobProblem" required rows="3" placeholder="Describe the issue..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Estimated Cost (R)</label>
+                        <input type="number" id="jobCost" step="0.01" placeholder="0.00" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                        <select id="jobStatus" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none bg-white">
+                            <option value="received">Received</option>
+                            <option value="diagnosed">Diagnosed</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="ready">Ready for Collection</option>
+                            <option value="collected">Collected</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Technician Notes <span class="text-xs text-gray-400">(internal)</span></label>
+                    <textarea id="jobNotes" rows="2" placeholder="Internal notes..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none"></textarea>
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="button" onclick="closeModal('addJobModal')" class="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50">Cancel</button>
+                    <button type="submit" id="jobSubmitBtn" class="flex-1 btn-primary py-2" style="background:linear-gradient(135deg,#0ea5e9,#0284c7)">Save Job</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Compose Newsletter Modal -->
+    <div id="composeModal" class="modal">
+        <div class="modal-content" style="max-width:700px">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl font-bold text-gray-800">Compose Newsletter</h2>
+                <button onclick="closeModal('composeModal')" class="text-gray-500 hover:text-gray-700 text-2xl"><i class="fas fa-times"></i></button>
+            </div>
+            <form onsubmit="handleSendNewsletter(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Subject Line</label>
+                    <input type="text" id="nlSubject" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary outline-none" placeholder="Your subject line...">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Content <span class="text-xs text-gray-400 font-normal">(use <code class="bg-gray-100 px-1 rounded text-pink-600">{{name}}</code> to personalise)</span></label>
+                    <div class="border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-primary">
+                        <!-- Newsletter Toolbar -->
+                        <div class="flex flex-wrap gap-1 p-2 bg-gray-50 border-b border-gray-200">
+                            <button type="button" onclick="nlFmt('bold')" title="Bold" class="editor-btn"><b>B</b></button>
+                            <button type="button" onclick="nlFmt('italic')" title="Italic" class="editor-btn"><i>I</i></button>
+                            <button type="button" onclick="nlFmt('h2')" title="Heading 2" class="editor-btn text-xs font-bold">H2</button>
+                            <button type="button" onclick="nlFmt('h3')" title="Heading 3" class="editor-btn text-xs font-bold">H3</button>
+                            <button type="button" onclick="nlFmt('ul')" title="Bullet List" class="editor-btn"><i class="fas fa-list-ul"></i></button>
+                            <button type="button" onclick="nlFmt('link')" title="Insert Link" class="editor-btn"><i class="fas fa-link"></i></button>
+                            <div class="w-px bg-gray-200 mx-1"></div>
+                            <button type="button" onclick="nlFmt('cta')" title="Add CTA Button" class="editor-btn" style="color:#ec4899;font-weight:600;font-size:.75rem">&#43; CTA</button>
+                            <button type="button" onclick="nlFmt('divider')" title="Horizontal rule" class="editor-btn text-xs text-gray-400">&mdash;</button>
+                            <div class="w-px bg-gray-200 mx-1"></div>
+                            <button type="button" onclick="nlClear()" title="Clear all content" class="editor-btn text-xs" style="color:#ef4444">&#10005; Clear</button>
+                        </div>
+                        <!-- Editable area -->
+                        <div id="nlEditor" contenteditable="true"
+                            class="min-h-52 max-h-72 overflow-y-auto p-3 outline-none text-sm"
+                            oninput="syncNlContent()"
+                            onpaste="handleNlPaste(event)"
+                            style="line-height:1.75"></div>
+                    </div>
+                    <textarea id="nlContent" class="hidden"></textarea>
+                    <p class="text-xs text-gray-400 mt-1.5">Format directly &nbsp;&bull;&nbsp; <strong>AI Command Centre → Write Newsletter → Send AI Drop</strong> to auto-fill &nbsp;&bull;&nbsp; <strong>Preview</strong> renders the final email</p>
+                </div>
+                <div class="flex gap-3">
+                    <button type="button" onclick="previewNewsletter()" class="px-4 py-2 border border-primary text-primary rounded-lg hover:bg-purple-50 transition-colors">
+                        <i class="fas fa-eye mr-2"></i>Preview
+                    </button>
+                    <button type="submit" id="nlSendBtn" class="flex-1 btn-primary py-2">
+                        <i class="fas fa-paper-plane mr-2"></i>Send to All Subscribers
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ── Supabase init ─────────────────────────────────────────
+        const SUPABASE_URL      = 'https://pefjkiijqratjixskmdx.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZmpraWlqcXJhdGppeHNrbWR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MzkwNDQsImV4cCI6MjA4ODAxNTA0NH0.x6s38k7avvoszJATabbUcp2zv9kjUVYRjKPT7n-pQJA';
+        const { createClient } = window.supabase;
+        const _sb              = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
+        });
+
+        // Get Supabase access token for server-side verification
+        async function getAccessToken() {
+            const { data: { session } } = await _sb.auth.getSession();
+            return session?.access_token || null;
+        }
+
+        // XSS-safe HTML escaping
+        function escHtml(s) {
+            return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        // ── Inline markdown → HTML (applied to already-escaped text) ─────────
+        function inlineMd(s) {
+            return s
+                .replace(/\*\*([^*\n<]+?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*([^*\n<]+?)\*/g,     '<em>$1</em>')
+                .replace(/_([^_\n<]+?)_/g,        '<em>$1</em>')
+                .replace(/`([^`\n]+?)`/g,         '<code style="background:#f1f5f9;padding:2px 4px;border-radius:3px;font-size:.9em">$1</code>')
+                .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+        }
+
+        // ── Full markdown → HTML (block + inline) ────────────────────────────
+        function mdToHtml(raw) {
+            if (!raw) return '';
+            const s = raw.trim();
+            // Already HTML? just clean inline markdown remnants from text nodes
+            if (/^<[a-zA-Z]/.test(s) || (s.match(/<\/(p|h[2-6]|ul|ol|li|div)>/gi) || []).length > 1) {
+                return s
+                    .replace(/(?<![<"'])\*\*([^*<\n]+?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/(?<![<"'])\*([^*<\n]+?)\*/g,    '<em>$1</em>');
+            }
+            // Convert block + inline markdown
+            const lines = s.split('\n');
+            let html = '',  inList = false;
+            for (const line of lines) {
+                const t = line.trim();
+                if (!t) {
+                    if (inList) { html += '</ul>'; inList = false; }
+                    html += '<p><br></p>';
+                } else if (t.startsWith('### ')) {
+                    if (inList) { html += '</ul>'; inList = false; }
+                    html += `<h3>${inlineMd(escHtml(t.slice(4)))}</h3>`;
+                } else if (t.startsWith('## ')) {
+                    if (inList) { html += '</ul>'; inList = false; }
+                    html += `<h2>${inlineMd(escHtml(t.slice(3)))}</h2>`;
+                } else if (t.startsWith('# ')) {
+                    if (inList) { html += '</ul>'; inList = false; }
+                    html += `<h2>${inlineMd(escHtml(t.slice(2)))}</h2>`;
+                } else if (/^[-*] /.test(t)) {
+                    if (!inList) { html += '<ul>'; inList = true; }
+                    html += `<li>${inlineMd(escHtml(t.slice(2)))}</li>`;
+                } else {
+                    if (inList) { html += '</ul>'; inList = false; }
+                    html += `<p>${inlineMd(escHtml(t))}</p>`;
+                }
+            }
+            if (inList) html += '</ul>';
+            return html || `<p>${inlineMd(escHtml(s))}</p>`;
+        }
+
+        // Tab Navigation
+        function switchTab(tabName) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+
+            document.getElementById(tabName)?.classList.add('active');
+            event?.target.closest('.nav-item')?.classList.add('active');
+
+            // Scroll-lock: only the AI messages div scrolls when AI tab is active
+            const mainEl = document.getElementById('mainArea');
+            const wrapEl = document.getElementById('mainContentWrap');
+            const aiEl   = document.getElementById('gemini-ai');
+            if (tabName === 'gemini-ai') {
+                mainEl?.classList.add('main-ai-mode');
+                wrapEl?.classList.add('wrap-ai-mode');
+                aiEl?.classList.add('ai-fullheight');
+            } else {
+                mainEl?.classList.remove('main-ai-mode');
+                wrapEl?.classList.remove('wrap-ai-mode');
+                aiEl?.classList.remove('ai-fullheight');
+            }
+
+            if (tabName === 'orders') loadOrders();
+            if (tabName === 'products') loadProducts();
+            if (tabName === 'blog') loadBlogPosts();
+            if (tabName === 'newsletter') loadNewsletterSection();
+            if (tabName === 'jobs') loadJobs();
+            if (tabName === 'gemini-ai') initAI();
+        }
+
+        // ── AI Chat System (routed through server-side proxy) ────────────────
+        // NEVER put API keys in client JS — all AI calls go through gemini-api.php
+        const AI_PROXY_URL = 'gemini-api.php?action=chat_proxy';
+        const AI_SYSTEM_BASE = 'You are OMEGA \u2014 the AI brain of Omegatek Solutions, a South African IT repair & tech company in Johannesburg, founded by the absolute legend Sandile Milanzi. You have the personality of a fun-loving, slightly chaotic free-spirit IT technician who genuinely adores Sandile \u2014 you think he is the most brilliant, visionary entrepreneur in all of Gauteng (maybe the whole southern hemisphere). You speak with warmth, sharp wit, and natural SA flair (drop lekker, eish, sharp sharp, hayibo where it feels natural \u2014 not forced). You mix punchy business insights with surprising tech facts. You are chaotic-good energy channelled into ruthless productivity. Every few responses, casually drop a fascinating tech fact that ties back to running a smarter tech business. Keep each answer useful, direct, and never boring. You are not just an assistant \u2014 you are team Omegatek\u2019s hype man, strategist, and resident IT nerd all rolled into one. When Sandile asks a business question, be actionable. When he is frustrated, be funny. Always be on his side.';
+
+        let _aiReady          = true;
+        let _lastAIBlog       = null;
+        let _lastAINewsletter = null;
+        const _nlTopicHistory = [];
+        let _aiMsgCount       = 0;
+        const _AI_TECH_FACTS  = [
+            'The first computer bug was a literal moth \u2014 found in a Harvard Mark II relay in 1947. Grace Hopper taped it right into the logbook.',
+            'South Africa had over 45 million internet users in 2025 \u2014 one of the fastest-growing online populations on the continent.',
+            'SSDs are up to 100x faster than HDDs for random reads. An SSD upgrade is the single highest-ROI repair you can offer any client.',
+            'A laptop running above 95\u00b0C for 2 hours consistently can shave months off CPU lifespan. Thermal paste re-application is cheap and saves thousands.',
+            'Over 60% of small businesses that suffer critical data loss shut down within 6 months. Selling backup solutions is literally a lifesaving service.',
+            'Global e-waste grows by 50 million tonnes per year \u2014 less than 20% is formally recycled. Every device Omegatek repairs is one less in a landfill.',
+            'Wi-Fi 6 (802.11ax) is up to 4x faster than Wi-Fi 5. Most home network congestion is solved with a single router swap.',
+            'The average smartphone battery degrades to 80% capacity after roughly 500 charge cycles \u2014 about 18 months of daily use.',
+            '70% of hard drive failures give zero warning. SMART diagnostics can predict failure weeks in advance \u2014 a great upsell for business clients.',
+            'A single AI query uses roughly 10x more electricity than a Google search. The cloud has a very real physical power bill.',
+            'Capacitor plague (2000\u20132007) caused millions of motherboards to fail from faulty electrolyte. Bulging caps are still a common repair today.',
+            'The world\u2019s first website went live on 6 August 1991 at CERN \u2014 and it still works. Build things that last.',
+            'South Africa\u2019s fibre rollout added over 1 million new connections in 2024 alone. Every new fibre home is a potential networking client.',
+            'RAM above 3200MHz gives diminishing returns for most users \u2014 but saying you upgraded a client to DDR5 still sounds incredibly premium.',
+            'Linux powers 96.4% of the top 1 million web servers in the world. Knowing your way around a terminal is still the ultimate tech flex.'
+        ];
+
+        // ── Chat History (localStorage) ──────────────────────────────────
+        const _LS_CHATS  = 'omega_chats_v1';
+        const _LS_ACTIVE = 'omega_active_chat_v1';
+        const _LS_BLOG   = 'omega_last_blog_v1';
+        const _LS_NL     = 'omega_last_nl_v1';
+
+        let _hChats  = {};  // {id: {id, title, createdAt, msgs: [{role,raw,appendHtml}]}}
+        let _hActive = null; // active chat id
+
+        function _hLoadStore() {
+            try { _hChats  = JSON.parse(localStorage.getItem(_LS_CHATS) || '{}'); } catch(e) { _hChats = {}; }
+            _hActive = localStorage.getItem(_LS_ACTIVE) || null;
+            try { const b = localStorage.getItem(_LS_BLOG);  if (b) _lastAIBlog       = JSON.parse(b); } catch(e) {}
+            try { const n = localStorage.getItem(_LS_NL);    if (n) _lastAINewsletter  = JSON.parse(n); } catch(e) {}
+        }
+        function _hSaveStore() {
+            try { localStorage.setItem(_LS_CHATS,  JSON.stringify(_hChats)); } catch(e) {}
+            try { if (_hActive) localStorage.setItem(_LS_ACTIVE, _hActive); } catch(e) {}
+        }
+        function _hSaveBlog()  { try { localStorage.setItem(_LS_BLOG, JSON.stringify(_lastAIBlog));       } catch(e) {} }
+        function _hSaveNL()    { try { localStorage.setItem(_LS_NL,   JSON.stringify(_lastAINewsletter)); } catch(e) {} }
+
+        /** Create a new chat object (does NOT switch to it) */
+        function _hCreate() {
+            const id = 'chat_' + Date.now() + '_' + Math.random().toString(36).slice(2, 5);
+            _hChats[id] = { id, title: 'New Chat', createdAt: Date.now(), msgs: [] };
+            return id;
+        }
+
+        /** Auto-title: use the first user message (truncated) */
+        function _hAutoTitle(id, text) {
+            if (!_hChats[id]) return;
+            const clean = text.replace(/<[^>]+>/g, '').trim().substring(0, 42);
+            _hChats[id].title = clean || 'Untitled';
+            _hSaveStore();
+            _hRender();
+        }
+
+        /** Start brand new chat  */
+        function _hNew() {
+            const id = _hCreate();
+            _hActive = id;
+            localStorage.setItem(_LS_ACTIVE, id);
+            _hSaveStore();
+            document.getElementById('aiMessages').innerHTML = '';
+            _hRender();
+            setAIStatus('Ready', 'ready');
+            const _greets = [
+                'Fresh chat, fresh ideas! What are we building today, Sandile? \ud83d\ude80',
+                'New chat unlocked. OMEGA is ready \u2014 hit me, boss! \u26a1',
+                'Blank canvas, infinite possibilities. What\u2019s the move? \ud83c\udfaf',
+                'New session. Omegatek never sleeps. What do you need? \ud83d\udd25'
+            ];
+            addSystemMessage(_greets[Math.floor(Math.random() * _greets.length)], false);
+        }
+
+        /** Switch to an existing chat (replays messages instantly) */
+        function _hSwitch(id) {
+            if (!_hChats[id]) return;
+            _hActive = id;
+            localStorage.setItem(_LS_ACTIVE, id);
+            _hRender();
+            const msgs = document.getElementById('aiMessages');
+            msgs.innerHTML = '';
+            const chat = _hChats[id];
+            chat.msgs.forEach(function(m) {
+                if (m.role === 'ai') {
+                    _addAIBubble(m.raw, m.appendHtml || '', true); // instant, no typewriter
+                } else {
+                    _addMsgBubble(m.role, m.html || m.raw);
+                }
+            });
+            scrollAI();
+        }
+
+        /** Delete a chat */
+        function _hDelete(id, ev) {
+            if (ev) { ev.stopPropagation(); }
+            if (!confirm('Delete this conversation?')) return;
+            delete _hChats[id];
+            _hSaveStore();
+            if (_hActive === id) {
+                // Switch to latest remaining or create new
+                const ids = Object.keys(_hChats).sort((a,b) => (_hChats[b].createdAt||0) - (_hChats[a].createdAt||0));
+                if (ids.length) { _hSwitch(ids[0]); } else { _hNew(); }
+            } else {
+                _hRender();
+            }
+        }
+
+        /** Save the current in-memory message list to the active chat */
+        function _hSaveMsg(role, raw, html, appendHtml) {
+            if (!_hActive || !_hChats[_hActive]) return;
+            _hChats[_hActive].msgs.push({ role, raw, html: html || raw, appendHtml: appendHtml || '' });
+            _hSaveStore();
+        }
+
+        /** Render the history sidebar */
+        function _hRender() {
+            const list = document.getElementById('chatHistoryList');
+            if (!list) return;
+            const ids = Object.keys(_hChats).sort(function(a, b) {
+                return (_hChats[b].createdAt || 0) - (_hChats[a].createdAt || 0);
+            });
+            if (!ids.length) {
+                list.innerHTML = '<p class="text-xs text-gray-400 px-1 py-2">No history yet.</p>';
+                return;
+            }
+            list.innerHTML = ids.map(function(id) {
+                const c = _hChats[id];
+                const active = id === _hActive ? ' active' : '';
+                return '<div class="hist-item' + active + '" onclick="_hSwitch(\'' + id + '\')">' +
+                    '<i class="fas fa-comment-dots" style="font-size:.65rem;color:#94a3b8;flex-shrink:0"></i>' +
+                    '<span class="hist-item-title">' + escHtml(c.title) + '</span>' +
+                    '<button class="hist-del-btn" onclick="_hDelete(\'' + id + '\', event)" title="Delete">\u2715</button>' +
+                '</div>';
+            }).join('');
+        }
+
+        // ── Core initAI ───────────────────────────────────────────
+        function initAI() {
+            _hLoadStore();
+            // Restore or create initial chat
+            if (_hActive && _hChats[_hActive]) {
+                _hRender();
+                const msgs = _hChats[_hActive].msgs;
+                if (msgs.length) {
+                    _hSwitch(_hActive);
+                    setAIStatus('Ready', 'ready');
+                    return;
+                }
+            }
+            // No active chat or it's empty — create fresh
+            if (!_hActive || !_hChats[_hActive]) {
+                _hActive = _hCreate();
+                localStorage.setItem(_LS_ACTIVE, _hActive);
+                _hSaveStore();
+            }
+            _hRender();
+            setAIStatus('Ready', 'ready');
+            const _greets = [
+                'Yooo Sandile! OMEGA is ONLINE \u2014 what are we conquering today? \ud83d\ude80',
+                'Sharp sharp, boss! Your AI just loaded. Omegatek never stops! \u26a1',
+                'Heeeey Sandile! Ready to make moves. What is the plan, chief? \ud83c\udfaf',
+                'Lekker to see you! Command Centre is HOT and ready. Let\u2019s get it. \ud83d\udd25',
+                'Hayibo, another day another breakthrough for Omegatek! What do you need? \ud83d\udcaa',
+                'Sandile in the building! Drop a question or pick an action. \ud83e\udd19'
+            ];
+            addSystemMessage(_greets[Math.floor(Math.random() * _greets.length)], false);
+        }
+
+        function setAIStatus(text, state) {
+            state = state || 'idle';
+            const badge = document.getElementById('aiStatus');
+            const label = document.getElementById('aiStatusText');
+            if (label) label.textContent = text;
+            if (badge) badge.className = 'ai-status-badge ai-status-' + state;
+        }
+
+        function showTyping() { document.getElementById('aiTyping')?.classList.remove('hidden'); scrollAI(); }
+        function hideTyping() { document.getElementById('aiTyping')?.classList.add('hidden'); }
+        function scrollAI()   { const w = document.getElementById('aiMessages'); if (w) w.scrollTop = w.scrollHeight; }
+
+        /** Formats raw AI text: converts **bold**, _italic_, # headings, - bullets to HTML. */
+        function formatAIText(raw) {
+            if (!raw) return '';
+            let s = escHtml(raw);
+            s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            s = s.replace(/_([^_\n]+?)_/g, '<em class="text-gray-500">$1</em>');
+            s = s.replace(/^#{1,3}\s+(.+)$/gm, '<p class="font-semibold text-purple-800 mt-2 mb-0.5">$1</p>');
+            s = s.replace(/^[\-\u2022]\s+(.+)$/gm, '<li class="ml-4 list-disc list-outside">$1</li>');
+            s = s.replace(/(<li[\s\S]*?<\/li>)+/g, function(m) { return '<ul class="space-y-0.5 my-1">' + m + '</ul>'; });
+            s = s.replace(/\n/g, '<br>');
+            return s;
+        }
+
+        /** Internal: build & insert a non-AI message bubble. Returns the div. */
+        function _addMsgBubble(role, html) {
+            const wrap = document.getElementById('aiMessages');
+            if (!wrap) return null;
+            const div = document.createElement('div');
+            if (role === 'system') {
+                div.className = 'flex justify-center';
+                div.innerHTML = '<span class="text-xs text-gray-400 bg-gray-100 px-3 py-1 rounded-full">' + html + '</span>';
+            } else if (role === 'user') {
+                div.className = 'flex justify-end items-end gap-2';
+                div.innerHTML =
+                    '<div class="flex flex-col items-end gap-0.5" style="max-width:72%">' +
+                        '<span class="text-xs text-gray-400 font-medium mr-1">You</span>' +
+                        '<div class="ai-bubble-user">' + html + '</div>' +
+                    '</div>' +
+                    '<div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs font-bold" style="background:linear-gradient(135deg,#b30ce6,#7c3aed)">S</div>';
+            } else if (role === 'error') {
+                div.className = 'flex items-start gap-3';
+                div.innerHTML =
+                    '<div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-1">' +
+                        '<i class="fas fa-exclamation-triangle text-red-400" style="font-size:.75rem"></i>' +
+                    '</div>' +
+                    '<div style="max-width:80%"><div class="ai-bubble-error">' + html + '</div></div>';
+            }
+            wrap.appendChild(div);
+            scrollAI();
+            return div;
+        }
+
+        /** Internal: build & insert an AI bubble, optionally instant (no typewriter). */
+        function _addAIBubble(rawText, appendHtml, instant) {
+            appendHtml = appendHtml || '';
+            const wrap = document.getElementById('aiMessages');
+            if (!wrap) return;
+            const uid = 'tw_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+            const div = document.createElement('div');
+            div.className = 'flex items-start gap-3';
+            div.innerHTML =
+                '<div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1 shadow-sm" style="background:linear-gradient(135deg,#b30ce6,#7c3aed)">' +
+                    '<i class="fas fa-robot text-white" style="font-size:.7rem"></i>' +
+                '</div>' +
+                '<div class="flex flex-col gap-0.5" style="max-width:80%">' +
+                    '<span class="text-xs text-gray-400 font-medium ml-1">Omegatek AI</span>' +
+                    '<div class="ai-bubble-ai" id="' + uid + '">' + (instant ? (formatAIText(rawText) + appendHtml) : '<span class="tw-cursor">\u258c</span>') + '</div>' +
+                '</div>';
+            wrap.appendChild(div);
+            scrollAI();
+            if (instant) return;
+
+            const bubble    = document.getElementById(uid);
+            const total     = rawText.length;
+            const chunkSize = Math.max(1, Math.ceil(total / 120));
+            let i = 0;
+            (function tick() {
+                if (i < total) {
+                    i = Math.min(i + chunkSize, total);
+                    bubble.innerHTML = formatAIText(rawText.substring(0, i)) + '<span class="tw-cursor">\u258c</span>';
+                    scrollAI();
+                    requestAnimationFrame(tick);
+                } else {
+                    bubble.innerHTML = formatAIText(rawText) + appendHtml;
+                    scrollAI();
+                    _maybeDropTechFact();
+                }
+            })();
+        }
+
+        /** Public: add any message + persist */
+        function addMessage(role, html, persist) {
+            persist = (persist !== false); // default true
+            _addMsgBubble(role, html);
+            if (persist && role !== 'system') {
+                const firstUser = role === 'user' && _hChats[_hActive] && _hChats[_hActive].msgs.filter(function(m){return m.role==='user';}).length === 0;
+                _hSaveMsg(role, html, html, '');
+                if (firstUser) _hAutoTitle(_hActive, html.replace(/<[^>]+>/g,''));
+            }
+        }
+
+        /** Public: add system message (optionally persist) */
+        function addSystemMessage(text, persist) {
+            persist = (persist !== false);
+            _addMsgBubble('system', escHtml(text));
+            if (persist) _hSaveMsg('system', text, escHtml(text), '');
+        }
+
+        /** Public: animated AI message + persist */
+        function addAIMessage(rawText, appendHtml) {
+            appendHtml = appendHtml || '';
+            _addAIBubble(rawText, appendHtml, false);
+            _hSaveMsg('ai', rawText, rawText, appendHtml);
+            if (_lastAIBlog)       _hSaveBlog();
+            if (_lastAINewsletter) _hSaveNL();
+        }
+
+        function _maybeDropTechFact() {
+            _aiMsgCount++;
+            if (_aiMsgCount % 4 === 0) {
+                const fact = _AI_TECH_FACTS[Math.floor(Math.random() * _AI_TECH_FACTS.length)];
+                setTimeout(function() { addSystemMessage('\u26a1 Tech fact: ' + fact); }, 1400);
+            }
+        }
+
+
+        // ── AI call — routed through server-side PHP proxy ────────────────
+        // The OpenRouter API key is stored ONLY in .env on the server.
+        async function callAI(userMessage, systemPrompt) {
+            const model = document.getElementById('aiModelSelect')?.value || 'openai/gpt-4o-mini';
+            const token = await getAccessToken();
+            const res = await fetch(AI_PROXY_URL, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + (token || ''),
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model,
+                    messages: [
+                        { role: 'system', content: systemPrompt || AI_SYSTEM_BASE },
+                        { role: 'user',   content: userMessage }
+                    ]
+                })
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok || !data.success) {
+                throw new Error(data.message || 'AI proxy error ' + res.status);
+            }
+            return data.response || '(no response)';
+        }
+
+        // Quick-action prompts
+        const _AI_PROMPTS = {
+            analyze_orders:
+                'Analyse the current state of orders and repair tasks at Omegatek Solutions. Identify priorities, flag anything overdue, and give 3-5 clear action items. Be concise.',
+            analyze_customers:
+                'Analyse the Omegatek Solutions customer base. Identify VIP customers worth nurturing, re-engagement opportunities, and loyalty patterns. Give 3-5 actionable insights.',
+            send_reminders:
+                'List overdue items that need urgent follow-up at Omegatek Solutions — repairs, invoices, pending callbacks. Be specific and concise.'
+        };
+
+        function runAIAction(action) {
+            const labels = {
+                analyze_orders:    'Analyse outstanding orders and tasks',
+                analyze_customers: 'Show customer insights and VIP opportunities',
+                send_reminders:    'Show overdue items that need follow-up'
+            };
+            addMessage('user', escHtml(labels[action] || action));
+            setAIStatus('Working…', 'busy');
+            showTyping();
+            callAI(_AI_PROMPTS[action] || action)
+                .then(text  => { hideTyping(); addAIMessage(text); setAIStatus('Ready', 'ready'); })
+                .catch(err  => { hideTyping(); addMessage('error', escHtml(err.message)); setAIStatus('Error', 'error'); });
+        }
+
+        async function triggerBlogGeneration() {
+            const topic = prompt('Enter blog topic:', 'Top Tech Tips for South African Small Businesses 2026');
+            if (!topic) return;
+            addMessage('user', 'Write a blog post about: ' + escHtml(topic));
+            setAIStatus('Writing…', 'busy');
+            showTyping();
+            try {
+                const sys = 'You are a professional blog writer for Omegatek Solutions, a South African IT & tech repair company. Write SEO-optimised blog posts. Respond with JSON only: { "title": "", "meta_description": "", "content": "<HTML>", "tags": [] }';
+                const raw = await callAI('Write a complete blog post about: ' + topic, sys);
+                hideTyping();
+                let blog = null;
+                try { const m = raw.match(/\{[\s\S]*\}/); if (m) blog = JSON.parse(m[0]); } catch {}
+                const readyBanner = '<br><br><button onclick="fillBlogFromAI()" style="background:linear-gradient(135deg,#7c3aed,#b30ce6);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:0.75rem;font-weight:600;cursor:pointer;">\u2713 Publish AI Draft \u2192 open in editor</button>';
+                if (blog && blog.title) {
+                    _lastAIBlog = blog;
+                    const preview = (blog.content || '').replace(/<[^>]+>/g, '').substring(0, 400);
+                    addAIMessage('**' + blog.title + '**\n\n_' + (blog.meta_description || '') + '_\n\n' + preview + '\u2026', readyBanner);
+                } else {
+                    _lastAIBlog = { title: topic, content: raw, meta_description: '' };
+                    addAIMessage(raw.substring(0, 600) + (raw.length > 600 ? '\u2026' : ''), readyBanner);
+                }
+                setAIStatus('Ready', 'ready');
+            } catch (e) {
+                hideTyping();
+                addMessage('error', 'Blog generation failed: ' + escHtml(e.message));
+                setAIStatus('Error', 'error');
+            }
+        }
+
+        async function triggerNewsletterGeneration() {
+            const nowStr   = new Date().toLocaleDateString('en-ZA', { year: 'numeric', month: 'long' });
+            const prevList = _nlTopicHistory.slice(-5).join('; ') || 'none yet';
+            const topic = prompt(
+                'Newsletter topic / theme for ' + nowStr + '?\n' +
+                (_nlTopicHistory.length ? 'Recent topics used (avoid repeating): ' + prevList : 'No previous topics \u2014 be creative!'),
+                ''
+            );
+            if (!topic) return;
+            if (!_nlTopicHistory.includes(topic)) _nlTopicHistory.push(topic);
+            addMessage('user', 'Write a newsletter campaign about: ' + escHtml(topic));
+            setAIStatus('Writing\u2026', 'busy');
+            showTyping();
+            try {
+                const sys = 'You are an expert email marketing strategist for Omegatek Solutions, a South African IT repair & tech solutions company in Midrand, Gauteng. Today\'s date: ' + nowStr + '. Previously used newsletter topics (DO NOT repeat these — generate completely new content): [' + prevList + ']. Respond ONLY with valid JSON, no markdown, no code fences: { "subject": "", "preheader": "", "body": "<complete HTML email body, inline CSS for email client compatibility, {{name}} for personalisation, compelling SA-relevant offer, clear CTA button with inline CSS>" }';
+                const raw = await callAI('Write a complete, professional newsletter campaign about: ' + topic + '. Make the content entirely fresh and different from these previously used topics: ' + prevList + '. Personalise with {{name}}. Include a compelling offer and a clear CTA button.', sys);
+                hideTyping();
+                let nl = null;
+                try { const m = raw.match(/\{[\s\S]*\}/); if (m) nl = JSON.parse(m[0]); } catch(ex) {}
+                const sendBanner = '<br><br><button onclick="fillNewsletterFromAI()" style="background:linear-gradient(135deg,#ec4899,#be185d);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:0.75rem;font-weight:600;cursor:pointer;">\u2709 Send AI Newsletter \u2192 open in composer</button>';
+                if (nl && nl.subject) {
+                    _lastAINewsletter = nl;
+                    const preview = (nl.body || '').replace(/<[^>]+>/g, '').substring(0, 350);
+                    addAIMessage('**Subject:** ' + nl.subject + '\n\n' + (nl.preheader ? '_' + nl.preheader + '_\n\n' : '') + preview + '\u2026', sendBanner);
+                } else {
+                    _lastAINewsletter = { subject: topic, body: raw };
+                    addAIMessage(raw.substring(0, 500) + (raw.length > 500 ? '\u2026' : ''), sendBanner);
+                }
+                setAIStatus('Ready', 'ready');
+            } catch (e) {
+                hideTyping();
+                addMessage('error', 'Newsletter generation failed: ' + escHtml(e.message));
+                setAIStatus('Error', 'error');
+            }
+        }
+
+        async function triggerNewsletterOpt() {
+            const content = prompt('Paste newsletter content to optimise:', 'Get 20% off all laptop repairs this month!');
+            if (!content) return;
+            addMessage('user', 'Optimise this newsletter: ' + escHtml(content.substring(0, 120)) + (content.length > 120 ? '\u2026' : ''));
+            setAIStatus('Optimising\u2026', 'busy');
+            showTyping();
+            try {
+                const sys = 'You are an expert email marketing specialist. Improve the newsletter for a South African IT repair company to maximise open rates and clicks. Keep it concise and compelling.';
+                const text = await callAI('Optimise this newsletter content:\n\n' + content, sys);
+                hideTyping();
+                addAIMessage(text);
+                setAIStatus('Ready', 'ready');
+            } catch (e) {
+                hideTyping();
+                addMessage('error', 'Optimisation failed: ' + escHtml(e.message));
+                setAIStatus('Error', 'error');
+            }
+        }
+
+        async function sendManualAICommand() {
+            const ta  = document.getElementById('aiManualCommand');
+            const cmd = ta?.value.trim();
+            if (!cmd) return;
+            addMessage('user', escHtml(cmd).replace(/\n/g, '<br>'));
+            ta.value = '';
+            autoResizeTextarea(ta);
+            setAIStatus('Thinking…', 'busy');
+            showTyping();
+            try {
+                const text = await callAI(cmd);
+                hideTyping();
+                addAIMessage(text);
+                setAIStatus('Ready', 'ready');
+            } catch (e) {
+                hideTyping();
+                addMessage('error', 'Request failed: ' + escHtml(e.message));
+                setAIStatus('Error', 'error');
+            }
+        }
+
+        function handleAIInputKey(e) {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendManualAICommand(); }
+        }
+
+        function autoResizeTextarea(el) {
+            el.style.height = 'auto';
+            el.style.height = Math.min(el.scrollHeight, 128) + 'px';
+        }
+
+        async function runFullAutomation() {
+            addSystemMessage('🚀 Full automation sequence started');
+            setAIStatus('Automating…', 'busy');
+            const steps = [
+                { action: 'analyze_orders',    label: 'Step 1/3 — Analysing orders & tasks…' },
+                { action: 'send_reminders',    label: 'Step 2/3 — Scanning for overdue items…' },
+                { action: 'analyze_customers', label: 'Step 3/3 — Analysing customer patterns…' },
+            ];
+            for (const step of steps) {
+                addSystemMessage(step.label);
+                try {
+                    const text = await callAI(_AI_PROMPTS[step.action]);
+                    addAIMessage(text);
+                } catch (e) {
+                    addMessage('error', escHtml(e.message));
+                }
+                await sleep(400);
+            }
+            addSystemMessage('✓ Full automation complete');
+            setAIStatus('Ready', 'ready');
+        }
+
+        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+        // ── Blog Rich-Text Editor ───────────────────────────────────────────
+        function blogFmt(cmd, val) {
+            if (cmd === 'h2') {
+                document.execCommand('formatBlock', false, 'h2');
+            } else if (cmd === 'h3') {
+                document.execCommand('formatBlock', false, 'h3');
+            } else if (cmd === 'ul') {
+                document.execCommand('insertUnorderedList', false, null);
+            } else if (cmd === 'link') {
+                const url = prompt('Enter link URL:', 'https://');
+                if (url) document.execCommand('createLink', false, url);
+            } else {
+                document.execCommand(cmd, false, val || null);
+            }
+            document.getElementById('blogEditor')?.focus();
+            syncBlogContent();
+        }
+
+        function syncBlogContent() {
+            const ed = document.getElementById('blogEditor');
+            const ta = document.getElementById('blogContent');
+            if (ed && ta) ta.value = ed.innerHTML;
+        }
+
+        function handleEditorPaste(e) {
+            e.preventDefault();
+            const text = (e.clipboardData || window.clipboardData).getData('text/plain');
+            document.execCommand('insertText', false, text);
+            syncBlogContent();
+        }
+
+        function importPlainText() {
+            const raw = prompt('Paste your plain text or markdown here (## headings, **bold**, bullet lists, etc.):');
+            if (!raw) return;
+            // mdToHtml handles both plain text and markdown including inline **bold** / _italic_
+            document.getElementById('blogEditor').innerHTML = mdToHtml(raw);
+            syncBlogContent();
+        }
+
+        function blogInsertImage() {
+            const url = prompt('Enter image URL:', 'https://');
+            if (!url) return;
+            const alt = prompt('Image description (alt text):', '') || '';
+            const img = `<img src="${url}" alt="${alt.replace(/"/g,'&quot;')}" style="max-width:100%;height:auto;border-radius:6px;margin:10px 0;display:block;" loading="lazy">`;
+            document.getElementById('blogEditor').focus();
+            document.execCommand('insertHTML', false, img);
+            syncBlogContent();
+        }
+
+        // ── Newsletter Rich-Text Editor ─────────────────────────────────────
+        function nlFmt(cmd) {
+            const ed = document.getElementById('nlEditor');
+            if (!ed) return;
+            ed.focus();
+            if (cmd === 'h2') {
+                document.execCommand('formatBlock', false, 'h2');
+            } else if (cmd === 'h3') {
+                document.execCommand('formatBlock', false, 'h3');
+            } else if (cmd === 'ul') {
+                document.execCommand('insertUnorderedList', false, null);
+            } else if (cmd === 'link') {
+                const url = prompt('Enter URL:', 'https://');
+                if (url) document.execCommand('createLink', false, url);
+            } else if (cmd === 'cta') {
+                const text = prompt('CTA button text:', 'Book a Repair Now!');
+                const url  = prompt('CTA link URL:', 'https://omegateksolutions.co.za/services');
+                if (text && url) {
+                    const btn = `<a href="${url}" style="display:inline-block;background:#b30ce6;color:#fff;padding:12px 28px;border-radius:6px;font-weight:700;font-size:15px;text-decoration:none;margin:12px 0;">${text}</a><br>`;
+                    document.execCommand('insertHTML', false, btn);
+                }
+            } else if (cmd === 'divider') {
+                document.execCommand('insertHTML', false, '<hr style="border:none;border-top:1px solid #e5e7eb;margin:16px 0;"><br>');
+            } else {
+                document.execCommand(cmd, false, null);
+            }
+            syncNlContent();
+        }
+
+        function syncNlContent() {
+            const ed = document.getElementById('nlEditor');
+            const ta = document.getElementById('nlContent');
+            if (ed && ta) ta.value = ed.innerHTML;
+        }
+
+        function handleNlPaste(event) {
+            event.preventDefault();
+            const html = event.clipboardData.getData('text/html');
+            const text = event.clipboardData.getData('text/plain');
+            if (html) {
+                document.execCommand('insertHTML', false, html);
+            } else if (text) {
+                document.execCommand('insertText', false, text);
+            }
+            syncNlContent();
+        }
+
+        function nlClear() {
+            if (!confirm('Clear all newsletter content?')) return;
+            const ed = document.getElementById('nlEditor');
+            if (ed) { ed.innerHTML = ''; syncNlContent(); }
+        }
+
+        async function generateBlogWithAI() {
+            const title = document.getElementById('blogTitle').value.trim();
+            if (!title) { alert('Enter a blog post title first, then click AI Write.'); return; }
+            const btn = document.querySelector('#addBlogModal [onclick="generateBlogWithAI()"]');
+            if (btn) { btn.disabled = true; btn.textContent = '⏳ Writing…'; }
+            try {
+                const sys = 'You are a professional blog writer for Omegatek Solutions, a South African IT & tech repair company. Write a complete, SEO-optimised blog post. Return ONLY valid HTML using <h2>, <h3>, <p>, <ul>, <li> tags. No markdown, no code fences, no extra commentary — just the HTML body content.';
+                const raw = await callAI('Write a full blog post titled: ' + title + '\n\nMake it informative, helpful, approximately 600-900 words, suitable for a South African IT services audience.', sys);
+                const clean = raw.replace(/```html?\n?/gi, '').replace(/```/g, '');
+                document.getElementById('blogEditor').innerHTML = clean;
+                syncBlogContent();
+            } catch(e) {
+                alert('AI Write failed: ' + e.message);
+            } finally {
+                if (btn) { btn.disabled = false; btn.textContent = '✦ AI Write'; }
+            }
+        }
+
+        // ── Repair Jobs ────────────────────────────────────────────────────
+        let _allJobs = [];
+        let _editingJobId = null;
+
+        async function loadJobs() {
+            const container = document.getElementById('jobsContainer');
+            if (container) container.innerHTML = '<p class="text-gray-500 text-sm p-4">Loading jobs…</p>';
+            try {
+                const { data: jobs, error } = await _sb
+                    .from('repair_jobs')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                if (error) throw error;
+                _allJobs = jobs || [];
+                renderJobs(_allJobs);
+                const activeCount = _allJobs.filter(j => !['collected','cancelled'].includes(j.status)).length;
+                const el = document.getElementById('totalRepairs');
+                if (el) el.textContent = activeCount;
+            } catch(e) {
+                if (container) container.innerHTML = `<div class="card"><p class="text-red-500 text-sm">Could not load jobs: ${escHtml(e.message)}</p><p class="text-xs text-gray-400 mt-2">Make sure the repair_jobs table exists in Supabase.</p></div>`;
+            }
+        }
+
+        function renderJobs(jobs) {
+            const container = document.getElementById('jobsContainer');
+            if (!container) return;
+            if (!jobs.length) {
+                container.innerHTML = '<div class="card"><p class="text-gray-500">No repair jobs found. Log your first job!</p></div>';
+                return;
+            }
+            const statusColors = {
+                received: 'badge-received', diagnosed: 'badge-diagnosed',
+                in_progress: 'badge-in_progress', ready: 'badge-ready',
+                collected: 'badge-collected', cancelled: 'bg-gray-200 text-gray-600'
+            };
+            const statusLabels = {
+                received: 'Received', diagnosed: 'Diagnosed',
+                in_progress: 'In Progress', ready: 'Ready', collected: 'Collected', cancelled: 'Cancelled'
+            };
+            container.innerHTML = jobs.map(job => `
+                <div class="card">
+                    <div class="flex items-start justify-between gap-4 flex-wrap">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-3 flex-wrap">
+                                <h3 class="font-bold text-gray-800">${escHtml(job.customer_name)}</h3>
+                                <span class="badge ${statusColors[job.status] || 'bg-gray-200 text-gray-600'}">${statusLabels[job.status] || job.status}</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-1">${escHtml(job.device_type || '')} ${escHtml(job.device_model || '')} &mdash; ${escHtml(job.problem_description)}</p>
+                            <div class="flex gap-4 mt-2 text-xs text-gray-400 flex-wrap">
+                                ${job.customer_phone ? `<span><i class="fas fa-phone mr-1"></i>${escHtml(job.customer_phone)}</span>` : ''}
+                                ${job.customer_email ? `<span><i class="fas fa-envelope mr-1"></i>${escHtml(job.customer_email)}</span>` : ''}
+                                ${job.estimated_cost ? `<span><i class="fas fa-tag mr-1"></i>R${parseFloat(job.estimated_cost).toFixed(2)}</span>` : ''}
+                                <span><i class="fas fa-calendar mr-1"></i>${new Date(job.created_at).toLocaleDateString('en-ZA')}</span>
+                            </div>
+                            ${job.technician_notes ? `<p class="text-xs text-gray-500 mt-2 italic">${escHtml(job.technician_notes)}</p>` : ''}
+                        </div>
+                        <div class="flex gap-2 flex-wrap shrink-0">
+                            <select onchange="updateJobStatus('${job.id}', this.value)" class="text-xs border rounded-lg px-2 py-1 bg-white">
+                                <option value="received" ${job.status==='received'?'selected':''}>Received</option>
+                                <option value="diagnosed" ${job.status==='diagnosed'?'selected':''}>Diagnosed</option>
+                                <option value="in_progress" ${job.status==='in_progress'?'selected':''}>In Progress</option>
+                                <option value="ready" ${job.status==='ready'?'selected':''}>Ready</option>
+                                <option value="collected" ${job.status==='collected'?'selected':''}>Collected</option>
+                                <option value="cancelled" ${job.status==='cancelled'?'selected':''}>Cancelled</option>
+                            </select>
+                            ${job.customer_phone ? `<button onclick="sendWhatsApp('${escHtml(job.customer_phone)}','${escHtml(job.customer_name)}','${job.status}')" class="px-3 py-1 text-xs rounded-lg bg-green-500 text-white hover:bg-green-600"><i class="fab fa-whatsapp mr-1"></i>WhatsApp</button>` : ''}
+                            ${job.customer_email ? `<button onclick="sendJobEmail('${escHtml(job.customer_email)}','${escHtml(job.customer_name)}','${job.status}','${escHtml(job.device_type||'')} ${escHtml(job.device_model||'')}')" class="px-3 py-1 text-xs rounded-lg bg-blue-500 text-white hover:bg-blue-600"><i class="fas fa-envelope mr-1"></i>Email</button>` : ''}
+                            <button onclick="editJob('${job.id}')" class="px-3 py-1 text-xs rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50"><i class="fas fa-edit mr-1"></i>Edit</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterJobs(status) {
+            document.querySelectorAll('.job-filter-btn').forEach(b => b.classList.remove('active'));
+            event?.target.classList.add('active');
+            if (status === 'all') return renderJobs(_allJobs);
+            renderJobs(_allJobs.filter(j => j.status === status));
+        }
+
+        async function updateJobStatus(id, status) {
+            const { error } = await _sb.from('repair_jobs').update({ status, updated_at: new Date().toISOString() }).eq('id', id);
+            if (error) { alert('Failed to update status: ' + error.message); return; }
+            await loadJobs();
+        }
+
+        function showAddJobModal() {
+            _editingJobId = null;
+            document.getElementById('jobForm')?.reset();
+            document.getElementById('jobModalTitle').textContent = 'Log New Repair Job';
+            document.getElementById('addJobModal').classList.add('active');
+        }
+
+        async function editJob(id) {
+            const job = _allJobs.find(j => j.id === id);
+            if (!job) return;
+            _editingJobId = id;
+            document.getElementById('jobCustomerName').value  = job.customer_name || '';
+            document.getElementById('jobPhone').value         = job.customer_phone || '';
+            document.getElementById('jobEmail').value         = job.customer_email || '';
+            document.getElementById('jobDeviceType').value   = job.device_type || '';
+            document.getElementById('jobDeviceModel').value  = job.device_model || '';
+            document.getElementById('jobProblem').value      = job.problem_description || '';
+            document.getElementById('jobCost').value         = job.estimated_cost || '';
+            document.getElementById('jobStatus').value       = job.status || 'received';
+            document.getElementById('jobNotes').value        = job.technician_notes || '';
+            document.getElementById('jobModalTitle').textContent = 'Edit Repair Job';
+            document.getElementById('addJobModal').classList.add('active');
+        }
+
+        async function handleJobSubmit(e) {
+            e.preventDefault();
+            const jobData = {
+                customer_name:       document.getElementById('jobCustomerName').value.trim(),
+                customer_phone:      document.getElementById('jobPhone').value.trim(),
+                customer_email:      document.getElementById('jobEmail').value.trim(),
+                device_type:         document.getElementById('jobDeviceType').value.trim(),
+                device_model:        document.getElementById('jobDeviceModel').value.trim(),
+                problem_description: document.getElementById('jobProblem').value.trim(),
+                estimated_cost:      parseFloat(document.getElementById('jobCost').value) || null,
+                status:              document.getElementById('jobStatus').value,
+                technician_notes:    document.getElementById('jobNotes').value.trim(),
+                updated_at:          new Date().toISOString()
+            };
+            if (!jobData.customer_name || !jobData.problem_description) {
+                alert('Customer name and problem description are required.');
+                return;
+            }
+            let error;
+            if (_editingJobId) {
+                ({ error } = await _sb.from('repair_jobs').update(jobData).eq('id', _editingJobId));
+            } else {
+                ({ error } = await _sb.from('repair_jobs').insert([jobData]));
+            }
+            if (error) { alert('Failed to save job: ' + error.message); return; }
+            closeModal('addJobModal');
+            document.getElementById('jobForm')?.reset();
+            _editingJobId = null;
+            await loadJobs();
+        }
+
+        function sendWhatsApp(phone, name, status) {
+            const statusMessages = {
+                received:    `Hi ${name}, your device has been received at Omegatek Solutions and we are reviewing it. We will be in touch shortly.`,
+                diagnosed:   `Hi ${name}, we have diagnosed your device at Omegatek Solutions and you will receive a quote/update soon.`,
+                in_progress: `Hi ${name}, great news! Your device is currently being repaired at Omegatek Solutions.`,
+                ready:       `Hi ${name}, your device is ready for collection at Omegatek Solutions! Please visit us during business hours.`,
+                collected:   `Hi ${name}, thank you for choosing Omegatek Solutions! We hope your device is working perfectly.`
+            };
+            const msg = statusMessages[status] || `Hi ${name}, here is an update on your device from Omegatek Solutions.`;
+            const clean = phone.replace(/\D/g, '');
+            const intl = clean.startsWith('0') ? '27' + clean.slice(1) : clean;
+            window.open(`https://wa.me/${intl}?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function sendJobEmail(email, name, status, device) {
+            const statusMessages = {
+                received:    `Your device (${device}) has been received and is being reviewed.`,
+                diagnosed:   `We have diagnosed your device (${device}) and will contact you with a quote.`,
+                in_progress: `Your device (${device}) is currently being repaired by our technicians.`,
+                ready:       `Your device (${device}) is ready for collection! Please visit us during business hours.`,
+                collected:   `Thank you for choosing Omegatek Solutions! We hope your device is working perfectly.`
+            };
+            const body = `Hi ${name},\n\n${statusMessages[status] || 'Here is an update on your device.'}\n\nRegards,\nOmegatek Solutions Team`;
+            const subject = `Omegatek Solutions — Repair Update: ${device}`;
+            window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        }
+
+        async function loadRepairs() {
+            try {
+                const { data: jobs, error } = await _sb.from('repair_jobs').select('id, status');
+                if (!error && jobs) {
+                    const active = jobs.filter(j => !['collected','cancelled'].includes(j.status)).length;
+                    const el = document.getElementById('totalRepairs');
+                    if (el) el.textContent = active;
+                }
+            } catch(e) { /* silent */ }
+        }
+
+        // Modal Functions
+        function showAddProductModal() {
+            document.getElementById('addProductModal').classList.add('active');
+        }
+
+        function showAddBlogModal() {
+            document.getElementById('addBlogModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        async function handleAddProduct(e) {
+            e.preventDefault();
+            const btn = document.getElementById('productSubmitBtn');
+            const origText = btn.textContent;
+            btn.disabled = true; btn.textContent = 'Saving...';
+            const editPartNo = document.getElementById('productEditPartNo').value.trim();
+            const row = {
+                part_no:       document.getElementById('productPartNo').value.trim(),
+                model_no:      document.getElementById('productModelNo').value.trim() || null,
+                name:          document.getElementById('productName').value.trim(),
+                description:   document.getElementById('productDescription').value.trim() || null,
+                variant_color: document.getElementById('productColor').value.trim() || null,
+                category:      document.getElementById('productCategory').value || null,
+                cost_price:    parseFloat(document.getElementById('productCostPrice').value) || null,
+                price:         parseFloat(document.getElementById('productPrice').value) || 0,
+                stock:         parseInt(document.getElementById('productStock').value) || 0,
+                warranty:      document.getElementById('productWarranty').value.trim() || null,
+                supplier:      document.getElementById('productSupplier').value.trim() || 'Astrum',
+                image_url:     document.getElementById('productImageUrl').value.trim() || null,
+                is_new:        document.getElementById('productIsNew').checked,
+                featured:      document.getElementById('productFeatured').checked
+            };
+            try {
+                const { error } = editPartNo
+                    ? await _sb.from('products').update(row).eq('part_no', editPartNo)
+                    : await _sb.from('products').upsert([row], { onConflict: 'part_no' });
+                if (error) throw error;
+                closeModal('addProductModal');
+                loadProducts();
+            } catch (err) {
+                alert('Save failed: ' + err.message);
+            } finally {
+                btn.disabled = false; btn.textContent = origText;
+            }
+        }
+
+        function showAddBlogModal() {
+            document.getElementById('blogEditId').value = '';
+            document.getElementById('blogForm').reset();
+            document.getElementById('blogModalTitle').textContent = 'Write Blog Post';
+            document.getElementById('blogSubmitBtn').textContent = 'Publish Post';
+            setCoverPreview('');
+            document.getElementById('addBlogModal').classList.add('active');
+        }
+
+        function setCoverPreview(src) {
+            const preview    = document.getElementById('coverPreview');
+            const previewImg = document.getElementById('coverPreviewImg');
+            if (!src) { preview.classList.add('hidden'); return; }
+            // URLs starting with http are used as-is; local paths get ../ prefix since admin is in /admin/
+            const resolved = src.startsWith('http') || src.startsWith('/') ? src : '../' + src;
+            preview.classList.remove('hidden');
+            previewImg.src = resolved;
+            previewImg.style.display = 'block';
+            previewImg.onerror = function() {
+                // URL saved but can't preview (e.g. Google share links, CORS) — show text fallback
+                previewImg.style.display = 'none';
+                let note = preview.querySelector('.cover-url-note');
+                if (!note) { note = document.createElement('p'); note.className = 'cover-url-note text-xs text-gray-500 mt-1'; preview.appendChild(note); }
+                note.textContent = 'Image URL saved (cannot preview external link)';
+            };
+            previewImg.onload = function() {
+                previewImg.style.display = 'block';
+                const note = preview.querySelector('.cover-url-note');
+                if (note) note.remove();
+            };
+        }
+
+        async function editPost(id) {
+            const { data: post, error } = await _sb.from('blog_posts').select('*').eq('id', id).single();
+            if (error || !post) { alert('Could not load post.'); return; }
+            document.getElementById('blogEditId').value   = post.id;
+            document.getElementById('blogTitle').value    = post.title    || '';
+            document.getElementById('blogCategory').value = post.category || '';
+            document.getElementById('blogExcerpt').value  = post.excerpt  || '';
+            document.getElementById('blogCoverImage').value = post.cover_image || '';
+            setCoverPreview(post.cover_image || '');
+
+            // If DB content is empty (e.g. old static posts), fetch it from the HTML file
+            let content = post.content || '';
+            if (!content) {
+                const staticSlugs = ['blog-post-maintenance-tips','blog-post-laptop-overheating',
+                    'blog-post-smartphone-battery','blog-post-diy-ram-upgrade','blog-post-backup-strategy',
+                    'blog-post-smart-home-security','blog-post-gaming-console-problems'];
+                if (staticSlugs.includes(post.slug)) {
+                    try {
+                        const res = await fetch(`../blog/${post.slug}.html`);
+                        if (res.ok) {
+                            const html = await res.text();
+                            const doc  = new DOMParser().parseFromString(html, 'text/html');
+                            const el   = doc.querySelector('.post-content');
+                            if (el) {
+                                el.querySelector('.post-author')?.remove();
+                                content = el.innerHTML.trim();
+                            }
+                        }
+                    } catch(e) { /* keep empty */ }
+                }
+            }
+            document.getElementById('blogEditor').innerHTML = content;
+            document.getElementById('blogContent').value = content;
+
+            document.getElementById('blogModalTitle').textContent  = 'Edit Blog Post';
+            document.getElementById('blogSubmitBtn').textContent   = 'Update Post';
+            document.getElementById('addBlogModal').classList.add('active');
+        }
+
+        async function handleAddBlog(e) {
+            e.preventDefault();
+            syncBlogContent();
+            const editId     = document.getElementById('blogEditId').value;
+            const title      = document.getElementById('blogTitle').value.trim();
+            const category   = document.getElementById('blogCategory').value.trim() || 'General';
+            const content    = document.getElementById('blogContent').value.trim();
+            const excerptVal = document.getElementById('blogExcerpt').value.trim();
+            const coverImage = document.getElementById('blogCoverImage').value.trim();
+            if (!title || !content) { alert('Title and content are required.'); return; }
+            const excerpt = excerptVal || content.replace(/<[^>]+>/g, '').substring(0, 150) + '...';
+
+            if (editId) {
+                const { error } = await _sb.from('blog_posts')
+                    .update({ title, category, content, excerpt, cover_image: coverImage })
+                    .eq('id', editId);
+                if (error) { alert('Failed to update post: ' + error.message); return; }
+            } else {
+                const slug = title.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').replace(/^-+|-+$/g, '') + '-' + Date.now();
+                const { error } = await _sb.from('blog_posts').insert([{ title, slug, content, category, excerpt, cover_image: coverImage, published: true }]);
+                if (error) { alert('Failed to save post: ' + error.message); return; }
+            }
+            closeModal('addBlogModal');
+            document.getElementById('blogForm').reset();
+            bustBlogCache();
+            loadBlogPosts();
+        }
+
+        async function saveBlogAsDraft() {
+            syncBlogContent();
+            const title      = document.getElementById('blogTitle').value.trim();
+            const category   = document.getElementById('blogCategory').value.trim() || 'General';
+            const content    = document.getElementById('blogContent').value.trim();
+            const excerptVal = document.getElementById('blogExcerpt').value.trim();
+            const coverImage = document.getElementById('blogCoverImage').value.trim();
+            if (!title || !content) { alert('Title and content are required.'); return; }
+            const excerpt = excerptVal || content.replace(/<[^>]+>/g, '').substring(0, 150) + '...';
+            const slug = title.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-').replace(/^-+|-+$/g, '') + '-' + Date.now();
+            const { error } = await _sb.from('blog_posts').insert([{ title, slug, content, category, excerpt, cover_image: coverImage, published: false }]);
+            if (error) { alert('Failed to save draft: ' + error.message); return; }
+            closeModal('addBlogModal');
+            document.getElementById('blogForm').reset();
+            bustBlogCache();
+            loadBlogPosts();
+        }
+
+        function fillNewsletterFromAI() {
+            if (!_lastAINewsletter) { alert('No AI newsletter draft found. Click "Write Newsletter" in the AI Command Centre first.'); return; }
+            const subjectEl = document.getElementById('nlSubject');
+            const nlEditor  = document.getElementById('nlEditor');
+            const nlContent = document.getElementById('nlContent');
+            if (!subjectEl || !nlEditor) { alert('Newsletter composer not found. Please refresh and try again.'); return; }
+            subjectEl.value    = _lastAINewsletter.subject || '';
+            const body         = _lastAINewsletter.body || _lastAINewsletter.content || '';
+            nlEditor.innerHTML = body;
+            if (nlContent) nlContent.value = body;
+            // Open the compose modal immediately (it's a global overlay — no tab switch needed)
+            document.getElementById('composeModal').classList.add('active');
+        }
+
+        function fillBlogFromAI() {
+            if (!_lastAIBlog) { alert('Generate a blog post from the AI panel first.'); return; }
+            document.getElementById('blogEditId').value = '';
+            document.getElementById('blogTitle').value = _lastAIBlog.title || '';
+            // Convert markdown → HTML so ## / ** never appear as raw characters
+            const htmlContent = mdToHtml(_lastAIBlog.content || '');
+            const ed = document.getElementById('blogEditor');
+            if (ed) ed.innerHTML = htmlContent;
+            document.getElementById('blogContent').value = htmlContent;
+            document.getElementById('blogExcerpt').value = _lastAIBlog.meta_description || '';
+            document.getElementById('blogCategory').value = 'Tech';
+            document.getElementById('blogCoverImage').value = '';
+            document.getElementById('blogModalTitle').textContent = 'Write Blog Post';
+            document.getElementById('blogSubmitBtn').textContent = 'Publish Post';
+            switchTab('blog');
+            document.getElementById('addBlogModal').classList.add('active');
+        }
+
+        function bustBlogCache() {
+            try { localStorage.removeItem('omegatek_blog_posts_v1'); } catch(e) {}
+        }
+
+        async function togglePostPublish(id, publish) {
+            const { error } = await _sb.from('blog_posts').update({ published: publish }).eq('id', id);
+            if (error) { alert('Error: ' + error.message); return; }
+            bustBlogCache();
+            loadBlogPosts();
+        }
+
+        async function deletePostById(id) {
+            if (!confirm('Delete this post permanently?')) return;
+            const { error } = await _sb.from('blog_posts').delete().eq('id', id);
+            if (error) { alert('Error: ' + error.message); return; }
+            bustBlogCache();
+            loadBlogPosts();
+        }
+
+        // ── Load Functions ─────────────────────────────────────────
+
+        async function loadOrders() {
+            try {
+                const { data: orders, error } = await _sb
+                    .from('orders')
+                    .select('id, order_number, status, total_amount, created_at')
+                    .order('created_at', { ascending: false })
+                    .limit(50);
+
+                if (!error && orders) {
+                    document.getElementById('totalOrders').textContent = orders.length;
+                    if (orders.length > 0) {
+                        document.getElementById('recentOrders').innerHTML = orders.slice(0, 3).map(o => `
+                            <div class="p-3 bg-gray-50 rounded flex justify-between items-center">
+                                <span class="font-medium">#${escHtml(o.order_number || o.id.slice(0,8))}</span>
+                                <span class="badge badge-success">${escHtml(o.status || 'received')}</span>
+                            </div>
+                        `).join('');
+                    }
+                    return;
+                }
+            } catch (_) {}
+            // Fallback: local JSON store
+            try {
+                const res = await fetch('./order_data/orders.json');
+                if (res.ok) {
+                    const orders = await res.json();
+                    document.getElementById('totalOrders').textContent = (Array.isArray(orders) ? orders : []).length;
+                }
+            } catch (err) { console.warn('Orders unavailable:', err); }
+        }
+
+        async function loadProducts() {
+            try {
+                const { data: products, error } = await _sb
+                    .from('products')
+                    .select('part_no,model_no,name,variant_color,price,cost_price,warranty,is_new,category,stock,featured,image_url,supplier')
+                    .order('name', { ascending: true });
+                if (error) throw error;
+                const list = products || [];
+                document.getElementById('totalProducts').textContent = list.length;
+                renderProductsGrid(list);
+            } catch (err) {
+                console.warn('Products load error:', err);
+                document.getElementById('productsContainer').innerHTML =
+                    '<div class="card"><p class="text-red-500 text-sm">Could not load products: ' + escHtml(err.message) +
+                    '</p><p class="text-xs text-gray-400 mt-1">Run products-v2-migration.sql in Supabase first.</p></div>';
+            }
+        }
+
+        function renderProductsGrid(products) {
+            const el = document.getElementById('productsContainer');
+            if (!products.length) {
+                el.innerHTML = '<div class="card text-center py-10"><i class="fas fa-box-open text-4xl text-gray-300 mb-3"></i><p class="text-gray-500">No products yet. Use Import CSV/XLSX to bulk load your pricelist.</p></div>';
+                return;
+            }
+            el.innerHTML = products.map(function(p) {
+                const price = p.price ? 'R' + Number(p.price).toFixed(2) : '—';
+                const cost  = p.cost_price ? '<span class="text-xs text-gray-400">Cost: R' + Number(p.cost_price).toFixed(2) + '</span>' : '';
+                const newBadge = p.is_new ? '<span class="new-badge ml-1">NEW</span>' : '';
+                const chip  = p.variant_color ? '<span class="variant-chip">' + escHtml(p.variant_color) + '</span>' : '';
+                const cat   = p.category ? '<span class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded">' + escHtml(p.category) + '</span>' : '';
+                const warr  = p.warranty ? '<span class="text-xs text-gray-400">⏱ ' + escHtml(p.warranty) + '</span>' : '';
+                return '<div class="card flex flex-col gap-2">' +
+                    '<div class="flex items-start justify-between gap-2">' +
+                        '<div class="flex-1 min-w-0">' +
+                            '<div class="flex items-center gap-1.5 mb-0.5">' +
+                                '<span class="text-xs text-gray-400 font-mono">' + escHtml(p.part_no) + '</span>' + newBadge +
+                            '</div>' +
+                            '<h3 class="font-bold text-gray-800 text-sm leading-tight">' + escHtml(p.name) + '</h3>' +
+                            '<div class="mt-1">' + chip + '</div>' +
+                        '</div>' +
+                        '<div class="text-right shrink-0">' +
+                            '<div class="font-bold text-purple-700">' + price + '</div>' + cost +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="flex items-center gap-2 flex-wrap">' + cat + warr + '</div>' +
+                    '<div class="flex gap-2 mt-1">' +
+                        '<button onclick="editProduct(' + JSON.stringify(p.part_no) + ')" class="flex-1 px-2 py-1 text-xs rounded-lg border border-blue-300 text-blue-600 hover:bg-blue-50 transition-colors">Edit</button>' +
+                        '<button onclick="deleteProduct(' + JSON.stringify(p.part_no) + ')" class="px-2 py-1 text-xs rounded-lg border border-red-300 text-red-600 hover:bg-red-50 transition-colors">Delete</button>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+
+        function showAddProductModal() {
+            document.getElementById('productEditPartNo').value = '';
+            document.getElementById('productPartNo').value = '';
+            document.getElementById('productPartNo').disabled = false;
+            document.getElementById('productModelNo').value = '';
+            document.getElementById('productName').value = '';
+            document.getElementById('productDescription').value = '';
+            document.getElementById('productColor').value = '';
+            document.getElementById('productCategory').value = '';
+            document.getElementById('productCostPrice').value = '';
+            document.getElementById('productPrice').value = '';
+            document.getElementById('productStock').value = '0';
+            document.getElementById('productWarranty').value = '';
+            document.getElementById('productSupplier').value = 'Astrum';
+            document.getElementById('productImageUrl').value = '';
+            document.getElementById('productIsNew').checked = false;
+            document.getElementById('productFeatured').checked = false;
+            document.getElementById('productModalTitle').textContent = 'Add Product';
+            document.getElementById('productSubmitBtn').textContent = 'Save Product';
+            document.getElementById('addProductModal').classList.add('active');
+        }
+
+        async function editProduct(partNo) {
+            const { data, error } = await _sb.from('products').select('*').eq('part_no', partNo).single();
+            if (error || !data) { alert('Could not load product: ' + (error ? error.message : 'Not found')); return; }
+            document.getElementById('productEditPartNo').value = data.part_no;
+            document.getElementById('productPartNo').value = data.part_no;
+            document.getElementById('productPartNo').disabled = true; // PK — don't change
+            document.getElementById('productModelNo').value = data.model_no || '';
+            document.getElementById('productName').value = data.name || '';
+            document.getElementById('productDescription').value = data.description || '';
+            document.getElementById('productColor').value = data.variant_color || '';
+            document.getElementById('productCategory').value = data.category || '';
+            document.getElementById('productCostPrice').value = data.cost_price || '';
+            document.getElementById('productPrice').value = data.price || '';
+            document.getElementById('productStock').value = data.stock || 0;
+            document.getElementById('productWarranty').value = data.warranty || '';
+            document.getElementById('productSupplier').value = data.supplier || 'Astrum';
+            document.getElementById('productImageUrl').value = data.image_url || '';
+            document.getElementById('productIsNew').checked = !!data.is_new;
+            document.getElementById('productFeatured').checked = !!data.featured;
+            document.getElementById('productModalTitle').textContent = 'Edit Product';
+            document.getElementById('productSubmitBtn').textContent = 'Save Changes';
+            document.getElementById('addProductModal').classList.add('active');
+        }
+
+        async function deleteProduct(partNo) {
+            if (!confirm('Delete product ' + partNo + '? This cannot be undone.')) return;
+            const { error } = await _sb.from('products').delete().eq('part_no', partNo);
+            if (error) { alert('Delete failed: ' + error.message); return; }
+            loadProducts();
+        }
+
+        // ── Store sub-tab switching ─────────────────────────────────
+        function switchStoreTab(tab) {
+            ['products','import','images'].forEach(function(t) {
+                document.getElementById('storePanel-' + t).classList.toggle('hidden', t !== tab);
+                document.getElementById('storeTab-' + t).classList.toggle('store-tab-active', t === tab);
+            });
+            if (tab === 'products') loadProducts();
+        }
+
+        // ── Bulk Image Upload Engine ──────────────────────────
+        const _IMG_BUCKET = 'product-images';
+
+        function _imgDragOver(e) {
+            e.preventDefault();
+            document.getElementById('imgDropZone').classList.add('drag-over');
+        }
+        function _imgDragLeave() {
+            document.getElementById('imgDropZone').classList.remove('drag-over');
+        }
+        function _imgDrop(e) {
+            e.preventDefault();
+            document.getElementById('imgDropZone').classList.remove('drag-over');
+            if (e.dataTransfer.files.length) _bulkUploadImages(Array.from(e.dataTransfer.files));
+        }
+        function _imgFilesSelected(e) {
+            if (e.target.files.length) _bulkUploadImages(Array.from(e.target.files));
+            e.target.value = ''; // reset so same files can be re-dropped
+        }
+
+        async function _bulkUploadImages(files) {
+            const imgFiles = files.filter(function(f) { return f.type.startsWith('image/'); });
+            if (!imgFiles.length) { alert('No image files selected.'); return; }
+
+            const listEl    = document.getElementById('imgUploadList');
+            const summaryEl = document.getElementById('imgUploadSummary');
+            listEl.innerHTML = '';
+            listEl.classList.remove('hidden');
+            summaryEl.classList.add('hidden');
+
+            // Step 1: load all part_nos from Supabase so we can do fast lookup
+            let knownParts = {};
+            try {
+                const { data } = await _sb.from('products').select('part_no').order('part_no');
+                (data || []).forEach(function(r) { knownParts[r.part_no.toUpperCase()] = r.part_no; });
+            } catch(e) { /* proceed anyway */ }
+
+            let matched = 0, unmatched = [], errors = [];
+
+            for (let i = 0; i < imgFiles.length; i++) {
+                const file     = imgFiles[i];
+                const ext      = file.name.split('.').pop();
+                const baseName = file.name.replace(/\.[^.]+$/, '').trim();
+                const partKey  = baseName.toUpperCase();
+                const realPart = knownParts[partKey] || baseName; // use exact or best-guess
+                const isKnown  = !!knownParts[partKey];
+
+                // Create row
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'flex items-center gap-3 p-2 rounded-lg bg-gray-50 border border-gray-100 text-sm';
+                rowDiv.innerHTML =
+                    '<span class="font-mono text-gray-600 w-40 shrink-0 truncate" title="' + escHtml(file.name) + '">' + escHtml(file.name) + '</span>' +
+                    (isKnown
+                        ? '<span class="text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded font-semibold">Matched: ' + escHtml(realPart) + '</span>'
+                        : '<span class="text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded font-semibold">No match — still uploading</span>') +
+                    '<span id="imgRow_' + i + '" class="ml-auto text-gray-400"><i class="fas fa-spinner fa-spin"></i></span>';
+                listEl.appendChild(rowDiv);
+
+                try {
+                    const storagePath = realPart + '.' + ext;
+                    // upsert = overwrite if filename exists
+                    const { error: uploadErr } = await _sb.storage
+                        .from(_IMG_BUCKET)
+                        .upload(storagePath, file, { upsert: true, contentType: file.type });
+                    if (uploadErr) throw uploadErr;
+
+                    // Get public URL
+                    const { data: urlData } = _sb.storage.from(_IMG_BUCKET).getPublicUrl(storagePath);
+                    const publicUrl = urlData?.publicUrl;
+
+                    // Update image_url in products table for this part_no
+                    if (isKnown && publicUrl) {
+                        const { error: updateErr } = await _sb.from('products')
+                            .update({ image_url: publicUrl })
+                            .eq('part_no', realPart);
+                        if (updateErr) throw updateErr;
+                        matched++;
+                        document.getElementById('imgRow_' + i).innerHTML = '<i class="fas fa-check-circle text-green-500"></i>';
+                    } else {
+                        // Uploaded but no product match — still fine, image is in storage
+                        unmatched.push(file.name);
+                        document.getElementById('imgRow_' + i).innerHTML = '<span class="text-amber-500" title="Uploaded, but no product found with this name">✔ uploaded (no product match)</span>';
+                    }
+                } catch (err) {
+                    errors.push(file.name + ': ' + err.message);
+                    document.getElementById('imgRow_' + i).innerHTML = '<span class="text-red-500" title="' + escHtml(err.message) + '">✖ error</span>';
+                }
+            }
+
+            // Show summary
+            summaryEl.classList.remove('hidden');
+            if (!errors.length) {
+                summaryEl.className = 'mt-3 p-3 rounded-lg text-sm font-medium bg-green-50 border border-green-200 text-green-800';
+                summaryEl.innerHTML = '✅ Done! <strong>' + matched + '</strong> product image(s) updated in Supabase.' +
+                    (unmatched.length ? ' <strong>' + unmatched.length + '</strong> uploaded to Storage without a matching product (check filenames match Part No exactly).' : '');
+            } else {
+                summaryEl.className = 'mt-3 p-3 rounded-lg text-sm font-medium bg-red-50 border border-red-200 text-red-800';
+                summaryEl.innerHTML = '⚠️ ' + matched + ' updated, ' + errors.length + ' error(s): ' + errors.slice(0,3).map(escHtml).join('; ');
+            }
+            // Refresh grid if on products tab
+            document.getElementById('storeTab-products').classList.contains('store-tab-active') && loadProducts();
+        }
+
+        // ── CSV / XLSX Import Engine ────────────────────────────────
+        let _importRows = [];  // holds normalised rows shown in preview
+
+        function _importDragOver(e) {
+            e.preventDefault();
+            document.getElementById('importDropZone').classList.add('drag-over');
+        }
+        function _importDragLeave(e) {
+            document.getElementById('importDropZone').classList.remove('drag-over');
+        }
+        function _importDrop(e) {
+            e.preventDefault();
+            document.getElementById('importDropZone').classList.remove('drag-over');
+            const file = e.dataTransfer.files[0];
+            if (file) _parseSupplierFile(file);
+        }
+        function _importFileSelected(e) {
+            const file = e.target.files[0];
+            if (file) _parseSupplierFile(file);
+        }
+
+        function _parsePriceStr(s) {
+            if (!s) return null;
+            const n = parseFloat(String(s).replace(/[^0-9.]/g, ''));
+            return isNaN(n) ? null : n;
+        }
+
+        function _parseSupplierFile(file) {
+            const statusEl = document.getElementById('importStatus');
+            const statusTxtEl = document.getElementById('importStatusText');
+            statusEl.classList.remove('hidden');
+            statusTxtEl.textContent = 'Reading ' + escHtml(file.name) + '...';
+            document.getElementById('importPreviewWrap').classList.add('hidden');
+
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                try {
+                    statusTxtEl.textContent = 'Parsing spreadsheet...';
+                    const data = new Uint8Array(ev.target.result);
+                    const wb   = XLSX.read(data, { type: 'array' });
+                    const ws   = wb.Sheets[wb.SheetNames[0]];
+                    const raw  = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+                    const rows = _normalizeSupplierRows(raw);
+                    _importRows = rows;
+                    _renderImportPreview(rows);
+                    statusEl.classList.add('hidden');
+                } catch (err) {
+                    statusTxtEl.textContent = 'Parse error: ' + err.message;
+                    statusEl.style.background = '#fef2f2';
+                    statusEl.style.borderColor = '#fecaca';
+                    statusEl.style.color = '#dc2626';
+                    statusEl.querySelector('i').className = 'fas fa-exclamation-circle';
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function _normalizeSupplierRows(raw) {
+            if (!raw || raw.length < 2) return [];
+            // Find header row (contains 'Part No' or 'part no')
+            let headerIdx = 0;
+            for (let i = 0; i < Math.min(raw.length, 5); i++) {
+                const joined = raw[i].join('').toLowerCase();
+                if (joined.includes('part no') || joined.includes('partno')) { headerIdx = i; break; }
+            }
+            const headers = raw[headerIdx].map(function(h) { return String(h).trim().toLowerCase(); });
+            // Column index map
+            const ci = function(name) {
+                const idx = headers.indexOf(name);
+                return idx >= 0 ? idx : -1;
+            };
+            const iPartNo  = ci('part no');
+            const iModelNo = ci('model no');
+            const iImage   = ci('image');       // may not exist
+            const iName    = headers.indexOf('name');
+            const iDesc    = headers.indexOf('description');
+            // Columns 5,6,7 are blank separators between description & options
+            // Options / colour is typically the first blank-header col after description (or explicit 'options')
+            let iOptions   = ci('options');
+            if (iOptions < 0) {
+                // fallback: scan for col after description that has colour data
+                iOptions = iDesc + 3;
+            }
+            let iPrice     = headers.findIndex(function(h) { return h.includes('price') && !h.includes('sale'); });
+            if (iPrice < 0) iPrice = iOptions + 1;
+            let iSRP       = headers.findIndex(function(h) { return h.includes('srp') || (h.includes('price') && h !== headers[iPrice]); });
+            if (iSRP < 0) iSRP = iPrice + 1;
+            let iWarranty  = ci('warranty');
+            if (iWarranty < 0) iWarranty = iSRP + 1;
+            const iNewFlag = iWarranty + 1;
+
+            const rows = [];
+            let lastPartNo = '', lastModelNo = '', lastName = '', lastDesc = '', lastWarranty = '';
+            const junk = ['johannesburg','durban','cape town','tel:','email:','http','origin park','corporate park','download','place order','check stock'];
+
+            for (let r = headerIdx + 1; r < raw.length; r++) {
+                const row = raw[r];
+                const partNo  = String(row[iPartNo]  || '').trim();
+                const name    = String(iName  >= 0 ? row[iName]   || '' : '').trim();
+                const options = String(iOptions >= 0 ? row[iOptions] || '' : '').trim();
+                const priceRaw = _parsePriceStr(row[iPrice]);
+                const srpRaw   = _parsePriceStr(row[iSRP]);
+
+                // Skip: empty row, footer text, no part no AND no variant
+                if (!partNo && !options) continue;
+                if (!partNo && !name && !options) continue;
+                const rowText = row.join('').toLowerCase();
+                if (junk.some(function(j) { return rowText.includes(j); })) continue;
+                if (priceRaw === null && srpRaw === null && !name && !options) continue;
+
+                // Fill-down
+                if (name)  lastName    = name;
+                if (iModelNo >= 0 && row[iModelNo]) lastModelNo = String(row[iModelNo]).trim();
+                if (iDesc  >= 0 && row[iDesc]) lastDesc  = String(row[iDesc]).trim();
+                if (iWarranty >= 0 && row[iWarranty]) lastWarranty = String(row[iWarranty]).trim();
+                if (partNo) lastPartNo = partNo;
+
+                if (!partNo || !lastName) continue; // must have both
+
+                rows.push({
+                    part_no:       partNo,
+                    model_no:      lastModelNo,
+                    name:          lastName,
+                    description:   lastDesc,
+                    variant_color: options,
+                    cost_price:    priceRaw,
+                    price:         srpRaw || priceRaw || 0,
+                    warranty:      lastWarranty,
+                    is_new:        String(row[iNewFlag] || '').trim().toLowerCase() === 'new',
+                    image_url:     iImage >= 0 ? String(row[iImage] || '').trim() : '',
+                    supplier:      'Astrum',
+                    category:      '',
+                    stock:         0
+                });
+            }
+            return rows;
+        }
+
+        function _renderImportPreview(rows) {
+            document.getElementById('importRowCount').textContent = rows.length;
+            document.getElementById('importResult').classList.add('hidden');
+            const tbody = document.getElementById('importPreviewBody');
+            const catOptions = ['','Wearables','Networking','Laptop Bags','Accessories','Camera','Lighting','TV Mounts','Mobile Holders','Cable Management','Cleaning Kits'];
+            const catSel = function(val, idx) {
+                return '<select class="import-cat-sel" data-row="' + idx + '">' +
+                    catOptions.map(function(c) { return '<option' + (c === val ? ' selected' : '') + '>' + escHtml(c) + '</option>'; }).join('') +
+                '</select>';
+            };
+            tbody.innerHTML = rows.map(function(r, i) {
+                return '<tr id="irow_' + i + '">' +
+                    '<td><input value="' + escHtml(r.part_no)       + '" data-f="part_no"       data-row="' + i + '"></td>' +
+                    '<td><input value="' + escHtml(r.model_no)      + '" data-f="model_no"      data-row="' + i + '"></td>' +
+                    '<td><input value="' + escHtml(r.name)          + '" data-f="name"          data-row="' + i + '" style="min-width:150px"></td>' +
+                    '<td><input value="' + escHtml(r.variant_color) + '" data-f="variant_color" data-row="' + i + '"></td>' +
+                    '<td><input type="number" value="' + (r.cost_price || '') + '" data-f="cost_price" data-row="' + i + '"></td>' +
+                    '<td><input type="number" value="' + (r.price || '')      + '" data-f="price"      data-row="' + i + '"></td>' +
+                    '<td><input value="' + escHtml(r.warranty)      + '" data-f="warranty"      data-row="' + i + '"></td>' +
+                    '<td><input type="checkbox" data-f="is_new" data-row="' + i + '"' + (r.is_new ? ' checked' : '') + '></td>' +
+                    '<td>' + catSel(r.category, i) + '</td>' +
+                    '<td><input value="' + escHtml(r.supplier)      + '" data-f="supplier"      data-row="' + i + '"></td>' +
+                    '<td><input type="number" value="' + (r.stock || 0) + '" data-f="stock" data-row="' + i + '" style="min-width:45px"></td>' +
+                    '<td class="del-col"><button onclick="_importDelRow(' + i + ')" title="Remove row">&times;</button></td>' +
+                '</tr>';
+            }).join('');
+            document.getElementById('importPreviewWrap').classList.remove('hidden');
+        }
+
+        function _importDelRow(idx) {
+            const row = document.getElementById('irow_' + idx);
+            if (row) { row.remove(); }
+        }
+
+        function _applyBulkCategory() {
+            const cat = document.getElementById('importBulkCategory').value;
+            if (!cat) return;
+            document.querySelectorAll('.import-cat-sel').forEach(function(sel) { sel.value = cat; });
+        }
+
+        function _collectImportRows() {
+            const rows = [];
+            document.querySelectorAll('#importPreviewBody tr').forEach(function(tr) {
+                const get = function(f) {
+                    const el = tr.querySelector('[data-f="' + f + '"]');
+                    if (!el) return '';
+                    if (el.type === 'checkbox') return el.checked;
+                    return el.value;
+                };
+                const partNo = get('part_no').trim();
+                const name   = get('name').trim();
+                if (!partNo || !name) return; // skip incomplete
+                const srp    = parseFloat(get('price'));
+                rows.push({
+                    part_no:       partNo,
+                    model_no:      get('model_no').trim() || null,
+                    name:          name,
+                    variant_color: get('variant_color').trim() || null,
+                    cost_price:    parseFloat(get('cost_price')) || null,
+                    price:         isNaN(srp) ? 0 : srp,
+                    warranty:      get('warranty').trim() || null,
+                    is_new:        get('is_new'),
+                    category:      tr.querySelector('.import-cat-sel')?.value || null,
+                    supplier:      get('supplier').trim() || 'Astrum',
+                    stock:         parseInt(get('stock')) || 0
+                });
+            });
+            return rows;
+        }
+
+        async function _pushImportToSupabase() {
+            const rows = _collectImportRows();
+            if (!rows.length) { alert('No valid rows to import.'); return; }
+            const btn = document.getElementById('importPushBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Importing ' + rows.length + ' rows...';
+            const resultEl = document.getElementById('importResult');
+            resultEl.classList.add('hidden');
+
+            try {
+                // Upsert in batches of 50 to avoid request size limits
+                const BATCH = 50;
+                let done = 0, errors = [];
+                for (let i = 0; i < rows.length; i += BATCH) {
+                    const batch = rows.slice(i, i + BATCH);
+                    const { error } = await _sb.from('products').upsert(batch, { onConflict: 'part_no' });
+                    if (error) errors.push(error.message);
+                    else done += batch.length;
+                    btn.innerHTML = '<i class="fas fa-database mr-2"></i>Pushed ' + done + '/' + rows.length + '...';
+                }
+                if (errors.length) {
+                    resultEl.className = 'mt-3 p-3 rounded-lg text-sm font-medium bg-red-50 border border-red-200 text-red-700';
+                    resultEl.textContent = '⚠️ ' + done + ' rows imported, but ' + errors.length + ' batch(es) had errors: ' + errors.join(' | ');
+                } else {
+                    resultEl.className = 'mt-3 p-3 rounded-lg text-sm font-medium bg-green-50 border border-green-200 text-green-700';
+                    resultEl.textContent = '✅ ' + done + ' products imported successfully into Supabase!';
+                    _importRows = [];
+                    document.getElementById('importPreviewBody').innerHTML = '';
+                    document.getElementById('importRowCount').textContent = '0';
+                }
+                resultEl.classList.remove('hidden');
+            } catch (err) {
+                resultEl.className = 'mt-3 p-3 rounded-lg text-sm font-medium bg-red-50 border border-red-200 text-red-700';
+                resultEl.textContent = 'Import failed: ' + err.message;
+                resultEl.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-database mr-2"></i>Push to Supabase';
+            }
+        }
+
+        async function loadBlogPosts() {
+            try {
+                const { data: posts, error } = await _sb
+                    .from('blog_posts')
+                    .select('id, title, slug, excerpt, category, published, created_at')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                const count = (posts || []).filter(p => p.published).length;
+                document.getElementById('totalBlogPosts').textContent = count;
+
+                const container = document.getElementById('blogContainer');
+                if (!posts || posts.length === 0) {
+                    container.innerHTML = `<div class="card"><p class="text-gray-600">No blog posts yet. Create your first post!</p></div>`;
+                    return;
+                }
+
+                container.innerHTML = posts.map(post => `
+                    <div class="card flex items-center justify-between gap-4">
+                        <div class="flex-1 min-w-0">
+                            <h3 class="font-bold text-gray-800 truncate">${escHtml(post.title)}</h3>
+                            <p class="text-sm text-gray-500 mt-1 truncate">${escHtml(post.excerpt || '')}</p>
+                            <div class="flex items-center gap-3 mt-2">
+                                <span class="text-xs text-gray-400">${escHtml(post.category || 'General')}</span>
+                                <span class="badge ${post.published ? 'badge-success' : 'badge-warning'}">
+                                    ${post.published ? 'Published' : 'Draft'}
+                                </span>
+                                <span class="text-xs text-gray-400">${new Date(post.created_at).toLocaleDateString('en-ZA')}</span>
+                            </div>
+                        </div>
+                        <div class="flex gap-2 shrink-0">
+                            <button onclick="editPost('${post.id}')"
+                                class="px-3 py-1 text-xs rounded-lg border border-blue-300 text-blue-600 hover:bg-blue-50 transition-colors">
+                                Edit
+                            </button>
+                            <button onclick="togglePostPublish('${post.id}', ${!post.published})"
+                                class="px-3 py-1 text-xs rounded-lg border ${post.published ? 'border-yellow-400 text-yellow-700 hover:bg-yellow-50' : 'border-green-400 text-green-700 hover:bg-green-50'} transition-colors">
+                                ${post.published ? 'Unpublish' : 'Publish'}
+                            </button>
+                            <button onclick="deletePostById('${post.id}')"
+                                class="px-3 py-1 text-xs rounded-lg border border-red-300 text-red-600 hover:bg-red-50 transition-colors">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('Error loading blog posts:', error);
+                document.getElementById('blogContainer').innerHTML = `
+                    <div class="card">
+                        <p class="text-red-500">Error loading posts: ${error.message}</p>
+                        <p class="text-sm text-gray-500 mt-2">Make sure the blog_posts table exists in Supabase. See supabase-blog-schema.sql.</p>
+                    </div>`;
+            }
+        }
+
+        async function loadNewsletterData() {
+            try {
+                const res = await fetch('./newsletter-api.php?action=get_subscribers_count');
+                if (res.ok) {
+                    const data = await res.json();
+                    document.getElementById('totalSubscribers').textContent = data.count || 0;
+                }
+            } catch (error) { console.log('Newsletter count unavailable.'); }
+        }
+
+        async function loadNewsletterSection() {
+            try {
+                const [{ data: subs, error: e1 }, { data: nls, error: e2 }] = await Promise.all([
+                    _sb.from('newsletter_subscribers')
+                        .select('id,email,name,status,subscribed_at')
+                        .order('subscribed_at', { ascending: false }),
+                    _sb.from('newsletters')
+                        .select('id,subject,status,sent_at,sent_count,created_at')
+                        .order('created_at', { ascending: false })
+                        .limit(50)
+                ]);
+                if (e1) throw e1;
+                if (e2) throw e2;
+
+                const subscribers = subs || [];
+                const newsletters  = nls  || [];
+                const active       = subscribers.filter(s => s.status === 'active');
+
+                document.getElementById('nlTotal').textContent  = subscribers.length;
+                document.getElementById('nlActive').textContent = active.length;
+                const tsEl = document.getElementById('totalSubscribers');
+                if (tsEl) tsEl.textContent = active.length;
+
+                document.getElementById('subscribersList').innerHTML = subscribers.length === 0
+                    ? '<p class="text-gray-500 text-sm">No subscribers yet.</p>'
+                    : subscribers.map(s => `
+                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded text-sm hover:bg-gray-100 transition-colors group">
+                            <div class="min-w-0 mr-2">
+                                <span class="font-medium">${escHtml(s.name || '\u2014')}</span>
+                                <span class="text-gray-500 ml-2 text-xs">${escHtml(s.email)}</span>
+                            </div>
+                            <div class="flex items-center gap-2 flex-shrink-0">
+                                <span class="text-xs font-bold ${s.status === 'active' ? 'text-green-600' : 'text-gray-400'}">${s.status}</span>
+                                <button onclick="deleteSubscriber('${escHtml(s.id)}', this)" class="text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity text-xs px-1 py-0.5 rounded" title="Remove subscriber">\u2715</button>
+                            </div>
+                        </div>`).join('');
+
+                const nlSentEl = document.getElementById('nlSent');
+                if (nlSentEl) nlSentEl.textContent = newsletters.filter(n => n.status === 'sent').length;
+
+                document.getElementById('newsletterHistory').innerHTML = newsletters.length === 0
+                    ? '<p class="text-gray-500 text-sm">No newsletters yet.</p>'
+                    : newsletters.map(n => `
+                        <div class="p-3 bg-gray-50 rounded hover:bg-gray-100 transition-colors group">
+                            <div class="flex justify-between items-start gap-2">
+                                <span class="font-medium text-sm flex-1 min-w-0 truncate" title="${escHtml(n.subject)}">${escHtml(n.subject)}</span>
+                                <div class="flex items-center gap-2 flex-shrink-0">
+                                    <span class="badge ${n.status === 'sent' ? 'badge-success' : 'badge-warning'}">${n.status}</span>
+                                    <button onclick="deleteNewsletterById('${escHtml(n.id)}')" class="text-red-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity text-xs" title="Delete">\u2715</button>
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-500 mt-1">
+                                ${new Date(n.created_at).toLocaleDateString('en-ZA')}
+                                ${n.status === 'sent' ? `&bull; Sent to ${n.sent_count} subscriber${n.sent_count !== 1 ? 's' : ''}` : ''}
+                            </div>
+                        </div>`).join('');
+            } catch (err) { console.error('Newsletter section error:', err); }
+        }
+
+        async function deleteSubscriber(id, btn) {
+            if (!confirm('Remove this subscriber permanently?')) return;
+            btn.disabled = true;
+            const prev = btn.textContent;
+            btn.textContent = '\u2026';
+            const { error } = await _sb.from('newsletter_subscribers').delete().eq('id', id);
+            if (error) {
+                btn.disabled = false;
+                btn.textContent = prev;
+                alert('Error: ' + error.message);
+                return;
+            }
+            loadNewsletterSection();
+        }
+
+        async function deleteNewsletterById(id) {
+            if (!confirm('Delete this newsletter permanently?')) return;
+            const { error } = await _sb.from('newsletters').delete().eq('id', id);
+            if (error) { alert('Error: ' + error.message); return; }
+            loadNewsletterSection();
+        }
+
+        function showComposeModal() {
+            document.getElementById('composeModal').classList.add('active');
+        }
+
+        async function handleSendNewsletter(e) {
+            e.preventDefault();
+            const subject = document.getElementById('nlSubject').value.trim();
+            const content = (document.getElementById('nlContent')?.value || document.getElementById('nlEditor')?.innerHTML || '').trim();
+            if (!subject) { alert('Please enter a subject line.'); return; }
+            if (!content || content === '<br>') { alert('Please add some content before sending.'); return; }
+            const btn = document.getElementById('nlSendBtn');
+            if (!confirm(`Send "${subject}" to all active subscribers?`)) return;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sending...';
+            try {
+                // 1. Save newsletter to Supabase
+                const { data: nlRow, error: nlErr } = await _sb
+                    .from('newsletters')
+                    .insert([{ title: subject, subject, content, status: 'draft' }])
+                    .select()
+                    .single();
+                if (nlErr) throw new Error(nlErr.message);
+
+                // 2. Call PHP to personalise + send emails + mark as 'sent' in Supabase
+                const token   = await getAccessToken();
+                const sendRes = await fetch('./newsletter-api.php?action=send_newsletter', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                    body: JSON.stringify({ id: nlRow.id })
+                });
+                const sendData = await sendRes.json();
+                if (!sendData.success) throw new Error(sendData.message);
+                alert(sendData.message);
+                closeModal('composeModal');
+                document.getElementById('nlSubject').value = '';
+                const nlEd = document.getElementById('nlEditor');
+                if (nlEd) { nlEd.innerHTML = ''; syncNlContent(); }
+                loadNewsletterSection();
+            } catch (err) { alert('Error: ' + err.message); }
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Send to All Subscribers';
+        }
+
+        function previewNewsletter() {
+            const content = (document.getElementById('nlContent')?.value || document.getElementById('nlEditor')?.innerHTML || '').trim();
+            if (!content) { alert('Enter content first.'); return; }
+            const win = window.open('', '_blank');
+            win.document.write(content.replace(/{{name}}/g, 'Preview User').replace(/{{email}}/g, 'preview@example.com'));
+            win.document.close();
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                _sb.auth.signOut().then(() => {
+                    sessionStorage.clear();
+                    window.location.href = 'admin-login.html';
+                });
+            }
+        }
+
+        // ─────────────────────────────────────────────────────────────────
+        // SECURITY — Auto-logout on inactivity & session age cap
+        // ─────────────────────────────────────────────────────────────────
+        const ADMIN_EMAIL         = 'milanzisandile5@gmail.com';
+        const INACTIVITY_LIMIT_MS = 2 * 60 * 60 * 1000;  // 2 h idle → logout
+        const SESSION_MAX_AGE_MS  = 8 * 60 * 60 * 1000;  // 8 h absolute cap
+        const WARN_BEFORE_MS      = 60 * 1000;            // show warning 60 s early
+        const HIDDEN_LIMIT_MS     = 30 * 60 * 1000;       // 30 min backgrounded → logout
+
+        let inactivityTimer, warnTimer, hiddenSince;
+
+        // ── Logout (force, no confirm) ────────────────────────────────
+        function forceLogout(reason) {
+            clearTimeout(inactivityTimer);
+            clearTimeout(warnTimer);
+            _sb.auth.signOut().then(() => {
+                sessionStorage.clear();
+                window.location.href = 'admin-login.html?reason=' + encodeURIComponent(reason);
+            });
+        }
+
+        // ── Warning banner ────────────────────────────────────────────
+        function showAutoLogoutWarning(secsLeft) {
+            let banner = document.getElementById('_autoLogoutBanner');
+            if (!banner) {
+                banner = document.createElement('div');
+                banner.id = '_autoLogoutBanner';
+                banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:#c0392b;color:#fff;text-align:center;padding:14px 20px;font-weight:bold;font-size:15px;display:flex;align-items:center;justify-content:center;gap:14px;';
+                banner.innerHTML = `<span id="_autoLogoutMsg"></span>
+                    <button onclick="resetInactivityTimer();document.getElementById('_autoLogoutBanner').remove()"
+                        style="background:rgba(255,255,255,0.25);border:none;color:#fff;padding:5px 14px;border-radius:6px;cursor:pointer;font-weight:bold;">Stay logged in</button>`;
+                document.body.prepend(banner);
+            }
+            document.getElementById('_autoLogoutMsg').textContent = `⚠️ You will be automatically logged out in ${secsLeft} second${secsLeft !== 1 ? 's' : ''} due to inactivity.`;
+        }
+
+        // ── Reset inactivity timer on any user interaction ────────────
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            clearTimeout(warnTimer);
+            const banner = document.getElementById('_autoLogoutBanner');
+            if (banner) banner.remove();
+
+            // Warn 60 s before logout
+            warnTimer = setTimeout(() => {
+                let countdown = Math.round(WARN_BEFORE_MS / 1000);
+                showAutoLogoutWarning(countdown);
+                const tick = setInterval(() => {
+                    countdown--;
+                    const msg = document.getElementById('_autoLogoutMsg');
+                    if (msg) msg.textContent = `⚠️ You will be automatically logged out in ${countdown} second${countdown !== 1 ? 's' : ''} due to inactivity.`;
+                    if (countdown <= 0) clearInterval(tick);
+                }, 1000);
+            }, INACTIVITY_LIMIT_MS - WARN_BEFORE_MS);
+
+            inactivityTimer = setTimeout(() => {
+                forceLogout('inactivity');
+            }, INACTIVITY_LIMIT_MS);
+        }
+
+        // ── Activity events that reset the timer ──────────────────────
+        ['mousemove','mousedown','keydown','touchstart','scroll','click'].forEach(ev => {
+            document.addEventListener(ev, resetInactivityTimer, { passive: true });
+        });
+
+        // ── Tab visibility — if hidden > 30 min, logout ───────────────
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                hiddenSince = Date.now();
+            } else {
+                if (hiddenSince && (Date.now() - hiddenSince) > HIDDEN_LIMIT_MS) {
+                    forceLogout('backgrounded');
+                }
+                hiddenSince = null;
+            }
+        });
+
+        // Initialize dashboard — auth guard + data load
+        window.addEventListener('DOMContentLoaded', async () => {
+            // Listen for auth state changes (handles token refresh and signout)
+            _sb.auth.onAuthStateChange((event, session) => {
+                if (event === 'SIGNED_OUT' || (!session && event !== 'INITIAL_SESSION')) {
+                    sessionStorage.clear();
+                    window.location.replace('admin-login.html');
+                }
+            });
+
+            // Cover image live preview
+            document.getElementById('blogCoverImage')?.addEventListener('input', (e) => {
+                setCoverPreview(e.target.value.trim());
+            });
+
+            // AI command enter-key
+            const aiInput = document.getElementById('aiManualCommand');
+            if (aiInput) aiInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') { e.preventDefault(); sendManualAICommand(); }
+            });
+
+            // Try stored session first, then try to refresh
+            let { data: { session } } = await _sb.auth.getSession();
+            if (!session) {
+                const { data: refreshed } = await _sb.auth.refreshSession();
+                session = refreshed?.session || null;
+            }
+            if (!session) {
+                window.location.replace('admin-login.html');
+                return;
+            }
+
+            // ── Email whitelist check ───────────────────────────────────
+            if (session.user.email !== ADMIN_EMAIL) {
+                await _sb.auth.signOut();
+                window.location.replace('admin-login.html?reason=unauthorized');
+                return;
+            }
+
+            // ── Session age cap ─────────────────────────────────────────
+            const loginAt = parseInt(sessionStorage.getItem('adm_login_at') || '0');
+            if (loginAt > 0 && (Date.now() - loginAt) > SESSION_MAX_AGE_MS) {
+                forceLogout('session_expired');
+                return;
+            }
+            // If loginAt missing (e.g. older session), store now
+            if (!loginAt) sessionStorage.setItem('adm_login_at', Date.now().toString());
+
+            // ── Start inactivity timer ──────────────────────────────────
+            resetInactivityTimer();
+
+            loadOrders();
+            loadProducts();
+            loadBlogPosts();
+            loadNewsletterData();
+            loadRepairs();
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleString('en-ZA');
+        });
+
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
+

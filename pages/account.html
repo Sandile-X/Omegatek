@@ -1,0 +1,504 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Account | Omegatek Solutions</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="icon" type="image/png" href="../images2/favicon.png">
+    
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+        
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 40;
+        }
+        
+        .navbar a {
+            color: #64748b;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .navbar a:hover {
+            color: #b30ce6;
+        }
+        
+        .auth-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #b30ce6 0%, #9333ea 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(179, 12, 230, 0.3);
+        }
+        
+        .order-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-left: 4px solid #b30ce6;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .badge-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .badge-processing {
+            background: #bfdbfe;
+            color: #1e40af;
+        }
+        
+        .badge-completed {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .badge-shipped {
+            background: #e9d5ff;
+            color: #6b21a8;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <img src="../images2/OMEGATEK%20ICON%20ONLY.png" alt="Logo" class="w-8 h-8">
+                <span class="font-bold text-lg text-gray-800">Omegatek</span>
+            </div>
+            <div class="flex items-center gap-6">
+                <a href="/">Home</a>
+                <a href="products">Products</a>
+                <a href="services">Services</a>
+                <a href="blog">Blog</a>
+                <button onclick="logout()" class="btn-primary" id="logoutBtn" style="display:none;">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        
+        <!-- Login Section (Hidden after login) -->
+        <div id="loginSection" class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div class="auth-card">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Login</h2>
+                <form onsubmit="handleLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" id="loginEmail" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input type="password" id="loginPassword" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
+                    </div>
+                    <button type="submit" class="w-full btn-primary py-2">Login</button>
+                    <p class="text-center text-sm text-gray-600">
+                        Don't have an account? <a href="#" onclick="switchToRegister()" class="text-purple-600 font-medium">Register here</a>
+                    </p>
+                </form>
+            </div>
+
+            <div class="auth-card">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Create Account</h2>
+                <form onsubmit="handleRegister(event)" class="space-y-4" id="registerForm" style="display:none;">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                        <input type="text" id="regFirstName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                        <input type="text" id="regLastName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" id="regEmail" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                        <input type="tel" id="regPhone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input type="password" id="regPassword" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
+                    </div>
+                    <button type="submit" class="w-full btn-primary py-2">Create Account</button>
+                    <p class="text-center text-sm text-gray-600">
+                        Already have an account? <a href="#" onclick="switchToLogin()" class="text-purple-600 font-medium">Login here</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+
+        <!-- Account Dashboard (Shown after login) -->
+        <div id="accountSection" style="display:none;">
+            
+            <!-- Welcome Header -->
+            <div class="bg-gradient-to-r from-purple-600 to-purple-800 text-white rounded-lg p-8 mb-8">
+                <h1 class="text-4xl font-bold mb-2">Welcome, <span id="userGreeting">Guest</span>!</h1>
+                <p class="text-purple-100">Manage your orders and repair tickets from here</p>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex gap-4 mb-8 border-b border-gray-200">
+                <button onclick="switchTab('orders')" class="tab-btn active px-6 py-3 font-medium text-gray-700 border-b-2 border-purple-600">
+                    <i class="fas fa-shopping-cart mr-2"></i>Orders
+                </button>
+                <button onclick="switchTab('repairs')" class="tab-btn px-6 py-3 font-medium text-gray-700">
+                    <i class="fas fa-tools mr-2"></i>Repair Tickets
+                </button>
+                <button onclick="switchTab('profile')" class="tab-btn px-6 py-3 font-medium text-gray-700">
+                    <i class="fas fa-user mr-2"></i>Profile
+                </button>
+            </div>
+
+            <!-- Orders Tab -->
+            <div id="orders-tab" class="tab-content">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Your Orders</h2>
+                <div id="ordersList" class="space-y-4">
+                    <p class="text-gray-600">Loading orders...</p>
+                </div>
+            </div>
+
+            <!-- Repairs Tab -->
+            <div id="repairs-tab" class="tab-content" style="display:none;">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Repair Tickets</h2>
+               <div id="repairsList" class="space-y-4">
+                    <p class="text-gray-600">Loading repair tickets...</p>
+                </div>
+            </div>
+
+            <!-- Profile Tab -->
+            <div id="profile-tab" class="tab-content" style="display:none;">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Your Profile</h2>
+                <div class="auth-card max-w-2xl">
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                            <input type="email" id="profileEmail" readonly class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                                <input type="text" id="profileFirstName" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                                <input type="text" id="profileLastName" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
+                            <input type="tel" id="profilePhone" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                        </div>
+                        <button onclick="updateProfile()" class="btn-primary py-2">Update Profile</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        const API_BASE = './admin/';
+        let currentUser = null;
+        let authToken = localStorage.getItem('authToken');
+
+        // Check if user is logged in on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            if (authToken) {
+                verifyToken();
+            }
+        });
+
+        // Switch between login and register forms
+        function switchToRegister() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+            document.querySelector('.auth-card:first-child').style.display = 'none';
+        }
+
+        function switchToLogin() {
+            document.getElementById('loginSection').style.display = 'grid';
+            document.getElementById('registerForm').style.display = 'none';
+            document.querySelector('.auth-card:first-child').style.display = 'block';
+        }
+
+        // Handle login
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const response = await fetch(API_BASE + 'auth-api.php?action=login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    localStorage.setItem('authToken', data.token);
+                    authToken = data.token;
+                    currentUser = data.user;
+                    showAccountDashboard();
+                    loadUserOrders();
+                    loadRepairTickets();
+                } else {
+                    alert('Login failed: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Login error. Please try again.');
+            }
+        }
+
+        // Handle registration
+        async function handleRegister(e) {
+            e.preventDefault();
+            const data = {
+                first_name: document.getElementById('regFirstName').value,
+                last_name: document.getElementById('regLastName').value,
+                email: document.getElementById('regEmail').value,
+                phone: document.getElementById('regPhone').value,
+                password: document.getElementById('regPassword').value
+            };
+
+            try {
+                const response = await fetch(API_BASE + 'auth-api.php?action=register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    localStorage.setItem('authToken', result.token);
+                    authToken = result.token;
+                    currentUser = result.user;
+                    showAccountDashboard();
+                } else {
+                    alert('Registration failed: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                alert('Registration error. Please try again.');
+            }
+        }
+
+        // Verify token
+        async function verifyToken() {
+            try {
+                const response = await fetch(API_BASE + 'auth-api.php?action=verify_token', {
+                    headers: { 'Authorization': 'Bearer ' + authToken }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    currentUser = data.user;
+                    showAccountDashboard();
+                    loadUserOrders();
+                    loadRepairTickets();
+                } else {
+                    logout();
+                }
+            } catch (error) {
+                console.error('Token verification error:', error);
+                logout();
+            }
+        }
+
+        // Show account dashboard
+        function showAccountDashboard() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('accountSection').style.display = 'block';
+            document.getElementById('logoutBtn').style.display = 'inline-block';
+            document.getElementById('userGreeting').textContent = currentUser.first_name || currentUser.email;
+            loadProfile();
+        }
+
+        // Load user orders from database
+        async function loadUserOrders() {
+            try {
+                const response = await fetch(API_BASE + 'orders-api.php?action=get_customer_orders', {
+                    headers: { 'Authorization': 'Bearer ' + authToken }
+                });
+
+                const data = await response.json();
+
+                if (data.success && data.orders.length > 0) {
+                    document.getElementById('ordersList').innerHTML = data.orders.map(order => `
+                        <div class="order-card">
+                            <div class="flex items-center justify-between mb-3">
+                                <div>
+                                    <h3 class="font-bold text-gray-800">#${order.order_number}</h3>
+                                    <p class="text-sm text-gray-600">${new Date(order.created_at).toLocaleDateString()}</p>
+                                </div>
+                                <span class="badge badge-${order.status}">${order.status}</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 pt-3 border-t border-gray-200">
+                                <div>
+                                    <p class="text-xs text-gray-600">Total Amount</p>
+                                    <p class="font-bold text-gray-800">R${parseFloat(order.total_amount).toFixed(2)}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-600">Payment Status</p>
+                                    <p class="font-bold text-gray-800">${order.payment_status}</p>
+                                </div>
+                            </div>
+                            <button onclick="viewOrderDetails(${order.id})" class="mt-3 text-purple-600 text-sm font-medium hover:underline">
+                                View Details →
+                            </button>
+                        </div>
+                    `).join('');
+                } else {
+                    document.getElementById('ordersList').innerHTML = '<p class="text-gray-600">No orders yet.</p>';
+                }
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                document.getElementById('ordersList').innerHTML = '<p class="text-red-600">Error loading orders.</p>';
+            }
+        }
+
+        // Load repair tickets
+        async function loadRepairTickets() {
+            try {
+                const response = await fetch(API_BASE + 'orders-api.php?action=get_customer_repairs', {
+                    headers: { 'Authorization': 'Bearer ' + authToken }
+                });
+
+                const data = await response.json();
+
+                if (data.success && data.tickets.length > 0) {
+                    document.getElementById('repairsList').innerHTML = data.tickets.map(ticket => `
+                        <div class="order-card">
+                            <div class="flex items-center justify-between mb-3">
+                                <div>
+                                    <h3 class="font-bold text-gray-800">#${ticket.ticket_number}</h3>
+                                    <p class="text-sm text-gray-600">${ticket.device_type}</p>
+                                </div>
+                                <span class="badge badge-${ticket.status}">${ticket.status}</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-3">${ticket.issue_description}</p>
+                            <div class="grid grid-cols-2 gap-4 pt-3 border-t border-gray-200">
+                                <div>
+                                    <p class="text-xs text-gray-600">Priority</p>
+                                    <p class="font-bold text-gray-800 capitalize">${ticket.priority}</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-600">Assigned To</p>
+                                    <p class="font-bold text-gray-800">${ticket.assigned_technician || 'Pending'}</p>
+                                </div>
+                            </div>
+                            <button onclick="viewTicketDetails(${ticket.id})" class="mt-3 text-purple-600 text-sm font-medium hover:underline">
+                                View Details →
+                            </button>
+                        </div>
+                    `).join('');
+                } else {
+                    document.getElementById('repairsList').innerHTML = '<p class="text-gray-600">No repair tickets yet.</p>';
+                }
+            } catch (error) {
+                console.error('Error loading repairs:', error);
+                document.getElementById('repairsList').innerHTML = '<p class="text-red-600">Error loading repair tickets.</p>';
+            }
+        }
+
+        // Load user profile
+        async function loadProfile() {
+            if (!currentUser) return;
+
+            document.getElementById('profileEmail').value = currentUser.email;
+            document.getElementById('profileFirstName').value = currentUser.first_name || '';
+            document.getElementById('profileLastName').value = currentUser.last_name || '';
+            document.getElementById('profilePhone').value = currentUser.phone || '';
+        }
+
+        // Update profile
+        async function updateProfile() {
+            // Profile update functionality coming soon
+            alert('Profile update functionality coming soon!');
+        }
+
+        // Switch tabs
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('border-b-2', 'border-purple-600');
+                el.classList.add('text-gray-700');
+            });
+
+            document.getElementById(tab + '-tab').style.display = 'block';
+            event.target.closest('.tab-btn').classList.add('border-b-2', 'border-purple-600');
+            event.target.closest('.tab-btn').classList.remove('text-gray-700');
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('authToken');
+            authToken = null;
+            currentUser = null;
+            document.getElementById('loginSection').style.display = 'grid';
+            document.getElementById('accountSection').style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+        }
+
+        // Placeholder functions
+        function viewOrderDetails(orderId) {
+            alert('Order details page coming soon! Order ID: ' + orderId);
+        }
+
+        function viewTicketDetails(ticketId) {
+            alert('Ticket details page coming soon! Ticket ID: ' + ticketId);
+        }
+    </script>
+</body>
+</html>
+
+

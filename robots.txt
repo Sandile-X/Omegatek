@@ -1,0 +1,47 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://omegatek.co.za/sitemap.xml
+Sitemap: https://omegatek.co.za/video-sitemap.xml
+
+# Block admin interfaces and sensitive pages
+Disallow: /*-admin.html
+Disallow: /admin-dashboard.html
+Disallow: /admin/orders-admin.html
+Disallow: /newsletter-admin.html
+Disallow: /products-admin.html
+Disallow: /admin/
+Disallow: /private/
+Disallow: /temp/
+Disallow: /newsletter_data/
+Disallow: /order_data/
+Disallow: /*-api.php
+Disallow: /contact_us.php
+Disallow: /unsubscribe.php
+
+# Allow all public pages
+Allow: /index.html
+Allow: /about.html
+Allow: /services.html
+Allow: /blog.html
+Allow: /blog-*.html
+Allow: /products.html
+Allow: /webdev.html
+Allow: /checkout.html
+Allow: /order-confirmation.html
+Allow: /order-tracking.html
+Allow: /privacy-policy.html
+Allow: /terms-of-service.html
+Allow: /css/
+Allow: /js/
+Allow: /images/
+Allow: /products/
+
+# Crawl delay to be respectful
+Crawl-delay: 1
+Allow: /images/
+Allow: /images2/
+
+# Crawl delay (optional - helps prevent server overload)
+Crawl-delay: 1

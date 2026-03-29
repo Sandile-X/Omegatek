@@ -1,0 +1,273 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation | Omegatek Solutions</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+       tailwind.config = {
+          theme: {
+             extend: {
+                colors: {
+                   primary: '#b30ce6'
+                }
+             }
+          }
+       }
+    </script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="icon" type="image/png" href="../images2/favicon.png">
+    
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #b30ce6;
+            position: absolute;
+            animation: confetti-fall 3s linear forwards;
+        }
+        
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .checkmark-circle {
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            stroke-width: 2;
+            stroke-miterlimit: 10;
+            stroke: #28a745;
+            fill: none;
+            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+        
+        .checkmark {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: block;
+            stroke-width: 3;
+            stroke: #fff;
+            stroke-miterlimit: 10;
+            margin: 30px auto;
+            box-shadow: inset 0px 0px 0px #28a745;
+            animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
+        }
+        
+        .checkmark-check {
+            transform-origin: 50% 50%;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+        }
+        
+        @keyframes stroke {
+            100% {
+                stroke-dashoffset: 0;
+            }
+        }
+        
+        @keyframes scale {
+            0%, 100% {
+                transform: none;
+            }
+            50% {
+                transform: scale3d(1.1, 1.1, 1);
+            }
+        }
+        
+        @keyframes fill {
+            100% {
+                box-shadow: inset 0px 0px 0px 60px #28a745;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container max-w-4xl mx-auto px-4 py-16">
+        <!-- Success Animation -->
+        <div class="bg-white rounded-3xl shadow-2xl p-12 text-center">
+            <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+                <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+                <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+            </svg>
+            
+            <h1 class="text-5xl font-bold text-gray-800 mb-4">Order Confirmed!</h1>
+            <p class="text-2xl text-gray-600 mb-8">Thank you for your purchase</p>
+            
+            <div class="bg-gradient-to-r from-primary to-purple-600 text-white p-6 rounded-2xl inline-block mb-8">
+                <p class="text-lg mb-2">Your Order Number</p>
+                <p class="text-4xl font-mono font-bold" id="orderNumber">Loading...</p>
+            </div>
+            
+            <div class="bg-gray-50 rounded-2xl p-8 text-left mb-8" id="orderDetails">
+                <div class="animate-pulse">
+                    <div class="h-6 bg-gray-300 rounded w-3/4 mb-4"></div>
+                    <div class="h-4 bg-gray-300 rounded w-1/2 mb-2"></div>
+                    <div class="h-4 bg-gray-300 rounded w-2/3"></div>
+                </div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-4 mb-8">
+                <div class="bg-blue-50 border-2 border-blue-200 rounded-xl p-6 text-left">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-envelope text-blue-600 text-3xl mt-1"></i>
+                        <div>
+                            <h3 class="font-bold text-blue-900 text-lg mb-2">Check Your Email</h3>
+                            <p class="text-blue-700">We've sent order confirmation and details to your email address.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-green-50 border-2 border-green-200 rounded-xl p-6 text-left">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-truck text-green-600 text-3xl mt-1"></i>
+                        <div>
+                            <h3 class="font-bold text-green-900 text-lg mb-2">Track Your Order</h3>
+                            <p class="text-green-700">Monitor your order status and estimated delivery date.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="order-tracking.html?order=" id="trackOrderBtn" 
+                   class="bg-gradient-to-r from-primary to-purple-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-lg transition-all transform hover:scale-105">
+                    <i class="fas fa-search-location mr-2"></i> Track My Order
+                </a>
+                <a href="products" 
+                   class="bg-gray-200 text-gray-800 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-300 transition-all">
+                    <i class="fas fa-shopping-bag mr-2"></i> Continue Shopping
+                </a>
+            </div>
+            
+            <div class="mt-12 pt-8 border-t-2 border-gray-200">
+                <h3 class="font-bold text-gray-800 text-xl mb-4">Need Help?</h3>
+                <p class="text-gray-600 mb-4">Contact us if you have any questions about your order</p>
+                <div class="flex flex-wrap justify-center gap-6 text-gray-700">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-phone text-primary"></i>
+                        <span>073 653 8207</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-envelope text-primary"></i>
+                        <span>sales@omegateksolutions.co.za</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Get order ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get('order');
+        
+        if (!orderId) {
+            window.location.href = 'products.html';
+        }
+        
+        // Display order number
+        document.getElementById('orderNumber').textContent = orderId;
+        document.getElementById('trackOrderBtn').href += orderId;
+        
+        // Fetch order details
+        async function loadOrderDetails() {
+            try {
+                const response = await fetch(`admin/orders-api.php?action=get_order&orderId=${orderId}`);
+                const data = await response.json();
+                
+                if (data.success && data.order) {
+                    const order = data.order;
+                    const detailsHtml = `
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Order Summary</h2>
+                        
+                        <div class="space-y-4 mb-6">
+                            ${order.items.map(item => `
+                                <div class="flex justify-between items-center pb-4 border-b border-gray-200">
+                                    <div>
+                                        <p class="font-semibold text-gray-800">${item.name}</p>
+                                        <p class="text-gray-600">Qty: ${item.quantity}</p>
+                                    </div>
+                                    <p class="font-bold text-primary">R${(item.price * item.quantity).toFixed(2)}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                        
+                        <div class="space-y-2 mb-4">
+                            <div class="flex justify-between text-gray-700">
+                                <span>Subtotal:</span>
+                                <span>R${order.subtotal.toFixed(2)}</span>
+                            </div>
+                            <div class="flex justify-between text-gray-700">
+                                <span>Delivery Fee:</span>
+                                <span>R${order.deliveryFee.toFixed(2)}</span>
+                            </div>
+                            <div class="flex justify-between text-2xl font-bold text-primary pt-4 border-t-2 border-primary">
+                                <span>Total:</span>
+                                <span>R${order.total.toFixed(2)}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white p-4 rounded-lg">
+                            <h3 class="font-semibold text-gray-800 mb-2">Delivery Address:</h3>
+                            <p class="text-gray-600">
+                                ${order.address.street}<br>
+                                ${order.address.suburb}, ${order.address.city}<br>
+                                ${order.address.province}, ${order.address.postalCode}
+                            </p>
+                        </div>
+                    `;
+                    
+                    document.getElementById('orderDetails').innerHTML = detailsHtml;
+                } else {
+                    document.getElementById('orderDetails').innerHTML = '<p class="text-red-600">Unable to load order details</p>';
+                }
+            } catch (error) {
+                console.error('Error loading order:', error);
+                document.getElementById('orderDetails').innerHTML = '<p class="text-red-600">Error loading order details: ' + error.message + '</p>';
+            }
+        }
+        
+        // Create confetti effect
+        function createConfetti() {
+            const colors = ['#b30ce6', '#9333ea', '#ec4899', '#f97316', '#eab308'];
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    confetti.style.animationDelay = Math.random() + 's';
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 30);
+            }
+        }
+        
+        // Initialize
+        loadOrderDetails();
+        createConfetti();
+    </script>
+    
+</body>
+</html>
+
+

@@ -1,0 +1,552 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Omegatek Solutions</title>
+    <meta name="description" content="Complete your purchase securely at Omegatek Solutions">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+       tailwind.config = {
+          theme: {
+             extend: {
+                colors: {
+                   primary: '#b30ce6',
+                   secondary: '#334'
+                }
+             }
+          }
+       }
+    </script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="icon" type="image/png" href="../images2/favicon.png">
+    <link rel="stylesheet" href="../css/style.css">
+    
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://pefjkiijqratjixskmdx.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZmpraWlqcXJhdGppeHNrbWR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MzkwNDQsImV4cCI6MjA4ODAxNTA0NH0.x6s38k7avvoszJATabbUcp2zv9kjUVYRjKPT7n-pQJA';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Sync order to Supabase so the customer portal can show it
+        async function syncOrderToSupabase(orderData, phpOrderId) {
+            try {
+                // Get current logged-in user (if any)
+                const { data: { user } } = await supabaseClient.auth.getUser();
+
+                // Insert into orders table
+                const { data: order, error: orderError } = await supabaseClient
+                    .from('orders')
+                    .insert({
+                        order_number: phpOrderId,
+                        customer_id: user?.id || null,
+                        customer_email: orderData.customer.email,
+                        customer_name: orderData.customer.fullName,
+                        customer_phone: orderData.customer.phone,
+                        status: 'pending',
+                        payment_status: 'pending',
+                        payment_method: orderData.paymentMethod,
+                        subtotal: orderData.subtotal,
+                        shipping_amount: orderData.deliveryFee,
+                        total_amount: orderData.total,
+                        shipping_address: JSON.stringify(orderData.address),
+                        notes: orderData.notes || ''
+                    })
+                    .select()
+                    .single();
+
+                if (orderError) {
+                    console.warn('Supabase order sync warning:', orderError.message);
+                    return;
+                }
+
+                // Insert order items
+                if (order && orderData.items?.length) {
+                    const items = orderData.items.map(item => ({
+                        order_id: order.id,
+                        product_id: item.id?.toString() || null,
+                        product_name: item.name,
+                        product_image: item.image || null,
+                        quantity: item.quantity,
+                        unit_price: item.price
+                    }));
+
+                    const { error: itemsError } = await supabaseClient
+                        .from('order_items')
+                        .insert(items);
+
+                    if (itemsError) {
+                        console.warn('Supabase order items sync warning:', itemsError.message);
+                    }
+                }
+            } catch (err) {
+                console.warn('Supabase sync failed (non-critical):', err.message);
+            }
+        }
+    </script>
+    
+    <style>
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        .checkout-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+        
+        .checkout-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 1.2rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #b30ce6;
+            box-shadow: 0 0 0 4px rgba(179, 12, 230, 0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #b30ce6, #9333ea);
+            color: white;
+            padding: 1.5rem 3rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.6rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(179, 12, 230, 0.4);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .order-summary {
+            background: #f9fafb;
+            padding: 2rem;
+            border-radius: 16px;
+        }
+        
+        .cart-item {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .cart-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .payment-method {
+            padding: 1.5rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .payment-method:hover {
+            border-color: #b30ce6;
+            background: rgba(179, 12, 230, 0.05);
+        }
+        
+        .payment-method.selected {
+            border-color: #b30ce6;
+            background: rgba(179, 12, 230, 0.1);
+        }
+        
+        .payment-method input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #b30ce6;
+        }
+        
+        @media (max-width: 768px) {
+            .checkout-container {
+                padding: 2rem 1rem;
+            }
+            
+            .checkout-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="checkout-container">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <a href="products" class="inline-flex items-center gap-2 text-primary hover:text-purple-600 transition-colors mb-4">
+                <i class="fas fa-arrow-left"></i> Back to Products
+            </a>
+            <h1 class="text-5xl font-bold text-gray-800 mb-2">Checkout</h1>
+            <p class="text-xl text-gray-600">Complete your order securely</p>
+        </div>
+        
+        <!-- Checkout Grid -->
+        <div class="checkout-card">
+            <div class="grid md:grid-cols-3 gap-8 p-8">
+                
+                <!-- Left Section: Customer Details Form (2/3 width) -->
+                <div class="md:col-span-2">
+                    <form id="checkoutForm">
+                        
+                        <!-- Contact Information -->
+                        <div class="mb-8">
+                            <h2 class="text-3xl font-bold text-gray-800 mb-6">Contact Information</h2>
+                            
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-gray-700 mb-2 font-semibold">Full Name *</label>
+                                    <input type="text" name="fullName" class="form-input" required placeholder="John Doe">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 mb-2 font-semibold">Email Address *</label>
+                                    <input type="email" name="email" class="form-input" required placeholder="john@example.com">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 mb-2 font-semibold">Phone Number *</label>
+                                    <input type="tel" name="phone" class="form-input" required placeholder="073 123 4567">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 mb-2 font-semibold">Alternative Phone</label>
+                                    <input type="tel" name="altPhone" class="form-input" placeholder="Optional">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Delivery Address -->
+                        <div class="mb-8">
+                            <h2 class="text-3xl font-bold text-gray-800 mb-6">Delivery Address</h2>
+                            
+                            <div class="mb-4">
+                                <label class="block text-gray-700 mb-2 font-semibold">Street Address *</label>
+                                <input type="text" name="address" class="form-input" required placeholder="123 Main Street">
+                            </div>
+                            
+                            <div class="grid md:grid-cols-3 gap-4 mb-4">
+                                <div>
+                                    <label class="block text-gray-700 mb-2 font-semibold">Suburb/Area *</label>
+                                    <input type="text" name="suburb" class="form-input" required placeholder="Midrand">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 mb-2 font-semibold">City *</label>
+                                    <input type="text" name="city" class="form-input" required placeholder="Johannesburg">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 mb-2 font-semibold">Province *</label>
+                                    <select name="province" class="form-input" required>
+                                        <option value="">Select Province</option>
+                                        <option value="Gauteng">Gauteng</option>
+                                        <option value="Western Cape">Western Cape</option>
+                                        <option value="Eastern Cape">Eastern Cape</option>
+                                        <option value="KwaZulu-Natal">KwaZulu-Natal</option>
+                                        <option value="Free State">Free State</option>
+                                        <option value="Limpopo">Limpopo</option>
+                                        <option value="Mpumalanga">Mpumalanga</option>
+                                        <option value="North West">North West</option>
+                                        <option value="Northern Cape">Northern Cape</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 mb-2 font-semibold">Postal Code *</label>
+                                <input type="text" name="postalCode" class="form-input" required placeholder="1685">
+                            </div>
+                        </div>
+                        
+                        <!-- Payment Method -->
+                        <div class="mb-8">
+                            <h2 class="text-3xl font-bold text-gray-800 mb-6">Payment Method</h2>
+                            
+                            <div class="space-y-4">
+                                <label class="payment-method selected">
+                                    <div class="flex items-center gap-4">
+                                        <input type="radio" name="paymentMethod" value="bank_transfer" checked>
+                                        <div class="flex-1">
+                                            <div class="flex items-center gap-2 mb-1">
+                                                <i class="fas fa-university text-2xl text-primary"></i>
+                                                <span class="text-xl font-semibold">Bank Transfer / EFT</span>
+                                            </div>
+                                            <p class="text-gray-600 ml-10">Pay via direct bank transfer (Banking details provided after order)</p>
+                                        </div>
+                                    </div>
+                                </label>
+                                
+                                <label class="payment-method">
+                                    <div class="flex items-center gap-4">
+                                        <input type="radio" name="paymentMethod" value="cash_on_delivery">
+                                        <div class="flex-1">
+                                            <div class="flex items-center gap-2 mb-1">
+                                                <i class="fas fa-money-bill-wave text-2xl text-primary"></i>
+                                                <span class="text-xl font-semibold">Cash on Delivery</span>
+                                            </div>
+                                            <p class="text-gray-600 ml-10">Pay with cash upon delivery (Midrand area only)</p>
+                                        </div>
+                                    </div>
+                                </label>
+                                
+                                <label class="payment-method">
+                                    <div class="flex items-center gap-4">
+                                        <input type="radio" name="paymentMethod" value="payfast">
+                                        <div class="flex-1">
+                                            <div class="flex items-center gap-2 mb-1">
+                                                <i class="fas fa-credit-card text-2xl text-primary"></i>
+                                                <span class="text-xl font-semibold">Card Payment (PayFast)</span>
+                                            </div>
+                                            <p class="text-gray-600 ml-10">Secure payment with credit/debit card</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Order Notes -->
+                        <div class="mb-8">
+                            <h2 class="text-3xl font-bold text-gray-800 mb-6">Order Notes (Optional)</h2>
+                            <textarea name="notes" class="form-input" rows="4" placeholder="Any special instructions for your order?"></textarea>
+                        </div>
+                        
+                        <!-- Terms & Submit -->
+                        <div class="mb-6">
+                            <label class="flex items-start gap-3 text-gray-700">
+                                <input type="checkbox" name="terms" required class="mt-1 w-5 h-5">
+                                <span class="text-base">I agree to the <a href="terms-of-service" class="text-primary hover:underline">Terms of Service</a> and <a href="privacy-policy" class="text-primary hover:underline">Privacy Policy</a></span>
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary" id="placeOrderBtn">
+                            <i class="fas fa-lock mr-2"></i> Place Order Securely
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Right Section: Order Summary (1/3 width) -->
+                <div class="md:col-span-1">
+                    <div class="order-summary sticky top-8">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-6">Order Summary</h2>
+                        
+                        <div id="checkoutCartItems" class="mb-6">
+                            <!-- Cart items will be injected here -->
+                        </div>
+                        
+                        <div class="border-t-2 border-gray-300 pt-4 space-y-3">
+                            <div class="flex justify-between text-lg">
+                                <span class="text-gray-600">Subtotal:</span>
+                                <span class="font-semibold" id="subtotalAmount">R0.00</span>
+                            </div>
+                            <div class="flex justify-between text-lg">
+                                <span class="text-gray-600">Delivery Fee:</span>
+                                <span class="font-semibold" id="deliveryFee">R0.00</span>
+                            </div>
+                            <div class="flex justify-between text-2xl font-bold text-primary border-t-2 border-primary pt-4">
+                                <span>Total:</span>
+                                <span id="totalAmount">R0.00</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-6 p-4 bg-green-50 border-2 border-green-200 rounded-lg">
+                            <div class="flex items-start gap-2">
+                                <i class="fas fa-shield-alt text-green-600 text-xl mt-1"></i>
+                                <div>
+                                    <h3 class="font-semibold text-green-800">Secure Checkout</h3>
+                                    <p class="text-sm text-green-700">Your information is protected</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 text-center text-sm text-gray-500">
+                            <i class="fas fa-truck mr-2"></i> Free delivery on orders over R500
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Load cart from localStorage
+        const cart = JSON.parse(localStorage.getItem('omegatek_cart')) || [];
+        
+        // Check if cart is empty
+        if (cart.length === 0) {
+            window.location.href = 'products.html';
+        }
+        
+        // Delivery fee calculation
+        function calculateDeliveryFee(province, subtotal) {
+            if (subtotal >= 500) return 0; // Free delivery over R500
+            
+            const deliveryFees = {
+                'Gauteng': 50,
+                'Western Cape': 100,
+                'KwaZulu-Natal': 100,
+                'Eastern Cape': 120,
+                'Free State': 100,
+                'Limpopo': 120,
+                'Mpumalanga': 100,
+                'North West': 100,
+                'Northern Cape': 150
+            };
+            
+            return deliveryFees[province] || 100;
+        }
+        
+        // Render cart items
+        function renderCheckoutCart() {
+            const container = document.getElementById('checkoutCartItems');
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            container.innerHTML = cart.map(item => `
+                <div class="cart-item">
+                    <img src="${item.image}" alt="${item.name}" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27200%27 height=%27200%27 viewBox=%270 0 200 200%27%3E%3Crect width=%27200%27 height=%27200%27 fill=%27%23f3f4f6%27/%3E%3Cpath d=%27M65 70h70a10 10 0 0110 10v60a10 10 0 01-10 10H65a10 10 0 01-10-10V80a10 10 0 0110-10z%27 fill=%27none%27 stroke=%27%23d1d5db%27 stroke-width=%273%27/%3E%3Ccircle cx=%27100%27 cy=%27105%27 r=%2718%27 fill=%27none%27 stroke=%27%23d1d5db%27 stroke-width=%273%27/%3E%3C/svg%3E'">
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-gray-800 mb-1">${item.name}</h3>
+                        <p class="text-gray-600">Qty: ${item.quantity}</p>
+                        <p class="text-primary font-bold mt-1">R${(item.price * item.quantity).toFixed(2)}</p>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('subtotalAmount').textContent = `R${subtotal.toFixed(2)}`;
+            updateTotal();
+        }
+        
+        // Update total based on province selection
+        function updateTotal() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const province = document.querySelector('select[name="province"]').value;
+            const deliveryFee = province ? calculateDeliveryFee(province, subtotal) : 0;
+            const total = subtotal + deliveryFee;
+            
+            document.getElementById('deliveryFee').textContent = deliveryFee === 0 ? 'FREE' : `R${deliveryFee.toFixed(2)}`;
+            document.getElementById('totalAmount').textContent = `R${total.toFixed(2)}`;
+        }
+        
+        // Province change listener
+        document.querySelector('select[name="province"]').addEventListener('change', updateTotal);
+        
+        // Payment method selection
+        document.querySelectorAll('.payment-method').forEach(method => {
+            method.addEventListener('click', function() {
+                document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
+                this.classList.add('selected');
+                this.querySelector('input[type="radio"]').checked = true;
+            });
+        });
+        
+        // Form submission
+        document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('placeOrderBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+            
+            const formData = new FormData(e.target);
+            const orderData = {
+                customer: {
+                    fullName: formData.get('fullName'),
+                    email: formData.get('email'),
+                    phone: formData.get('phone'),
+                    altPhone: formData.get('altPhone')
+                },
+                address: {
+                    street: formData.get('address'),
+                    suburb: formData.get('suburb'),
+                    city: formData.get('city'),
+                    province: formData.get('province'),
+                    postalCode: formData.get('postalCode')
+                },
+                paymentMethod: formData.get('paymentMethod'),
+                notes: formData.get('notes'),
+                items: cart,
+                subtotal: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+                deliveryFee: calculateDeliveryFee(formData.get('province'), cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)),
+                total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) + calculateDeliveryFee(formData.get('province'), cart.reduce((sum, item) => sum + (item.price * item.quantity), 0))
+            };
+            
+            try {
+                const response = await fetch('../admin/orders-api.php?action=place_order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Sync to Supabase so the customer portal shows the order
+                    await syncOrderToSupabase(orderData, data.orderId);
+
+                    // Check if PayFast payment
+                    if (data.payfast) {
+                        // Clear cart before redirect
+                        localStorage.removeItem('omegatek_cart');
+                        
+                        // Redirect to PayFast payment page
+                        window.location.href = data.redirectUrl;
+                    } else {
+                        // Clear cart for other payment methods
+                        localStorage.removeItem('omegatek_cart');
+                        
+                        // Redirect to order confirmation page
+                        window.location.href = `order-confirmation.html?order=${data.orderId}`;
+                    }
+                } else {
+                    alert('Error placing order: ' + data.message);
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-lock mr-2"></i> Place Order Securely';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Server error. Please try again or contact support.');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-lock mr-2"></i> Place Order Securely';
+            }
+        });
+        
+        // Initialize
+        renderCheckoutCart();
+    </script>
+    
+</body>
+</html>

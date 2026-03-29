@@ -1,19 +1,26 @@
 let menu = document.querySelector('#menu-btn');
 let navbarLinks = document.querySelector('.header .navbar .links');
 
-menu.onclick = () =>{
-   menu.classList.toggle('fa-times');
-   navbarLinks.classList.toggle('active');
+if (menu && navbarLinks) {
+   menu.onclick = () => {
+      menu.classList.toggle('fa-times');
+      navbarLinks.classList.toggle('active');
+   }
 }
 
-window.onscroll = () =>{
-   menu.classList.remove('fa-times');
-   navbarLinks.classList.remove('active');
+window.onscroll = () => {
+   if (menu && navbarLinks) {
+      menu.classList.remove('fa-times');
+      navbarLinks.classList.remove('active');
+   }
 
-   if(window.scrollY > 60){
-      document.querySelector('.header .navbar').classList.add('active');
-   }else{
-      document.querySelector('.header .navbar').classList.remove('active');
+   const navbar = document.querySelector('.header .navbar');
+   if (navbar) {
+      if(window.scrollY > 60){
+         navbar.classList.add('active');
+      }else{
+         navbar.classList.remove('active');
+      }
    }
 }
 
@@ -48,30 +55,8 @@ document.addEventListener("DOMContentLoaded", function() {
       });
    }
    
-   // Newsletter subscription form
-   const newsletterForm = document.querySelector(".footer form");
-   if (newsletterForm) {
-      newsletterForm.addEventListener("submit", function(event) {
-         event.preventDefault();
-         
-         const emailInput = this.querySelector(".email");
-         const email = emailInput.value.trim();
-         
-         if (!email || !validateEmail(email)) {
-            alert("Please enter a valid email address");
-            return false;
-         }
-         
-         // Store email in localStorage for demo purposes
-         // In production, this would be sent to a server
-         let subscribers = JSON.parse(localStorage.getItem("newsletter_subscribers") || "[]");
-         subscribers.push(email);
-         localStorage.setItem("newsletter_subscribers", JSON.stringify(subscribers));
-         
-         alert("Thank you for subscribing to our newsletter!");
-         this.reset();
-      });
-   }
+   // Newsletter subscription is handled by the PHP-backed handler in index.html / page scripts.
+   // This legacy localStorage stub has been removed to prevent duplicate submissions.
 });
 
 // Email validation helper function

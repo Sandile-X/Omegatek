@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | Omegatek Solutions</title>
+    <meta name="robots" content="noindex, nofollow">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" type="image/png" href="../images2/favicon.png">
+    <!-- Supabase UMD (browser global) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+        <div class="text-center mb-8">
+            <img src="../images2/favicon.png" alt="Logo" class="w-20 h-20 mx-auto mb-4">
+            <h1 class="text-3xl font-bold text-gray-800">Admin Access</h1>
+            <p class="text-gray-600 mt-2">Omegatek Solutions Dashboard</p>
+        </div>
+        
+        <!-- Login form — only authorised admin -->
+        <form id="loginForm" class="space-y-5">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                <input type="email" id="emailInput"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                    placeholder="admin@omegatek.co.za" required autocomplete="username">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                <div class="relative">
+                    <input type="password" id="passwordInput"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none pr-12"
+                        placeholder="••••••••" required autocomplete="current-password">
+                    <button type="button" id="togglePw"
+                        class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-gray-600 text-sm select-none"
+                        tabindex="-1">Show</button>
+                </div>
+            </div>
+            <button type="submit" id="submitBtn"
+                class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold py-3 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all transform hover:scale-105">
+                Access Dashboard
+            </button>
+        </form>
+
+        <div id="message" class="mt-4 text-center text-sm"></div>
+
+        <div class="mt-6 pt-5 border-t border-gray-200 text-center text-xs text-gray-400">
+            <p>🔒 Authorised personnel only &bull; Omegatek Solutions</p>
+        </div>
+    </div>
+    
+    <script>
+        const SUPABASE_URL      = 'https://pefjkiijqratjixskmdx.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZmpraWlqcXJhdGppeHNrbWR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MzkwNDQsImV4cCI6MjA4ODAxNTA0NH0.x6s38k7avvoszJATabbUcp2zv9kjUVYRjKPT7n-pQJA';
+        const { createClient }  = window.supabase;
+        const _sb               = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ── Authorised admin email (only this address may log in) ─────
+        const ADMIN_EMAIL = 'milanzisandile5@gmail.com';
+
+        const message = document.getElementById('message');
+
+        // ── If already logged in, skip to dashboard ───────────────────
+        (async () => {
+            const { data: { session } } = await _sb.auth.getSession();
+            if (session && session.user.email === ADMIN_EMAIL) {
+                window.location.replace('admin-dashboard.html');
+            } else if (session) {
+                // Session belongs to some other user — sign them out
+                await _sb.auth.signOut();
+            }
+        })();
+
+        // ── Show / hide password toggle ───────────────────────────────
+        document.getElementById('togglePw').addEventListener('click', () => {
+            const pw  = document.getElementById('passwordInput');
+            const btn = document.getElementById('togglePw');
+            if (pw.type === 'password') {
+                pw.type = 'text';
+                btn.textContent = 'Hide';
+            } else {
+                pw.type = 'password';
+                btn.textContent = 'Show';
+            }
+        });
+
+        // ── Brute-force throttle ──────────────────────────────────────
+        let failedAttempts = parseInt(sessionStorage.getItem('adm_fails') || '0');
+        let lockUntil      = parseInt(sessionStorage.getItem('adm_lock')  || '0');
+
+        function isLocked() {
+            return Date.now() < lockUntil;
+        }
+
+        function recordFail() {
+            failedAttempts++;
+            sessionStorage.setItem('adm_fails', failedAttempts);
+            if (failedAttempts >= 5) {
+                const until = Date.now() + 5 * 60 * 1000; // 5-minute lockout
+                sessionStorage.setItem('adm_lock', until);
+                lockUntil = until;
+            }
+        }
+
+        function resetFails() {
+            failedAttempts = 0;
+            sessionStorage.removeItem('adm_fails');
+            sessionStorage.removeItem('adm_lock');
+        }
+
+        // ── Login handler ─────────────────────────────────────────────
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (isLocked()) {
+                const secsLeft = Math.ceil((lockUntil - Date.now()) / 1000);
+                showMessage(`✗ Too many failed attempts. Try again in ${secsLeft}s.`, 'error');
+                return;
+            }
+
+            const email    = document.getElementById('emailInput').value.trim().toLowerCase();
+            const password = document.getElementById('passwordInput').value;
+            const btn      = document.getElementById('submitBtn');
+
+            // ── Email whitelist check (before hitting Supabase) ───────
+            if (email !== ADMIN_EMAIL) {
+                recordFail();
+                showMessage('✗ Access denied.', 'error');
+                document.getElementById('passwordInput').value = '';
+                return;
+            }
+
+            btn.disabled    = true;
+            btn.textContent = 'Signing in…';
+
+            const { data, error } = await _sb.auth.signInWithPassword({ email, password });
+
+            if (error) {
+                recordFail();
+                const msg = isLocked()
+                    ? '✗ Too many failed attempts. You are locked out for 5 minutes.'
+                    : '✗ Invalid password. Please try again.';
+                showMessage(msg, 'error');
+                document.getElementById('passwordInput').value = '';
+                btn.disabled    = false;
+                btn.textContent = 'Access Dashboard';
+                return;
+            }
+
+            resetFails();
+            // Record login time for session-age enforcement in dashboard
+            sessionStorage.setItem('adm_login_at', Date.now().toString());
+            showMessage('✓ Access granted!', 'success');
+            setTimeout(() => window.location.href = 'admin-dashboard.html', 500);
+        });
+
+        function showMessage(text, type) {
+            message.textContent = text;
+            message.className = `mt-4 text-center text-sm font-semibold ${
+                type === 'error'   ? 'text-red-600'   :
+                type === 'success' ? 'text-green-600' :
+                type === 'warn'    ? 'text-amber-600' : 'text-yellow-600'
+            }`;
+        }
+
+        document.getElementById('emailInput').focus();
+
+        // ── Show reason message if redirected from dashboard ──────────
+        const reason = new URLSearchParams(location.search).get('reason');
+        if (reason === 'inactivity') {
+            showMessage('⏱ You were logged out due to 2 hours of inactivity.', 'warn');
+        } else if (reason === 'session_expired') {
+            showMessage('🔒 Your session expired after 8 hours. Please log in again.', 'warn');
+        } else if (reason === 'backgrounded') {
+            showMessage('⚠️ You were logged out — tab was inactive for over 30 minutes.', 'warn');
+        } else if (reason === 'unauthorized') {
+            showMessage('✗ Access denied. Authorised account only.', 'error');
+        }
+    </script>
+</body>
+</html>
+

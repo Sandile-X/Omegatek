@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrendScan - Inventory Management | Omega TekSolutions</title>
+    <meta name="description" content="Revolutionary Android inventory management system with professional licensing. From R 8,999. Free trial available.">
+    <meta name="keywords" content="inventory management, android app, business software, stock control, trendscan">
+    
+    <!-- Stylesheets -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/apps/trendscan/css/styles.css">
+</head>
+<body>
+    <!-- Simple gradient background -->
+    <div id="gradient-bg"></div>
+    
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-chart-line logo-icon"></i>
+                <span class="logo-text">TrendScan</span>
+            </div>
+            <div class="nav-menu">
+                <a href="/" class="nav-link" style="opacity:0.75;"><i class="fas fa-arrow-left" style="font-size:0.8em;"></i> Omegatek</a>
+                <a href="#hero" class="nav-link">Home</a>
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#pricing" class="nav-link">Pricing</a>
+                <a href="#media" class="nav-link">Demo</a>
+                <a href="#trial" class="nav-link">Free Trial</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-bolt"></i>
+                    <span>100% Offline - No WiFi Required</span>
+                </div>
+                <h1 class="hero-title">
+                    Lightning-Fast Inventory Management for Android
+                </h1>
+                <p class="hero-description">
+                    Transform your stock takes with TrendScan - the only inventory system that works completely offline. 
+                    Cut stock-take time by 65%, achieve 99.7% accuracy, and never worry about WiFi again.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" data-target="65">0</span>
+                        <span class="stat-label">% Faster Stock Takes</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" data-target="99">0</span>
+                        <span class="stat-label">% Accuracy Rate</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" data-target="100">0</span>
+                        <span class="stat-label">% Offline</span>
+                    </div>
+                </div>
+                <div class="hero-buttons">
+                    <button class="btn-primary" onclick="scrollToTrial()">
+                        <i class="fas fa-rocket"></i>
+                        Start Free Trial
+                    </button>
+                    <a class="btn-secondary" href="/api/apk-download.php?app=trendscan">
+                        <i class="fab fa-android"></i>
+                        Download APK
+                    </a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="phone-mockup">
+                    <div class="phone-screen">
+                        <div class="app-demo">
+                            <img src="/apps/trendscan/images/1%20(2).png" alt="TrendScan dashboard screenshot" class="hero-screenshot">
+                        </div>
+                    </div>
+                </div>
+                <div class="floating-cards">
+                    <div class="feature-card card-1">
+                        <i class="fas fa-wifi-slash"></i>
+                        <span>100% Offline</span>
+                    </div>
+                    <div class="feature-card card-2">
+                        <i class="fas fa-barcode"></i>
+                        <span>Zebra Printer Support</span>
+                    </div>
+                    <div class="feature-card card-3">
+                        <i class="fas fa-bolt"></i>
+                        <span>Lightning Fast</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Operations Video - Right Under Hero -->
+    <section class="video-hero-section">
+        <div class="container">
+            <div class="video-hero-wrapper">
+                <h2><i class="fas fa-play-circle"></i> See TrendScan in Action</h2>
+                <p>Watch how easy it is to manage your inventory from start to finish</p>
+                <video class="hero-video" autoplay muted loop playsinline poster="images/1%20(6).png">
+                    <source src="/apps/trendscan/images/operation%20vid.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Features</span>
+                <h2 class="section-title">Everything You Need, Nothing You Don't</h2>
+                <p class="section-description">
+                    Built for speed, designed for simplicity. No WiFi required, no subscriptions, no nonsense.
+                </p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-barcode"></i>
+                    </div>
+                    <h3 class="feature-title">Barcode Scanning</h3>
+                    <p class="feature-description">Lightning-fast barcode scanning with offline capability and batch processing.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-excel"></i>
+                    </div>
+                    <h3 class="feature-title">Excel Import/Export</h3>
+                    <p class="feature-description">Import your existing spreadsheets in seconds. Export reports to Excel or CSV anytime.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3 class="feature-title">Enterprise Security</h3>
+                    <p class="feature-description">AES-256 encryption, device binding, and tamper-proof licensing system.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-print"></i>
+                    </div>
+                    <h3 class="feature-title">Zebra Label Printing</h3>
+                    <p class="feature-description">Direct Bluetooth printing to Zebra printers. Professional QR codes and Code 128 barcodes.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3 class="feature-title">Fast Stock Takes</h3>
+                    <p class="feature-description">Scan barcodes, count items, track variances in real-time. Complete stock takes 65% faster.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-wifi-slash"></i>
+                    </div>
+                    <h3 class="feature-title">Complete Offline Operation</h3>
+                    <p class="feature-description">Works anywhere - warehouses, basements, remote locations. Zero WiFi or internet required.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">Pricing</span>
+                <h2 class="section-title">Choose Your Perfect Plan</h2>
+                <p class="section-description">
+                    Flexible pricing options designed to grow with your business. Start free, upgrade anytime.
+                </p>
+            </div>
+            <div class="pricing-grid">
+                <!-- Trial Plans -->
+                <div class="pricing-card trial-card">
+                    <div class="card-header">
+                        <span class="plan-badge free">FREE</span>
+                        <h3 class="plan-name">30-Day Trial</h3>
+                        <div class="plan-price">
+                            <span class="currency">R</span>
+                            <span class="amount">0</span>
+                            <span class="period">/month</span>
+                        </div>
+                    </div>
+                    <div class="card-features">
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Up to 50 items</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Basic barcode scanning</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Standard reports</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Email support</span>
+                        </div>
+                    </div>
+                    <button class="plan-button trial-button" onclick="generateTrialLicense('30')">
+                        Start Free Trial
+                    </button>
+                </div>
+
+                <!-- Small Business -->
+                <div class="pricing-card business-card">
+                    <div class="card-header">
+                        <span class="plan-badge popular">POPULAR</span>
+                        <h3 class="plan-name">Small Business</h3>
+                        <div class="plan-price">
+                            <span class="currency">R</span>
+                            <span class="amount">8,999</span>
+                            <span class="period">/year</span>
+                        </div>
+                    </div>
+                    <div class="card-features">
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Up to 1,000 items</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Advanced scanning & batch processing</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Full analytics dashboard</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Cloud backup & sync</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Priority support</span>
+                        </div>
+                    </div>
+                    <button class="plan-button business-button" onclick="contactSales('SMALL_BUSINESS')">
+                        Contact Sales
+                    </button>
+                </div>
+
+                <!-- Medium Business -->
+                <div class="pricing-card enterprise-card">
+                    <div class="card-header">
+                        <span class="plan-badge enterprise">ENTERPRISE</span>
+                        <h3 class="plan-name">Medium Business</h3>
+                        <div class="plan-price">
+                            <span class="currency">R</span>
+                            <span class="amount">24,999</span>
+                            <span class="period">/year</span>
+                        </div>
+                    </div>
+                    <div class="card-features">
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Up to 10,000 items</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Multi-user access control</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Advanced reporting & analytics</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>API access & integrations</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>24/7 dedicated support</span>
+                        </div>
+                    </div>
+                    <button class="plan-button enterprise-button" onclick="contactSales('MEDIUM_BUSINESS')">
+                        Contact Sales
+                    </button>
+                </div>
+
+                <!-- Enterprise -->
+                <div class="pricing-card ultimate-card">
+                    <div class="card-header">
+                        <span class="plan-badge ultimate">ULTIMATE</span>
+                        <h3 class="plan-name">Enterprise</h3>
+                        <div class="plan-price">
+                            <span class="currency">R</span>
+                            <span class="amount">49,999</span>
+                            <span class="period">/year</span>
+                        </div>
+                    </div>
+                    <div class="card-features">
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Unlimited items</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>White-label solutions</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Custom integrations</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>On-site training</span>
+                        </div>
+                        <div class="feature-item">
+                            <i class="fas fa-check"></i>
+                            <span>Dedicated account manager</span>
+                        </div>
+                    </div>
+                    <button class="plan-button ultimate-button" onclick="contactSales('ENTERPRISE')">
+                        Contact Sales
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Media Section -->
+    <section id="media" class="media">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">How It Works</span>
+                <h2 class="section-title">See TrendScan in Action</h2>
+                <p class="section-description">
+                    From uploading inventory to printing labels - see how TrendScan transforms your workflow.
+                </p>
+            </div>
+            
+            <!-- Feature Showcase Row 1 -->
+            <div class="feature-showcase">
+                <div class="showcase-item">
+                    <div class="showcase-image">
+                        <img src="/apps/trendscan/images/1%20(2).png" alt="Upload spreadsheet" class="feature-screenshot">
+                    </div>
+                    <div class="showcase-content">
+                        <h3><i class="fas fa-upload"></i> Import Your Inventory</h3>
+                        <p>Drag and drop your Excel or CSV files. TrendScan automatically maps columns and imports thousands of items in seconds.</p>
+                    </div>
+                </div>
+                
+                <div class="showcase-item reverse">
+                    <div class="showcase-image">
+                        <img src="/apps/trendscan/images/1%20(3).png" alt="View stock" class="feature-screenshot">
+                    </div>
+                    <div class="showcase-content">
+                        <h3><i class="fas fa-boxes"></i> Manage Your Stock</h3>
+                        <p>View, search, and edit your entire inventory with lightning-fast filters. Find any item in under 2 seconds.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature Showcase Row 2 -->
+            <div class="feature-showcase">
+                <div class="showcase-item">
+                    <div class="showcase-image">
+                        <img src="/apps/trendscan/images/1%20(4).png" alt="Generate barcodes" class="feature-screenshot">
+                    </div>
+                    <div class="showcase-content">
+                        <h3><i class="fas fa-qrcode"></i> Generate Professional Labels</h3>
+                        <p>Create QR codes and Code 128 barcodes instantly. Print directly to Zebra printers via Bluetooth - no computer needed.</p>
+                    </div>
+                </div>
+                
+                <div class="showcase-item reverse">
+                    <div class="showcase-image">
+                        <img src="/apps/trendscan/images/1%20(5).png" alt="Stock take" class="feature-screenshot">
+                    </div>
+                    <div class="showcase-content">
+                        <h3><i class="fas fa-clipboard-check"></i> Lightning-Fast Stock Takes</h3>
+                        <p>Scan items with your camera, count quickly, and track variances in real-time. Cut stock-take time by 65%.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Feature Showcase Row 3 -->
+            <div class="feature-showcase">
+                <div class="showcase-item">
+                    <div class="showcase-image">
+                        <img src="/apps/trendscan/images/1%20(7).png" alt="License management" class="feature-screenshot">
+                    </div>
+                    <div class="showcase-content">
+                        <h3><i class="fas fa-key"></i> Simple Licensing</h3>
+                        <p>Import your license file once and you're ready to go. No subscriptions, no ongoing fees, no hassle.</p>
+                    </div>
+                </div>
+                
+                <div class="showcase-item reverse">
+                    <div class="showcase-image">
+                        <img src="/apps/trendscan/images/1%20(8).png" alt="Export reports" class="feature-screenshot">
+                    </div>
+                    <div class="showcase-content">
+                        <h3><i class="fas fa-file-export"></i> Export Anything</h3>
+                        <p>Generate professional reports in Excel or CSV format. Share via email or save to your device instantly.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trial License Generator -->
+    <section id="trial" class="trial">
+        <div class="container">
+            <div class="trial-container">
+                <div class="trial-header">
+                    <h2 class="trial-title">Generate Your Free Trial License</h2>
+                    <p class="trial-description">
+                        Get instant access to TrendScan with a 7-day free trial. No credit card, no WiFi, no nonsense. Works 100% offline.
+                    </p>
+                </div>
+                <div class="trial-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="trialCompany">Company Name *</label>
+                            <input type="text" id="trialCompany" placeholder="Enter your company name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="trialOwner">Owner Name *</label>
+                            <input type="text" id="trialOwner" placeholder="Enter owner name" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="trialPhone">Phone Number *</label>
+                            <input type="tel" id="trialPhone" placeholder="+27 123 456 7890" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="trialEmail">Email Address *</label>
+                            <input type="email" id="trialEmail" placeholder="your@email.com" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="trialDevice">Device ID *</label>
+                            <input type="text" id="trialDevice" placeholder="Get from app settings" required>
+                            <small>Install the app first, then find Device ID in Settings > About</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="trialType">Trial Duration</label>
+                            <select id="trialType">
+                                <option value="7">7 Days (Standard)</option>
+                                <option value="60">60 Days (Extended)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="trial-generate-btn" onclick="generateTrialLicense()">
+                        <i class="fas fa-key"></i>
+                        Generate Trial License
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h2 class="contact-title">Ready to Transform Your Business?</h2>
+                    <p class="contact-description">
+                        Get in touch with our sales team for a personalized demo and custom pricing options.
+                    </p>
+                    <div class="contact-methods">
+                        <div class="contact-method">
+                            <div class="method-icon">
+                                <i class="fab fa-whatsapp"></i>
+                            </div>
+                            <div class="method-details">
+                                <h3>WhatsApp</h3>
+                                <p>073 653 8207</p>
+                                <a href="https://wa.me/27736538207" target="_blank" class="method-link">Chat Now</a>
+                            </div>
+                        </div>
+                        <div class="contact-method">
+                            <div class="method-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="method-details">
+                                <h3>Email Sales</h3>
+                                <p>sales@omegateksolutions.co.za</p>
+                                <a href="mailto:sales@omegateksolutions.co.za" class="method-link">Send Email</a>
+                            </div>
+                        </div>
+                        <div class="contact-method">
+                            <div class="method-icon">
+                                <i class="fas fa-download"></i>
+                            </div>
+                            <div class="method-details">
+                                <h3>Download</h3>
+                                <p>Get the APK & License Generator</p>
+                                <button class="method-link download-btn" onclick="downloadFiles()">Download Now</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <h3 class="form-title">Request a Demo</h3>
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <input type="text" id="contactName" placeholder="Your Name" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="contactEmail" placeholder="Your Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" id="contactPhone" placeholder="Your Phone" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="contactCompany" placeholder="Company Name" required>
+                        </div>
+                        <div class="form-group">
+                            <select id="contactPlan" required>
+                                <option value="">Select Plan Interest</option>
+                                <option value="SMALL_BUSINESS">Small Business (R 8,999)</option>
+                                <option value="MEDIUM_BUSINESS">Medium Business (R 24,999)</option>
+                                <option value="ENTERPRISE">Enterprise (R 49,999)</option>
+                                <option value="CUSTOM">Custom Solution</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="contactMessage" placeholder="Tell us about your inventory needs..." rows="4"></textarea>
+                        </div>
+                        <button type="submit" class="contact-submit">
+                            <i class="fas fa-paper-plane"></i>
+                            Request Demo
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <i class="fas fa-chart-line"></i>
+                        <span>TrendScan</span>
+                    </div>
+                    <p class="footer-description">
+                        Professional inventory management solutions for modern businesses. 
+                        Secure, scalable, and powerful.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Product</h4>
+                    <ul class="footer-links">
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#pricing">Pricing</a></li>
+                        <li><a href="#analytics">Analytics</a></li>
+                        <li><a href="#trial">Free Trial</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">API Reference</a></li>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#contact">Contact Sales</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-copyright">
+                    <p>&copy; 2024 Omega TekSolutions. All rights reserved.</p>
+                </div>
+                <div class="footer-contact">
+                    <p>sales@omegateksolutions.co.za | WhatsApp: 073 653 8207</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/apps/trendscan/js/animations.js"></script>
+    <script src="/apps/trendscan/js/trial-generator.js"></script>
+    <script src="/apps/trendscan/js/main.js"></script>
+
+    <!-- License Generator Modal -->
+    <div id="licenseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Your Trial License is Ready!</h3>
+                <span class="modal-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="license-success">
+                    <i class="fas fa-check-circle"></i>
+                    <p>Your trial license has been generated successfully!</p>
+                    <div class="license-details">
+                        <div class="detail-item">
+                            <label>Company:</label>
+                            <span id="licenseCompany"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Trial Duration:</label>
+                            <span id="licenseDuration"></span>
+                        </div>
+                        <div class="detail-item">
+                            <label>Device ID:</label>
+                            <span id="licenseDevice"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="license-actions">
+                    <button class="btn-download" onclick="downloadLicenseFile()">
+                        <i class="fas fa-download"></i>
+                        Download License File
+                    </button>
+                    <button class="btn-email" onclick="emailLicense()">
+                        <i class="fas fa-envelope"></i>
+                        Email License
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

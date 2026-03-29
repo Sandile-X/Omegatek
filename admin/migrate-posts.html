@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migrate Blog Posts | Omegatek Admin</title>
+    <meta name="robots" content="noindex, nofollow">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body { background:#f8fafc; font-family:system-ui,sans-serif; }
+        .card { background:#fff; border-radius:12px; border:1px solid #e2e8f0; }
+        .badge-pending  { background:#fef9c3; color:#92400e; padding:.2rem .6rem; border-radius:9999px; font-size:.75rem; font-weight:600; }
+        .badge-ok       { background:#dcfce7; color:#166534; padding:.2rem .6rem; border-radius:9999px; font-size:.75rem; font-weight:600; }
+        .badge-skip     { background:#e2e8f0; color:#64748b; padding:.2rem .6rem; border-radius:9999px; font-size:.75rem; font-weight:600; }
+        .badge-error    { background:#fee2e2; color:#991b1b; padding:.2rem .6rem; border-radius:9999px; font-size:.75rem; font-weight:600; }
+    </style>
+</head>
+<body class="min-h-screen p-6">
+    <div class="max-w-4xl mx-auto">
+        <div class="mb-6 flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">Blog Post Migration</h1>
+                <p class="text-gray-500 mt-1">Upload your 7 existing blog posts to Supabase. Safe to run multiple times — duplicates are skipped.</p>
+            </div>
+            <a href="admin-dashboard.html" class="text-sm text-purple-600 hover:underline"><i class="fas fa-arrow-left mr-1"></i>Back to Dashboard</a>
+        </div>
+
+        <div id="authCheck" class="card p-6 mb-4 text-center text-gray-500">
+            <i class="fas fa-spinner fa-spin mr-2"></i>Checking authentication…
+        </div>
+
+        <div id="mainContent" class="hidden">
+            <div class="card p-4 mb-4 flex items-center justify-between">
+                <div>
+                    <span id="statusText" class="font-medium text-gray-700">Ready to upload 7 posts</span>
+                    <span id="progressText" class="text-sm text-gray-400 ml-3"></span>
+                </div>
+                <button id="uploadBtn" onclick="runMigration()"
+                    class="px-5 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+                    <i class="fas fa-upload mr-2"></i>Upload All Posts
+                </button>
+            </div>
+
+            <div class="card divide-y divide-gray-100" id="postList"></div>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL      = 'https://pefjkiijqratjixskmdx.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZmpraWlqcXJhdGppeHNrbWR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MzkwNDQsImV4cCI6MjA4ODAxNTA0NH0.x6s38k7avvoszJATabbUcp2zv9kjUVYRjKPT7n-pQJA';
+        const { createClient } = window.supabase;
+        const _sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+            auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
+        });
+
+        // ── Old blog posts data ───────────────────────────────────────────────
+        const POSTS = [
+            {
+                title:       '5 Essential Maintenance Tips to Double Your Device Lifespan',
+                slug:        'blog-post-maintenance-tips',
+                category:    'Maintenance',
+                excerpt:     'Most electronic devices fail prematurely due to inadequate maintenance. Our repair experts share five simple but highly effective practices that can extend the life of your devices from the typical 2-3 years to 5-6 years or longer.',
+                cover_image: 'images2/A1.avif',
+                published:   true,
+                created_at:  '2025-05-06T08:00:00.000Z'
+            },
+            {
+                title:       'Solving Overheating Issues in Laptops: A Comprehensive Guide',
+                slug:        'blog-post-laptop-overheating',
+                category:    'Computers',
+                excerpt:     'Is your laptop running hot or suddenly shutting down? Overheating is a common issue that can permanently damage components. Learn the causes and step-by-step solutions to keep your computer cool.',
+                cover_image: 'images2/blog/Solving Overheating Issues.jpg',
+                published:   true,
+                created_at:  '2025-04-29T08:00:00.000Z'
+            },
+            {
+                title:       '10 Proven Ways to Extend Your Smartphone\'s Battery Life',
+                slug:        'blog-post-smartphone-battery',
+                category:    'Smartphones',
+                excerpt:     'Frustrated with your phone dying before the day ends? These practical battery-saving techniques go beyond the obvious tips, focusing on the settings and habits that have the biggest impact on battery longevity.',
+                cover_image: 'images2/blog/10 Proven Ways.jpg',
+                published:   true,
+                created_at:  '2025-04-22T08:00:00.000Z'
+            },
+            {
+                title:       'DIY RAM Upgrade: A Step-by-Step Guide for All Computer Types',
+                slug:        'blog-post-diy-ram-upgrade',
+                category:    'DIY Repairs',
+                excerpt:     'Adding RAM is one of the most cost-effective upgrades for improving computer performance. We break down the process for desktops, laptops, and even some tablets, with model-specific considerations.',
+                cover_image: 'images2/blog/DIY RAM Upgrade.jpg',
+                published:   true,
+                created_at:  '2025-04-15T08:00:00.000Z'
+            },
+            {
+                title:       'The 3-2-1 Backup Strategy: Protecting Your Digital Life',
+                slug:        'blog-post-backup-strategy',
+                category:    'Data Management',
+                excerpt:     'Data loss can be devastating and permanent. Learn how to implement the 3-2-1 backup strategy recommended by data recovery experts, using both local and cloud solutions for comprehensive protection.',
+                cover_image: 'images2/blog/321 backup strat.jpg',
+                published:   true,
+                created_at:  '2025-04-08T08:00:00.000Z'
+            },
+            {
+                title:       'Smart Home Security Vulnerabilities: What You Need to Know',
+                slug:        'blog-post-smart-home-security',
+                category:    'Tech News',
+                excerpt:     'The convenience of connected devices comes with security risks. We examine the most common smart home security flaws and provide practical steps to protect your privacy and security without sacrificing functionality.',
+                cover_image: 'images2/blog/Smart Home Security Vulnerabilities.jpg',
+                published:   true,
+                created_at:  '2025-04-01T08:00:00.000Z'
+            },
+            {
+                title:       'Common Gaming Console Problems and How to Fix Them',
+                slug:        'blog-post-gaming-console-problems',
+                category:    'Gaming',
+                excerpt:     'Gaming consoles often develop specific issues that can be resolved without professional help. From overheating to disc reading problems, we cover troubleshooting for PlayStation, Xbox, and Nintendo systems.',
+                cover_image: 'images2/blog/Common Gaming Console Problems.jpg',
+                published:   true,
+                created_at:  '2025-03-25T08:00:00.000Z'
+            }
+        ];
+
+        // ── State ─────────────────────────────────────────────────────────────
+        const state = {};  // slug → 'pending' | 'ok' | 'skip' | 'error'
+        POSTS.forEach(p => state[p.slug] = 'pending');
+
+        // ── Auth guard ────────────────────────────────────────────────────────
+        (async () => {
+            let { data: { session } } = await _sb.auth.getSession();
+            if (!session) {
+                const { data: r } = await _sb.auth.refreshSession();
+                session = r?.session || null;
+            }
+            if (!session) {
+                document.getElementById('authCheck').innerHTML =
+                    '<i class="fas fa-lock text-red-500 mr-2"></i>Not logged in. <a href="admin-login.html" class="text-purple-600 underline">Login first</a>';
+                return;
+            }
+            document.getElementById('authCheck').classList.add('hidden');
+            document.getElementById('mainContent').classList.remove('hidden');
+            renderList();
+        })();
+
+        // ── Render ────────────────────────────────────────────────────────────
+        function badgeHtml(s) {
+            const map = { pending:'badge-pending', ok:'badge-ok', skip:'badge-skip', error:'badge-error' };
+            const label = { pending:'Pending', ok:'Uploaded ✓', skip:'Already exists', error:'Error' };
+            return `<span class="${map[s]||'badge-pending'}">${label[s]||s}</span>`;
+        }
+
+        function renderList() {
+            document.getElementById('postList').innerHTML = POSTS.map(p => `
+                <div class="flex items-center justify-between p-4 gap-4" id="row-${p.slug.replace(/[^a-z0-9]/g,'_')}">
+                    <div class="flex-1 min-w-0">
+                        <div class="font-medium text-gray-800 truncate">${p.title}</div>
+                        <div class="text-xs text-gray-400 mt-0.5">${p.category} · ${p.slug} · ${new Date(p.created_at).toLocaleDateString('en-ZA')}</div>
+                    </div>
+                    <div id="badge-${p.slug.replace(/[^a-z0-9]/g,'_')}">${badgeHtml(state[p.slug])}</div>
+                </div>`).join('');
+        }
+
+        function updateRow(slug, newState) {
+            state[slug] = newState;
+            const id = slug.replace(/[^a-z0-9]/g,'_');
+            const badge = document.getElementById('badge-' + id);
+            if (badge) badge.innerHTML = badgeHtml(newState);
+        }
+
+        // ── Migration ─────────────────────────────────────────────────────────
+        async function runMigration() {
+            const btn = document.getElementById('uploadBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Uploading…';
+            document.getElementById('statusText').textContent = 'Uploading…';
+
+            let ok = 0, skipped = 0, errors = 0;
+
+            for (const post of POSTS) {
+                document.getElementById('progressText').textContent = `(${POSTS.indexOf(post)+1}/${POSTS.length})`;
+                try {
+                    // Check if slug already exists
+                    const { data: existing } = await _sb.from('blog_posts').select('id').eq('slug', post.slug).single();
+                    if (existing) {
+                        updateRow(post.slug, 'skip');
+                        skipped++;
+                        continue;
+                    }
+                    const { error } = await _sb.from('blog_posts').insert([{
+                        title:       post.title,
+                        slug:        post.slug,
+                        category:    post.category,
+                        excerpt:     post.excerpt,
+                        cover_image: post.cover_image,
+                        content:     '',   // Content lives in the static HTML file; edit in dashboard if needed
+                        published:   post.published,
+                        created_at:  post.created_at
+                    }]);
+                    if (error) throw error;
+                    updateRow(post.slug, 'ok');
+                    ok++;
+                } catch(e) {
+                    console.error(e);
+                    updateRow(post.slug, 'error');
+                    errors++;
+                }
+            }
+
+            document.getElementById('progressText').textContent = '';
+            document.getElementById('statusText').textContent =
+                `Done: ${ok} uploaded, ${skipped} skipped (already existed), ${errors} errors.`;
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-check mr-2"></i>Run Again';
+
+            // Bust the blog page cache so new posts show immediately
+            try { localStorage.removeItem('omegatek_blog_posts_v1'); } catch(e) {}
+        }
+    </script>
+</body>
+</html>

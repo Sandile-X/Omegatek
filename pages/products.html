@@ -1,0 +1,2347 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   
+   <!-- SEO Meta Tags -->
+   <meta name="description" content="Browse our latest tech products and accessories at Omegatek Solutions. Quality electronics and replacement parts in Midrand, Gauteng.">
+   <meta name="keywords" content="tech products, electronics accessories, computer parts, smartphone accessories, Midrand, Omegatek products">
+   <meta n<!-- Advanced Product Management JavaScript -->
+<script>
+// Product Management System
+class ProductManager {
+   constructor() {
+      this.products = [];
+      this.filteredProducts = [];
+      this.cart = JSON.parse(localStorage.getItem('omegatek_cart')) || [];
+      this.wishlist = JSON.parse(localStorage.getItem('omegatek_wishlist')) || [];
+      this.userRatings = JSON.parse(localStorage.getItem('omegatek_ratings')) || {};
+      this.currentView = 'grid';
+      this.currentPage = 1;
+      this.productsPerPage = 12;
+      this.filterTimeout = null;
+      this.filters = {
+         search: '',
+         categories: [],
+         priceRange: { min: 0, max: 10000 },
+         inStock: false,
+         onSale: false,
+         rating: null
+      };
+      this.sortBy = 'featured';
+      
+      this.init();
+   }
+
+   async init() {
+      // Show loading state
+      this.showLoadingState();
+      
+      await this.loadProducts();
+      
+      // Hide loading state
+      this.hideLoadingState();
+      
+      this.setupEventListeners();
+      this.updateCartUI();
+      this.updateWishlistUI();
+      this.renderProducts();
+      this.populateFilters();
+      
+      // Initialize AOS with performance settings
+      setTimeout(() => {
+         AOS.init({
+            duration: 600,
+            once: true,
+            disable: window.innerWidth < 768 // Disable on mobile for better performance
+         });
+      }, 100);
+   }
+
+   showLoadingState() {
+      const container = document.getElementById('productsGrid');
+      container.innerHTML = Array(8).fill(0).map(() => `
+         <div class="animate-pulse bg-white rounded-2xl shadow-lg overflow-hidden">
+            <div class="bg-gray-300 h-80 w-full"></div>
+            <div class="p-6">
+               <div class="bg-gray-300 h-4 w-3/4 mb-2 rounded"></div>
+               <div class="bg-gray-300 h-3 w-1/2 mb-4 rounded"></div>
+               <div class="bg-gray-300 h-6 w-1/3 rounded"></div>
+            </div>
+         </div>
+      `).join('');
+   }
+
+   hideLoadingState() {
+      // Loading state will be replaced by actual products
+   }
+
+   // Load products from Supabase
+   async loadProducts() {
+      try {
+         if (!window._sb) throw new Error('Supabase not initialised');
+         const { data, error } = await window._sb
+            .from('products')
+            .select('part_no,model_no,name,description,variant_color,price,cost_price,image_url,category,warranty,is_new,stock,featured,tags,supplier,created_at')
+            .order('name', { ascending: true });
+         if (error) throw error;
+
+         this.products = (data || []).map(function(row) {
+            const tags = row.tags || [];
+            if (row.variant_color && !tags.includes(row.variant_color)) tags.push(row.variant_color);
+            if (row.category && !tags.includes(row.category)) tags.push(row.category);
+            return {
+               id:           row.part_no,
+               partNo:       row.part_no,
+               modelNo:      row.model_no  || '',
+               name:         row.name,
+               description:  row.description  || '',
+               price:        parseFloat(row.price) || 0,
+               costPrice:    parseFloat(row.cost_price) || 0,
+               image:        row.image_url || '',
+               category:     row.category  || 'Uncategorised',
+               warranty:     row.warranty  || '',
+               variantColor: row.variant_color || '',
+               supplier:     row.supplier  || 'Astrum',
+               rating:       0,
+               reviews:      0,
+               inStock:      (row.stock > 0),
+               stockQuantity: row.stock || 0,
+               onSale:       false,
+               isNew:        !!row.is_new,
+               featured:     !!row.featured,
+               tags:         tags,
+               dateAdded:    row.created_at ? new Date(row.created_at) : new Date()
+            };
+         });
+
+         this.filteredProducts = [...this.products];
+         // Apply stored user ratings
+         this.products.forEach(p => {
+            if (this.userRatings[p.id] !== undefined) {
+               p.rating = this.userRatings[p.id];
+               if (!p.reviews) p.reviews = 1;
+            }
+         });
+
+         if (this.products.length === 0) {
+            // console.log('No products in Supabase yet — showing demo fallback.');
+            this.products = await this.loadDemoProducts();
+            this.filteredProducts = [...this.products];
+         }
+
+      } catch (error) {
+         // console.error('Error loading products from Supabase:', error);
+         this.products = await this.loadDemoProducts();
+         this.filteredProducts = [...this.products];
+      }
+   }
+
+   // Demo data loader (fallback when JSON fails to load)
+   async loadDemoProducts() {
+      return new Promise((resolve) => {
+         setTimeout(() => {
+            resolve([
+               {
+                  id: 'demo_001',
+                  partNo: 'DEMO-001',
+                  modelNo: 'D001',
+                  name: 'Demo Product',
+                  description: 'This is a demo product shown when JSON fails to load',
+                  price: 99,
+                  costPrice: 49,
+                  warranty: '12 Months',
+                  image: 'products/demo.jpg',
+                  category: 'Demo Category',
+                  rating: 4.0,
+                  reviews: 10,
+                  inStock: true,
+                  stockQuantity: 25,
+                  onSale: true,
+                  tags: ['phone', 'case', 'protection', 'wireless-charging'],
+                  dateAdded: new Date('2024-01-15'),
+                  featured: true,
+                  specifications: {
+                     material: 'Premium TPU + PC',
+                     compatibility: 'Samsung Galaxy S24 Ultra',
+                     protection: 'Military Grade Drop Protection',
+                     features: ['Wireless Charging Compatible', 'Raised Edges', 'Anti-Slip Grip']
+                  }
+               },
+               {
+                  id: 'prod_002',
+                  name: 'USB-C Fast Charging Cable 3m',
+                  description: 'High-speed 100W charging cable with 480Mbps data transfer and braided design',
+                  price: 89.99,
+                  image: 'products/image007.png',
+                  images: ['products/image007.png'],
+                  category: 'Cables & Chargers',
+                  sku: 'ANK-USBC-100W-3M',
+                  rating: 4.6,
+                  reviews: 156,
+                  inStock: true,
+                  stockQuantity: 50,
+                  onSale: false,
+                  tags: ['cable', 'usb-c', 'charging', 'fast-charging', '100w'],
+                  dateAdded: new Date('2024-01-10'),
+                  featured: true,
+                  specifications: {
+                     length: '3 meters',
+                     power: '100W Fast Charging',
+                     dataTransfer: '480Mbps',
+                     material: 'Braided Nylon',
+                     compatibility: 'USB-C devices'
+                  }
+               },
+               {
+                  id: 'prod_003',
+                  name: 'Sony WH-1000XM5 Wireless Earbuds',
+                  description: 'Industry-leading noise cancellation with 30-hour battery life and premium sound quality',
+                  price: 1299.99,
+                  originalPrice: 1599.99,
+                  image: 'products/image009.png',
+                  images: ['products/image009.png'],
+                  category: 'Audio & Headphones',
+                  sku: 'SNY-WH1000XM5-BLK',
+                  rating: 4.9,
+                  reviews: 89,
+                  inStock: true,
+                  stockQuantity: 15,
+                  onSale: true,
+                  tags: ['earbuds', 'wireless', 'audio', 'noise-cancelling', 'bluetooth'],
+                  dateAdded: new Date('2024-01-20'),
+                  featured: true,
+                  specifications: {
+                     batteryLife: '30 hours with case',
+                     noiseCancellation: 'Industry-leading ANC',
+                     connectivity: 'Bluetooth 5.2',
+                     waterResistance: 'IPX4',
+                     features: ['Touch Controls', 'Voice Assistant', 'Quick Charge']
+                  }
+               },
+               {
+                  id: 'prod_004',
+                  name: 'Apple MagSafe Wireless Charger',
+                  description: 'Official Apple MagSafe charger with 15W fast wireless charging for iPhone 12 and later',
+                  price: 649.99,
+                  image: 'products/image010.png',
+                  category: 'Cables & Chargers',
+                  sku: 'APL-MAGSAFE-WHT',
+                  rating: 4.7,
+                  reviews: 312,
+                  inStock: true,
+                  stockQuantity: 30,
+                  onSale: false,
+                  tags: ['wireless-charger', 'magsafe', 'iphone', 'apple', '15w'],
+                  dateAdded: new Date('2024-01-25'),
+                  featured: true,
+                  specifications: {
+                     power: '15W Fast Wireless Charging',
+                     compatibility: 'iPhone 12 and later',
+                     design: 'Magnetic alignment',
+                     cableLength: '1 meter USB-C cable included'
+                  }
+               },
+               {
+                  id: 'prod_005',
+                  name: 'Logitech MX Master 3S Wireless Mouse',
+                  description: 'Advanced wireless mouse with ultra-precise scrolling and ergonomic design',
+                  price: 899.99,
+                  image: 'products/image011.png',
+                  category: 'Computer Accessories',
+                  sku: 'LOG-MXM3S-BLK',
+                  rating: 4.8,
+                  reviews: 445,
+                  inStock: true,
+                  stockQuantity: 20,
+                  onSale: false,
+                  tags: ['mouse', 'wireless', 'gaming', 'productivity', 'ergonomic'],
+                  dateAdded: new Date('2024-01-18'),
+                  featured: false,
+                  inStock: true,
+                  onSale: false,
+                  featured: false,
+                  tags: ['demo'],
+                  dateAdded: new Date()
+               }
+            ]);
+         }, 500);
+      });
+   }
+
+   setupEventListeners() {
+      // Search functionality with debouncing
+      const searchInput = document.getElementById('searchInput');
+      let searchTimeout;
+      searchInput.addEventListener('input', (e) => {
+         clearTimeout(searchTimeout);
+         searchTimeout = setTimeout(() => {
+            this.filters.search = e.target.value.toLowerCase();
+            this.applyFilters();
+         }, 300); // 300ms debounce
+      });
+
+      // Clear search
+      document.getElementById('clearSearch').addEventListener('click', () => {
+         searchInput.value = '';
+         this.filters.search = '';
+         this.applyFilters();
+      });
+
+      // View toggle
+      document.getElementById('gridView').addEventListener('click', () => this.setView('grid'));
+      document.getElementById('listView').addEventListener('click', () => this.setView('list'));
+
+      // Sort functionality
+      document.getElementById('sortSelect').addEventListener('change', (e) => {
+         this.sortBy = e.target.value;
+         this.applySort();
+      });
+
+      // Price range
+      const minPrice = document.getElementById('minPrice');
+      const maxPrice = document.getElementById('maxPrice');
+      const priceRange = document.getElementById('priceRange');
+
+      [minPrice, maxPrice, priceRange].forEach(input => {
+         input.addEventListener('input', () => this.updatePriceFilter());
+      });
+
+      // Filter toggles
+      document.getElementById('inStock').addEventListener('change', (e) => {
+         this.filters.inStock = e.target.checked;
+         this.applyFilters();
+      });
+
+      document.getElementById('onSale').addEventListener('change', (e) => {
+         this.filters.onSale = e.target.checked;
+         this.applyFilters();
+      });
+
+      // Rating filters
+      document.querySelectorAll('input[name="rating"]').forEach(input => {
+         input.addEventListener('change', (e) => {
+            this.filters.rating = e.target.checked ? parseInt(e.target.value) : null;
+            this.applyFilters();
+         });
+      });
+
+      // Clear filters
+      document.getElementById('clearFilters').addEventListener('click', () => this.clearAllFilters());
+      document.getElementById('resetFilters').addEventListener('click', () => this.clearAllFilters());
+
+      // Cart functionality
+      document.getElementById('cartButton').addEventListener('click', () => this.openCart());
+      document.getElementById('closeCart').addEventListener('click', () => this.closeCart());
+      document.getElementById('cartOverlay').addEventListener('click', () => this.closeCart());
+      document.getElementById('continueShoppingBtn').addEventListener('click', () => this.closeCart());
+      document.getElementById('checkoutBtn').addEventListener('click', () => this.checkout());
+
+      // Wishlist
+      document.getElementById('wishlistBtn').addEventListener('click', () => this.showWishlist());
+      document.getElementById('closeWishlist').addEventListener('click', () => this.closeWishlist());
+      document.getElementById('wishlistOverlay').addEventListener('click', () => this.closeWishlist());
+
+      // Scroll to top
+      document.getElementById('scrollToTop').addEventListener('click', () => {
+         window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      // Show/hide scroll to top button
+      window.addEventListener('scroll', () => {
+         const scrollBtn = document.getElementById('scrollToTop');
+         if (window.pageYOffset > 300) {
+            scrollBtn.classList.remove('hidden');
+         } else {
+            scrollBtn.classList.add('hidden');
+         }
+      });
+
+      // Quick view modal
+      document.getElementById('closeQuickView').addEventListener('click', () => this.closeQuickView());
+   }
+
+   populateFilters() {
+      // Populate categories
+      const categories = [...new Set(this.products.map(p => p.category))];
+      const categoryContainer = document.getElementById('categoryFilters');
+      categoryContainer.innerHTML = categories.map(category => `
+         <label class="flex items-center cursor-pointer hover:bg-gray-50 p-2 rounded">
+            <input type="checkbox" value="${category}" class="category-filter rounded border-gray-300 text-primary focus:ring-primary mr-3">
+            <span class="text-sm text-gray-700">${category}</span>
+            <span class="ml-auto text-xs text-gray-500">(${this.products.filter(p => p.category === category).length})</span>
+         </label>
+      `).join('');
+
+      // Add event listeners for category filters
+      document.querySelectorAll('.category-filter').forEach(checkbox => {
+         checkbox.addEventListener('change', () => this.updateCategoryFilters());
+      });
+   }
+
+   updateCategoryFilters() {
+      const checked = Array.from(document.querySelectorAll('.category-filter:checked')).map(cb => cb.value);
+      this.filters.categories = checked;
+      this.applyFilters();
+   }
+
+   updatePriceFilter() {
+      const minPrice = document.getElementById('minPrice').value;
+      const maxPrice = document.getElementById('maxPrice').value;
+      
+      this.filters.priceRange.min = minPrice ? parseFloat(minPrice) : 0;
+      this.filters.priceRange.max = maxPrice ? parseFloat(maxPrice) : 10000;
+      
+      this.applyFilters();
+   }
+
+   applyFilters() {
+      // Use requestAnimationFrame for better performance
+      if (this.filterTimeout) {
+         cancelAnimationFrame(this.filterTimeout);
+      }
+      
+      this.filterTimeout = requestAnimationFrame(() => {
+         let filtered = [...this.products];
+
+         // Search filter
+         if (this.filters.search) {
+            const searchTerm = this.filters.search;
+            filtered = filtered.filter(product => 
+               product.name.toLowerCase().includes(searchTerm) ||
+               product.description.toLowerCase().includes(searchTerm) ||
+               product.partNo.toLowerCase().includes(searchTerm) ||
+               product.tags?.some(tag => tag.toLowerCase().includes(searchTerm))
+            );
+         }
+
+         // Category filter
+         if (this.filters.categories.length > 0) {
+            filtered = filtered.filter(product => this.filters.categories.includes(product.category));
+         }
+
+         // Price range filter
+         filtered = filtered.filter(product => 
+            product.price >= this.filters.priceRange.min && 
+            product.price <= this.filters.priceRange.max
+         );
+
+         // Stock filter
+         if (this.filters.inStock) {
+            filtered = filtered.filter(product => product.inStock);
+         }
+
+         // Sale filter
+         if (this.filters.onSale) {
+            filtered = filtered.filter(product => product.onSale);
+         }
+
+         // Rating filter
+         if (this.filters.rating) {
+            filtered = filtered.filter(product => product.rating >= this.filters.rating);
+         }
+
+         this.filteredProducts = filtered;
+         this.currentPage = 1;
+         this.applySort();
+      });
+   }
+
+   applySort() {
+      switch (this.sortBy) {
+         case 'price-low':
+            this.filteredProducts.sort((a, b) => a.price - b.price);
+            break;
+         case 'price-high':
+            this.filteredProducts.sort((a, b) => b.price - a.price);
+            break;
+         case 'name-az':
+            this.filteredProducts.sort((a, b) => a.name.localeCompare(b.name));
+            break;
+         case 'name-za':
+            this.filteredProducts.sort((a, b) => b.name.localeCompare(a.name));
+            break;
+         case 'newest':
+            this.filteredProducts.sort((a, b) => new Date(b.dateAdded) - new Date(a.dateAdded));
+            break;
+         case 'rating':
+            this.filteredProducts.sort((a, b) => b.rating - a.rating);
+            break;
+         default: // featured
+            this.filteredProducts.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+      }
+      
+      this.renderProducts();
+   }
+
+   setView(view) {
+      this.currentView = view;
+      
+      // Update button states
+      document.querySelectorAll('.view-toggle').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(view + 'View').classList.add('active');
+      
+      this.renderProducts();
+   }
+
+   renderProducts() {
+      const container = this.currentView === 'grid' ? 
+         document.getElementById('productsGrid') : 
+         document.getElementById('productsList');
+      
+      // Show/hide containers
+      document.getElementById('productsGrid').classList.toggle('hidden', this.currentView !== 'grid');
+      document.getElementById('productsList').classList.toggle('hidden', this.currentView !== 'list');
+      
+      // Update results count
+      document.getElementById('resultsCount').textContent = 
+         `Showing ${this.filteredProducts.length} product${this.filteredProducts.length !== 1 ? 's' : ''}`;
+
+      // Show no results message if needed
+      const noResults = document.getElementById('noResults');
+      if (this.filteredProducts.length === 0) {
+         noResults.classList.remove('hidden');
+         container.classList.add('hidden');
+         return;
+      } else {
+         noResults.classList.add('hidden');
+         container.classList.remove('hidden');
+      }
+
+      // Render products based on view
+      if (this.currentView === 'grid') {
+         this.renderGridView(container);
+      } else {
+         this.renderListView(container);
+      }
+
+      // Update active filters display
+      this.updateActiveFiltersDisplay();
+   }
+
+   renderGridView(container) {
+      container.innerHTML = this.filteredProducts.map(product => `
+         <div class="product-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 group" data-aos="fade-up">
+            ${product.image ? `
+            <div class="relative product-image-container">
+               <img src="${product.image}" alt="${product.name}" class="w-full h-80 object-cover" loading="lazy">` : `
+            <div class="relative bg-gradient-to-br from-primary to-secondary h-80 flex items-center justify-center">
+               <div class="text-center text-white p-6">
+                  <i class="fas fa-microchip text-6xl mb-4 opacity-50"></i>
+                  <h4 class="text-lg font-semibold">${product.name}</h4>
+               </div>`}
+               
+               <!-- Sale badge -->
+               ${product.onSale ? '<div class="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">Sale</div>' : ''}
+               
+               <!-- Wishlist button -->
+               <button class="wishlist-btn absolute top-4 right-4 w-12 h-12 bg-white rounded-full shadow-lg hover:bg-gray-100 transition-all duration-200 ${this.isInWishlist(product.id) ? 'active' : ''}" 
+                       onclick="productManager.toggleWishlist('${product.id}')">
+                  <i class="fas fa-heart"></i>
+               </button>
+               
+               ${product.image ? `
+               <!-- Quick view button -->
+               <button class="absolute bottom-4 right-4 bg-primary hover:bg-secondary text-white px-4 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200"
+                       onclick="productManager.openQuickView('${product.id}')">
+                  <i class="fas fa-eye mr-2"></i>Quick View
+               </button>` : ''}
+            </div>
+            
+            <div class="p-8">
+               <div class="flex items-start justify-between mb-4">
+                  <h3 class="text-xl font-bold text-gray-800 line-clamp-2 flex-1 mr-2">${product.name}</h3>
+                  <div class="flex items-center flex-shrink-0">
+                     <div class="flex text-yellow-400 text-sm gap-0.5">
+                        ${this.renderInteractiveStars(product.id, product.rating)}
+                     </div>
+                     <span class="text-xs text-gray-500 ml-1">(${product.reviews || 0})</span>
+                  </div>
+               </div>
+               
+               <p class="text-gray-600 text-base mb-6 line-clamp-2 leading-relaxed">${product.description}</p>
+               
+               <div class="flex items-center justify-between mb-8">
+                  <div class="flex items-center gap-2">
+                     <span class="text-3xl font-bold text-primary">R${product.price.toFixed(2)}</span>
+                     ${product.originalPrice ? `<span class="text-lg text-gray-400 line-through">R${product.originalPrice.toFixed(2)}</span>` : ''}
+                  </div>
+               </div>
+               
+               <div class="flex gap-3">
+                  <button class="flex-1 bg-primary hover:bg-secondary text-white py-3 px-4 rounded-lg font-semibold transition-all duration-200 hover:scale-105"
+                          onclick="productManager.addToCart('${product.id}')">
+                     <i class="fas fa-shopping-cart mr-2"></i>Add to Cart
+                  </button>
+                  <button class="px-4 py-3 border-2 border-primary text-primary hover:bg-primary hover:text-white rounded-lg transition-all duration-200"
+                          onclick="productManager.openQuickView('${product.id}')">
+                     <i class="fas fa-eye"></i>
+                  </button>
+               </div>
+            </div>
+         </div>
+      `).join('');
+   }
+
+   renderListView(container) {
+      container.innerHTML = this.filteredProducts.map(product => `
+         <div class="product-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 flex" data-aos="fade-up">
+            ${product.image ? `
+            <div class="relative w-64 flex-shrink-0 product-image-container">
+               <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover" loading="lazy">
+               ${product.onSale ? '<div class="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">Sale</div>' : ''}
+            </div>` : `
+            <div class="relative w-64 flex-shrink-0 bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+               <div class="text-center text-white p-4">
+                  <i class="fas fa-microchip text-4xl mb-2 opacity-50"></i>
+                  <div class="text-sm font-semibold">${product.category}</div>
+               </div>
+               ${product.onSale ? '<div class="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">Sale</div>' : ''}
+            </div>`}
+            
+            <div class="flex-1 p-8 flex flex-col justify-between">
+               <div>
+                  <div class="flex items-start justify-between mb-3">
+                     <h3 class="text-2xl font-bold text-gray-800 flex-1 mr-4">${product.name}</h3>
+                     <button class="wishlist-btn w-12 h-12 bg-gray-100 hover:bg-gray-200 rounded-full transition-all duration-200 ${this.isInWishlist(product.id) ? 'active' : ''}" 
+                             onclick="productManager.toggleWishlist('${product.id}')">
+                        <i class="fas fa-heart"></i>
+                     </button>
+                  </div>
+                  
+                  <div class="flex items-center mb-4">
+                     <div class="flex text-yellow-400 gap-0.5">
+                        ${this.renderInteractiveStars(product.id, product.rating)}
+                     </div>
+                     <span class="text-gray-500 ml-2 text-sm">(${product.reviews || 0} reviews)</span>
+                  </div>
+                  
+                  <p class="text-gray-600 mb-6 text-lg leading-relaxed">${product.description}</p>
+               </div>
+               
+               <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-4">
+                     <span class="text-4xl font-bold text-primary">R${product.price.toFixed(2)}</span>
+                     ${product.originalPrice ? `<span class="text-2xl text-gray-400 line-through">R${product.originalPrice.toFixed(2)}</span>` : ''}
+                  </div>
+                  
+                  <div class="flex gap-4">
+                     <button class="bg-primary hover:bg-secondary text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 hover:scale-105"
+                             onclick="productManager.addToCart('${product.id}')">
+                        <i class="fas fa-shopping-cart mr-2"></i>Add to Cart
+                     </button>
+                     <button class="border-2 border-primary text-primary hover:bg-primary hover:text-white px-6 py-4 rounded-lg transition-all duration-200"
+                             onclick="productManager.openQuickView('${product.id}')">
+                        <i class="fas fa-eye mr-2"></i>Quick View
+                     </button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      `).join('');
+   }
+
+   renderStars(rating) {
+      const fullStars = Math.floor(rating);
+      const hasHalfStar = rating % 1 >= 0.5;
+      const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+      
+      return '★'.repeat(fullStars) + 
+             (hasHalfStar ? '☆' : '') + 
+             '☆'.repeat(emptyStars);
+   }
+
+   renderInteractiveStars(productId, rating) {
+      return [1,2,3,4,5].map(i => {
+         const filled = i <= Math.round(rating);
+         return `<i class="${filled ? 'fas' : 'far'} fa-star cursor-pointer hover:text-yellow-300 transition-colors"
+                    onclick="event.stopPropagation(); productManager.rateProduct('${productId}', ${i})"
+                    title="Rate ${i} star${i > 1 ? 's' : ''}"></i>`;
+      }).join('');
+   }
+
+   rateProduct(productId, rating) {
+      this.userRatings[productId] = rating;
+      localStorage.setItem('omegatek_ratings', JSON.stringify(this.userRatings));
+      const product = this.products.find(p => p.id === productId);
+      if (product) {
+         product.rating = rating;
+         if (!product.reviews) product.reviews = 1;
+      }
+      this.applyFilters(); // re-render so star filter updates immediately
+   }
+
+   // Cart functionality
+   addToCart(productId) {
+      const product = this.products.find(p => p.id === productId);
+      if (!product) return;
+
+      const existingItem = this.cart.find(item => item.id === productId);
+      
+      if (existingItem) {
+         existingItem.quantity += 1;
+      } else {
+         this.cart.push({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            image: product.image,
+            quantity: 1
+         });
+      }
+
+      this.saveCart();
+      this.updateCartUI();
+      this.showToast('cartToast');
+   }
+
+   removeFromCart(productId) {
+      this.cart = this.cart.filter(item => item.id !== productId);
+      this.saveCart();
+      this.updateCartUI();
+      this.renderCartItems();
+   }
+
+   updateCartQuantity(productId, quantity) {
+      const item = this.cart.find(item => item.id === productId);
+      if (item) {
+         if (quantity <= 0) {
+            this.removeFromCart(productId);
+         } else {
+            item.quantity = quantity;
+            this.saveCart();
+            this.updateCartUI();
+            this.renderCartItems();
+         }
+      }
+   }
+
+   saveCart() {
+      localStorage.setItem('omegatek_cart', JSON.stringify(this.cart));
+   }
+
+   updateCartUI() {
+      const cartCount = document.getElementById('cartCount');
+      const totalItems = this.cart.reduce((sum, item) => sum + item.quantity, 0);
+      
+      if (totalItems > 0) {
+         cartCount.textContent = totalItems;
+         cartCount.classList.remove('hidden');
+      } else {
+         cartCount.classList.add('hidden');
+      }
+   }
+
+   openCart() {
+      document.getElementById('cartSidebar').classList.remove('translate-x-full');
+      document.getElementById('cartOverlay').classList.remove('hidden');
+      this.renderCartItems();
+   }
+
+   closeCart() {
+      document.getElementById('cartSidebar').classList.add('translate-x-full');
+      document.getElementById('cartOverlay').classList.add('hidden');
+   }
+
+   renderCartItems() {
+      const container = document.getElementById('cartItems');
+      const emptyCart = document.getElementById('emptyCart');
+      const cartFooter = document.getElementById('cartFooter');
+
+      if (this.cart.length === 0) {
+         container.classList.add('hidden');
+         emptyCart.classList.remove('hidden');
+         cartFooter.classList.add('hidden');
+         return;
+      }
+
+      container.classList.remove('hidden');
+      emptyCart.classList.add('hidden');
+      cartFooter.classList.remove('hidden');
+
+      container.innerHTML = this.cart.map((item, index) => `
+         <div class="flex items-center gap-4 p-4 border-b border-gray-200">
+            <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg" loading="lazy">
+            
+            <div class="flex-1">
+               <h4 class="font-semibold text-gray-800">${item.name}</h4>
+               <p class="text-primary font-bold">R${item.price.toFixed(2)}</p>
+            </div>
+            
+            <div class="flex items-center gap-2">
+               <button class="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center transition-colors"
+                       onclick="window.productManager.updateCartQuantity('${item.id}', ${item.quantity - 1})">
+                  <i class="fas fa-minus text-sm"></i>
+               </button>
+               <span class="w-8 text-center font-semibold">${item.quantity}</span>
+               <button class="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center transition-colors"
+                       onclick="window.productManager.updateCartQuantity('${item.id}', ${item.quantity + 1})">
+                  <i class="fas fa-plus text-sm"></i>
+               </button>
+            </div>
+            
+            <button class="text-red-500 hover:text-red-700 transition-colors"
+                    onclick="window.productManager.removeFromCart('${item.id}')">
+               <i class="fas fa-trash"></i>
+            </button>
+         </div>
+      `).join('');
+
+      // Update total
+      const total = this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      document.getElementById('cartTotal').textContent = `R${total.toFixed(2)}`;
+   }
+
+   checkout() {
+      if (this.cart.length === 0) {
+         alert('Your cart is empty!');
+         return;
+      }
+
+      // Require auth before proceeding to checkout
+      const proceed = (user) => {
+         // Persist cart so checkout page can read it
+         sessionStorage.setItem('pendingCart', JSON.stringify(this.cart));
+         if (user) {
+            sessionStorage.setItem('checkoutUser', JSON.stringify({
+               email: user.email,
+               name: (user.user_metadata?.full_name ||
+                      ((user.user_metadata?.first_name || '') + ' ' + (user.user_metadata?.last_name || '')).trim() ||
+                      ''),
+               phone: user.user_metadata?.phone || ''
+            }));
+         }
+         window.location.href = 'checkout.html';
+      };
+
+      if (window.requireAuthForCheckout) {
+         window.requireAuthForCheckout(proceed);
+      } else {
+         proceed(null); // auth.js not loaded yet – fall through
+      }
+   }
+
+   // Wishlist functionality
+   toggleWishlist(productId) {
+      const index = this.wishlist.findIndex(id => id === productId);
+      
+      if (index > -1) {
+         this.wishlist.splice(index, 1);
+      } else {
+         this.wishlist.push(productId);
+         this.showToast('wishlistToast');
+      }
+
+      this.saveWishlist();
+      this.updateWishlistUI();
+      this.renderProducts(); // Re-render to update wishlist buttons
+   }
+
+   isInWishlist(productId) {
+      return this.wishlist.includes(productId);
+   }
+
+   saveWishlist() {
+      localStorage.setItem('omegatek_wishlist', JSON.stringify(this.wishlist));
+   }
+
+   updateWishlistUI() {
+      const wishlistCount = document.getElementById('wishlistCount');
+      
+      if (this.wishlist.length > 0) {
+         wishlistCount.textContent = this.wishlist.length;
+         wishlistCount.classList.remove('hidden');
+      } else {
+         wishlistCount.classList.add('hidden');
+      }
+   }
+
+   showWishlist() {
+      document.getElementById('wishlistSidebar').classList.remove('-translate-x-full');
+      document.getElementById('wishlistOverlay').classList.remove('hidden');
+      this.renderWishlistItems();
+   }
+
+   closeWishlist() {
+      document.getElementById('wishlistSidebar').classList.add('-translate-x-full');
+      document.getElementById('wishlistOverlay').classList.add('hidden');
+   }
+
+   renderWishlistItems() {
+      const container = document.getElementById('wishlistItems');
+      const emptyEl   = document.getElementById('emptyWishlist');
+      const items     = this.products.filter(p => this.wishlist.includes(p.id));
+      if (items.length === 0) {
+         container.classList.add('hidden');
+         emptyEl.classList.remove('hidden');
+         return;
+      }
+      container.classList.remove('hidden');
+      emptyEl.classList.add('hidden');
+      container.innerHTML = items.map(product => {
+         const img = product.image
+            ? `<img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover">`
+            : `<div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-500 to-pink-500"><i class="fas fa-microchip text-white text-xl"></i></div>`;
+         const stock = product.inStock
+            ? '<span class="text-green-600">&#10003; In Stock</span>'
+            : '<span class="text-red-400">Out of Stock</span>';
+         return `
+         <div class="flex items-center gap-4 p-4 border-b border-gray-100 hover:bg-gray-50 transition-colors">
+            <div class="w-16 h-16 flex-shrink-0 rounded-xl overflow-hidden bg-gray-100 border border-gray-200">${img}</div>
+            <div class="flex-1 min-w-0">
+               <h4 class="font-semibold text-gray-800 text-sm leading-snug mb-1" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${product.name}</h4>
+               <p class="text-purple-600 font-bold text-sm">R${product.price.toFixed(2)}</p>
+               <p class="text-xs mt-0.5">${stock}</p>
+            </div>
+            <div class="flex flex-col gap-2 flex-shrink-0">
+               <button class="bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+                       onclick="productManager.addToCart('${product.id}')">
+                  <i class="fas fa-cart-plus mr-1"></i>Add
+               </button>
+               <button class="border border-red-300 text-red-500 hover:bg-red-50 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+                       onclick="productManager.toggleWishlist('${product.id}'); productManager.renderWishlistItems();">
+                  <i class="fas fa-trash-alt mr-1"></i>Remove
+               </button>
+            </div>
+         </div>`;
+      }).join('');
+   }
+
+   // Quick view functionality
+   openQuickView(productId) {
+      const product = this.products.find(p => p.id === productId);
+      if (!product) return;
+
+      const modal = document.getElementById('quickViewModal');
+      const content = document.getElementById('quickViewContent');
+
+      content.innerHTML = `
+         <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div>
+               <img src="${product.image}" alt="${product.name}" class="w-full h-96 object-cover rounded-lg" loading="lazy">
+            </div>
+            
+            <div>
+               <h2 class="text-4xl font-bold text-gray-800 mb-6">${product.name}</h2>
+               
+               <div class="flex items-center mb-6">
+                  <div class="flex text-yellow-400 mr-3 text-xl">
+                     ${this.renderStars(product.rating)}
+                  </div>
+                  <span class="text-gray-500 text-lg">(${product.reviews} reviews)</span>
+               </div>
+               
+               <p class="text-gray-600 mb-8 text-lg leading-relaxed">${product.description}</p>
+               
+               <div class="flex items-center gap-6 mb-8">
+                  <span class="text-5xl font-bold text-primary">R${product.price.toFixed(2)}</span>
+                  ${product.originalPrice ? `<span class="text-2xl text-gray-400 line-through">R${product.originalPrice.toFixed(2)}</span>` : ''}
+               </div>
+               
+               <div class="flex gap-6">
+                  <button class="flex-1 bg-primary hover:bg-secondary text-white py-5 px-8 rounded-lg font-semibold text-xl transition-all duration-200 hover:scale-105"
+                          onclick="productManager.addToCart('${product.id}'); productManager.closeQuickView();">
+                     <i class="fas fa-shopping-cart mr-3"></i>Add to Cart
+                  </button>
+                  <button class="px-8 py-5 border-2 border-primary text-primary hover:bg-primary hover:text-white rounded-lg transition-all duration-200 text-xl"
+                          onclick="productManager.toggleWishlist('${product.id}')">
+                     <i class="fas fa-heart"></i>
+                  </button>
+               </div>
+            </div>
+         </div>
+      `;
+
+      modal.classList.remove('hidden');
+   }
+
+   closeQuickView() {
+      document.getElementById('quickViewModal').classList.add('hidden');
+   }
+
+   // Utility functions
+   showToast(toastId) {
+      const toast = document.getElementById(toastId);
+      toast.classList.add('show');
+      
+      // Auto-hide after 3 seconds
+      setTimeout(() => {
+         toast.classList.remove('show');
+      }, 3000);
+   }
+
+   updateActiveFiltersDisplay() {
+      const container = document.getElementById('activeFilters');
+      const activeFilters = [];
+
+      if (this.filters.categories.length > 0) {
+         activeFilters.push(...this.filters.categories.map(cat => ({ type: 'category', value: cat })));
+      }
+
+      if (this.filters.inStock) {
+         activeFilters.push({ type: 'stock', value: 'In Stock' });
+      }
+
+      if (this.filters.onSale) {
+         activeFilters.push({ type: 'sale', value: 'On Sale' });
+      }
+
+      container.innerHTML = activeFilters.map(filter => `
+         <span class="bg-primary text-white px-3 py-1 rounded-full text-sm flex items-center gap-2">
+            ${filter.value}
+            <button onclick="productManager.removeFilter('${filter.type}', '${filter.value}')" class="hover:bg-white hover:bg-opacity-20 rounded-full w-4 h-4 flex items-center justify-center">
+               <i class="fas fa-times text-xs"></i>
+            </button>
+         </span>
+      `).join('');
+   }
+
+   removeFilter(type, value) {
+      switch (type) {
+         case 'category':
+            this.filters.categories = this.filters.categories.filter(cat => cat !== value);
+            document.querySelector(`input[value="${value}"].category-filter`).checked = false;
+            break;
+         case 'stock':
+            this.filters.inStock = false;
+            document.getElementById('inStock').checked = false;
+            break;
+         case 'sale':
+            this.filters.onSale = false;
+            document.getElementById('onSale').checked = false;
+            break;
+      }
+      
+      this.applyFilters();
+   }
+
+   clearAllFilters() {
+      // Reset all filters
+      this.filters = {
+         search: '',
+         categories: [],
+         priceRange: { min: 0, max: 10000 },
+         inStock: false,
+         onSale: false,
+         rating: null
+      };
+
+      // Reset UI
+      document.getElementById('searchInput').value = '';
+      document.querySelectorAll('.category-filter').forEach(cb => cb.checked = false);
+      document.getElementById('minPrice').value = '';
+      document.getElementById('maxPrice').value = '';
+      document.getElementById('inStock').checked = false;
+      document.getElementById('onSale').checked = false;
+      document.querySelectorAll('input[name="rating"]').forEach(radio => radio.checked = false);
+
+      this.applyFilters();
+   }
+
+   showError(message) {
+      // Implement error display
+      console.error(message);
+      // You can add a toast notification here
+      const toast = document.createElement('div');
+      toast.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg z-[10000]';
+      toast.innerHTML = `
+         <div class="flex items-center">
+            <i class="fas fa-exclamation-triangle mr-2"></i>
+            <span>${message}</span>
+         </div>
+      `;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+         toast.remove();
+      }, 5000);
+   }
+
+   // Admin function to add demo products to Firestore (for testing)
+   async addDemoProductsToFirestore() {
+      try {
+         await this.waitForFirebase();
+         const { addDoc } = await import("https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js");
+         
+         const demoProducts = await this.loadDemoProducts();
+         
+         for (const product of demoProducts) {
+            const productData = {
+               ...product,
+               dateAdded: new Date(product.dateAdded)
+            };
+            delete productData.id; // Let Firestore generate the ID
+            
+            const docRef = await addDoc(window.firebase.collection(window.firebase.db, 'products'), productData);
+            console.log('Product added with ID:', docRef.id);
+         }
+         
+         console.log('All demo products added to Firestore!');
+         // Reload products from Firestore
+         await this.loadProducts();
+         this.renderProducts();
+         
+      } catch (error) {
+         console.error('Error adding demo products to Firestore:', error);
+         this.showError('Failed to add demo products to Firestore');
+      }
+   }
+}
+
+// Initialize the product manager when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+   window.productManager = new ProductManager();
+   
+   // Mobile filter toggle functionality
+   const filterToggleBtn = document.getElementById('filterToggleBtn');
+   const mobileFilterOverlay = document.getElementById('mobileFilterOverlay');
+   const mobileFilterPanel = document.getElementById('mobileFilterPanel');
+   const closeMobileFilters = document.getElementById('closeMobileFilters');
+   const desktopFilters = document.querySelector('#filterSidebar > div');
+   
+   // Clone desktop filters to mobile panel
+   if (desktopFilters && mobileFilterPanel) {
+      const mobileFiltersContent = mobileFilterPanel.querySelector('.p-4');
+      if (mobileFiltersContent) {
+         mobileFiltersContent.appendChild(desktopFilters.cloneNode(true));
+      }
+   }
+   
+   // Open mobile filters
+   if (filterToggleBtn) {
+      filterToggleBtn.addEventListener('click', () => {
+         mobileFilterOverlay.classList.add('active');
+         mobileFilterOverlay.classList.remove('hidden');
+         setTimeout(() => {
+            mobileFilterPanel.classList.remove('-translate-x-full');
+         }, 10);
+      });
+   }
+   
+   // Close mobile filters
+   const closeMobileFiltersFn = () => {
+      mobileFilterPanel.classList.add('-translate-x-full');
+      setTimeout(() => {
+         mobileFilterOverlay.classList.remove('active');
+         mobileFilterOverlay.classList.add('hidden');
+      }, 300);
+   };
+   
+   if (closeMobileFilters) {
+      closeMobileFilters.addEventListener('click', closeMobileFiltersFn);
+   }
+   
+   if (mobileFilterOverlay) {
+      mobileFilterOverlay.addEventListener('click', (e) => {
+         if (e.target === mobileFilterOverlay) {
+            closeMobileFiltersFn();
+         }
+      });
+   }
+});
+
+// CSS for view toggle active state
+document.addEventListener('DOMContentLoaded', () => {
+   const style = document.createElement('style');
+   style.textContent = `
+      .view-toggle.active {
+         background-color: #b30ce6;
+         color: white;
+      }
+      
+      .line-clamp-2 {
+         display: -webkit-box;
+         -webkit-line-clamp: 2;
+         -webkit-box-orient: vertical;
+         overflow: hidden;
+      }
+   `;
+   document.head.appendChild(style);
+});
+</script>
+
+   <meta name="robots" content="index, follow">
+   <meta property="og:title" content="Products - Omegatek Solutions">
+   <meta property="og:description" content="Browse our latest tech products and accessories at Omegatek Solutions. Quality electronics and replacement parts.">
+   <meta property="og:type" content="website">
+   <meta property="og:url" content="https://omegatek.co.za/products.html">
+   <meta property="og:image" content="https://omegatek.co.za/images2/Omegatek3.png">
+   
+   <!-- Twitter Card Meta Tags -->
+   <meta name="twitter:card" content="summary_large_image">
+   <meta name="twitter:title" content="Products - Omegatek Solutions">
+   <meta name="twitter:description" content="Browse our latest tech products and accessories at Omegatek Solutions. Quality electronics and replacement parts.">
+   <meta name="twitter:image" content="https://omegatek.co.za/images2/Omegatek3.png">
+   
+   <!-- Canonical Tag -->
+   <link rel="canonical" href="https://omegatek.co.za/products.html">
+   
+   <!-- Product Catalog Schema (2026 SEO Enhancement) -->
+   <script type="application/ld+json" id="productCatalogSchema">
+   {
+     "@context": "https://schema.org",
+     "@type": "CollectionPage",
+     "name": "Tech Products & Accessories",
+     "description": "Browse our complete catalog of technology products, electronics, and accessories",
+     "url": "https://omegatek.co.za/products.html",
+     "isPartOf": {
+       "@type": "WebSite",
+       "name": "Omegatek Solutions",
+       "url": "https://omegatek.co.za"
+     },
+     "breadcrumb": {
+       "@type": "BreadcrumbList",
+       "itemListElement": [
+         {
+           "@type": "ListItem",
+           "position": 1,
+           "name": "Home",
+           "item": "https://omegatek.co.za/"
+         },
+         {
+           "@type": "ListItem",
+           "position": 2,
+           "name": "Products",
+           "item": "https://omegatek.co.za/products.html"
+         }
+       ]
+     },
+     "mainEntity": {
+       "@type": "ItemList",
+       "numberOfItems": 70,
+       "itemListElement": []
+     }
+   }
+   </script>
+   
+   <title>Products | Omegatek Solutions</title>
+
+   <!-- Modern CSS Frameworks -->
+   <script src="https://cdn.tailwindcss.com"></script>
+   <script>
+      tailwind.config = {
+         theme: {
+            extend: {
+               colors: {
+                  primary: '#b30ce6',
+                  secondary: '#7c2d92',
+                  accent: '#e74c3c',
+                  dark: '#1a1a1a',
+                  light: '#f8f9fa'
+               },
+               animation: {
+                  'pulse-glow': 'pulse-glow 2s ease-in-out infinite alternate',
+                  'float': 'float 3s ease-in-out infinite',
+                  'shimmer': 'shimmer 2s linear infinite',
+                  'bounce-soft': 'bounce-soft 2s infinite',
+                  'slide-up': 'slide-up 0.3s ease-out',
+                  'fade-in': 'fade-in 0.5s ease-out',
+                  'scale-in': 'scale-in 0.2s ease-out'
+               },
+               keyframes: {
+                  'pulse-glow': {
+                     '0%': { boxShadow: '0 0 20px rgba(179, 12, 230, 0.5)' },
+                     '100%': { boxShadow: '0 0 40px rgba(179, 12, 230, 0.8)' }
+                  },
+                  'float': {
+                     '0%, 100%': { transform: 'translateY(0px)' },
+                     '50%': { transform: 'translateY(-20px)' }
+                  },
+                  'shimmer': {
+                     '0%': { backgroundPosition: '-200% 0' },
+                     '100%': { backgroundPosition: '200% 0' }
+                  },
+                  'bounce-soft': {
+                     '0%, 100%': { transform: 'translateY(0)' },
+                     '50%': { transform: 'translateY(-10px)' }
+                  },
+                  'slide-up': {
+                     '0%': { transform: 'translateY(20px)', opacity: '0' },
+                     '100%': { transform: 'translateY(0)', opacity: '1' }
+                  },
+                  'fade-in': {
+                     '0%': { opacity: '0' },
+                     '100%': { opacity: '1' }
+                  },
+                  'scale-in': {
+                     '0%': { transform: 'scale(0.95)', opacity: '0' },
+                     '100%': { transform: 'scale(1)', opacity: '1' }
+                  }
+               }
+            }
+         }
+      }
+   </script>
+   
+   <!-- AOS Animation Library -->
+   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+   
+   <!-- Font awesome cdn link -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+   <!-- Custom css file links -->
+   <link rel="stylesheet" href="../css/style.css">
+   <!-- Auth Styles -->
+   <link rel="stylesheet" href="../css/auth.css">
+
+   <!-- Favicon -->
+   <link rel="icon" type="image/png" href="../images2/favicon.png">
+
+   <!-- Firebase SDK -->
+   <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+      import { getFirestore, collection, getDocs, query, orderBy, where, limit } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+      
+      // Your web app's Firebase configuration
+      const firebaseConfig = {
+         apiKey: "REDACTED_ROTATE_THIS_KEY",
+         authDomain: "omegatek-products.firebaseapp.com",
+         projectId: "omegatek-products",
+         storageBucket: "omegatek-products.firebasestorage.app",
+         messagingSenderId: "963359726483",
+         appId: "1:963359726483:web:729da448e9f17c087d6666"
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      
+      // Make Firebase available globally
+      window.firebase = {
+         app,
+         db,
+         collection,
+         getDocs,
+         query,
+         orderBy,
+         where,
+         limit
+      };
+   </script>
+
+   <!-- Custom Product Page Styles -->
+   <style>
+      .product-card {
+         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+         transform: translateZ(0); /* Enable hardware acceleration */
+         will-change: transform;
+      }
+      
+      .product-card:hover {
+         transform: translateY(-8px) translateZ(0);
+      }
+      
+      .filter-chip {
+         transition: all 0.2s ease;
+      }
+      
+      .filter-chip:hover {
+         transform: translateY(-2px);
+      }
+      
+      .category-grid {
+         display: grid;
+         grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+         gap: 1rem;
+      }
+      
+      .skeleton {
+         background: linear-gradient(90deg, #f0f0f0 25%, transparent 37%, #f0f0f0 63%);
+         background-size: 400% 100%;
+         animation: shimmer 1.5s ease-in-out infinite;
+      }
+      
+      .wishlist-btn.active {
+         color: #e74c3c;
+      }
+      
+      .quick-view-modal {
+         backdrop-filter: blur(10px);
+      }
+      
+      .price-range-slider {
+         background: linear-gradient(to right, #b30ce6 0%, #b30ce6 50%, #e5e7eb 50%, #e5e7eb 100%);
+      }
+
+      /* Performance optimizations */
+      * {
+         box-sizing: border-box;
+      }
+      
+      img {
+         image-rendering: -webkit-optimize-contrast;
+         image-rendering: crisp-edges;
+      }
+      
+      .product-image-container img {
+         transform: translateZ(0);
+         backface-visibility: hidden;
+      }
+
+      /* Custom scrollbar for filters */
+      .filter-scroll::-webkit-scrollbar {
+         width: 4px;
+      }
+      
+      .filter-scroll::-webkit-scrollbar-track {
+         background: #f1f1f1;
+         border-radius: 10px;
+      }
+      
+      .filter-scroll::-webkit-scrollbar-thumb {
+         background: #b30ce6;
+         border-radius: 10px;
+      }
+
+      /* Product image hover effects */
+      .product-image-container {
+         position: relative;
+         overflow: hidden;
+      }
+      
+      .product-image-container::before {
+         content: '';
+         position: absolute;
+         top: 0;
+         left: -100%;
+         width: 100%;
+         height: 100%;
+         background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+         transition: left 0.5s;
+         z-index: 1;
+      }
+      
+      .product-card:hover .product-image-container::before {
+         left: 100%;
+      }
+
+      /* Notification toast */
+      .toast {
+         position: fixed;
+         top: 20px;
+         right: 20px;
+         z-index: 9999;
+         transform: translateX(400px);
+         transition: transform 0.3s ease;
+      }
+      
+      .toast.show {
+         transform: translateX(0);
+      }
+
+      /* Hero title gradient text effects */
+      .title-line.featured {
+         background: linear-gradient(135deg, #b30ce6, #ff6b9d, #00f2fe) !important;
+         background-size: 200% 200% !important;
+         -webkit-background-clip: text !important;
+         background-clip: text !important;
+         -webkit-text-fill-color: transparent !important;
+         color: transparent !important;
+         animation: gradientShift 3s ease-in-out infinite !important;
+         display: inline-block !important;
+      }
+
+      @keyframes gradientShift {
+         0% { background-position: 0% 50%; }
+         50% { background-position: 100% 50%; }
+         100% { background-position: 0% 50%; }
+      }
+
+      /* Mobile filter panel animations */
+      #mobileFilterOverlay.active {
+         display: block;
+      }
+
+      #mobileFilterOverlay.active #mobileFilterPanel {
+         transform: translateX(0);
+      }
+
+      /* Container max-width for ultra-wide screens */
+      .container {
+         max-width: 1920px;
+      }
+
+      /* Scrollbar styling for products main area */
+      #productsMain::-webkit-scrollbar {
+         width: 5px;
+      }
+      #productsMain::-webkit-scrollbar-track {
+         background: #f1f1f1;
+         border-radius: 10px;
+      }
+      #productsMain::-webkit-scrollbar-thumb {
+         background: #b30ce6;
+         border-radius: 10px;
+      }
+
+      /* Improved product card styles */
+      .product-card {
+         background: white;
+         border-radius: 0.5rem;
+         overflow: hidden;
+         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      }
+
+      .product-card:hover {
+         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      }
+
+      /* View toggle button active state */
+      .view-toggle.active {
+         background: white !important;
+         color: #b30ce6 !important;
+         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 1024px) {
+         .container {
+            max-width: 100%;
+         }
+      }
+
+      @media (max-width: 768px) {
+         .product-card {
+            font-size: 0.9rem;
+         }
+      }
+   </style>
+   <!-- Supabase -->
+   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+   <script>
+      (function() {
+         const SUPA_URL = 'https://pefjkiijqratjixskmdx.supabase.co';
+         const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZmpraWlqcXJhdGppeHNrbWR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MzkwNDQsImV4cCI6MjA4ODAxNTA0NH0.x6s38k7avvoszJATabbUcp2zv9kjUVYRjKPT7n-pQJA';
+         window._sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
+      })();
+   </script>
+</head>
+<body class="min-h-screen flex flex-col">
+
+<!-- Header section starts -->
+<header class="header">
+   <div class="contact-info">
+      <p> <i class="fas fa-map"></i> Midrand, Gauteng, South Africa </p>
+      <p> <i class="fas fa-envelope"></i> sales@omegateksolutions.co.za </p>
+      <p> <i class="fas fa-phone"></i> 073 653 8207 </p>
+   </div>
+
+   <nav class="navbar">
+      <div class="logo">
+         <a href="/">
+           <img src="../images2/OMEGATEK_SOLUTIONS_9-NO BG.png" alt="Omegatek Solutions Logo">
+         </a>
+      </div>
+
+      <div class="links">
+         <a href="/">home</a>
+         <a href="about">about</a>
+         <a href="services">services</a>
+         <a href="webdev">Web/App Dev</a>
+         <a href="blog">blog</a>
+         <a href="../index.html#contact">contact</a>
+         <a href="products" class="active">products</a>
+      </div>
+
+      <div id="menu-btn" class="fa fa-bars"></div>
+   </nav>
+</header>
+<!-- Header section ends -->
+
+<!-- Construction Banner -->
+<div class="construction-banner-container overflow-hidden bg-gradient-to-r from-orange-500 via-red-500 to-orange-500 text-white relative z-40">
+   <div class="construction-banner whitespace-nowrap py-6 text-2xl font-bold animate-slide-infinite">
+      <span class="inline-block px-16 mx-4">🚧 WEBSTORE UNDER CONSTRUCTION 🚧</span>
+      <span class="inline-block px-16 mx-4">⚠️ COMING SOON ⚠️</span>
+      <span class="inline-block px-16 mx-4">🔧 BUILDING SOMETHING AMAZING 🔧</span>
+      <span class="inline-block px-16 mx-4">🚧 WEBSTORE UNDER CONSTRUCTION 🚧</span>
+      <span class="inline-block px-16 mx-4">⚠️ COMING SOON ⚠️</span>
+      <span class="inline-block px-16 mx-4">🔧 BUILDING SOMETHING AMAZING 🔧</span>
+      <span class="inline-block px-16 mx-4">🚧 WEBSTORE UNDER CONSTRUCTION 🚧</span>
+      <span class="inline-block px-16 mx-4">⚠️ COMING SOON ⚠️</span>
+      <span class="inline-block px-16 mx-4">🔧 BUILDING SOMETHING AMAZING 🔧</span>
+      <span class="inline-block px-16 mx-4">🚧 WEBSTORE UNDER CONSTRUCTION 🚧</span>
+      <span class="inline-block px-16 mx-4">⚠️ COMING SOON ⚠️</span>
+      <span class="inline-block px-16 mx-4">🔧 BUILDING SOMETHING AMAZING 🔧</span>
+   </div>
+   
+   <!-- Animated construction elements -->
+   <div class="absolute top-0 left-0 w-full h-full pointer-events-none">
+      <div class="construction-dot construction-dot-1"></div>
+      <div class="construction-dot construction-dot-2"></div>
+      <div class="construction-dot construction-dot-3"></div>
+   </div>
+</div>
+
+<style>
+@keyframes slide-infinite {
+   0% {
+      transform: translateX(0);
+   }
+   100% {
+      transform: translateX(-100%);
+   }
+}
+
+@keyframes construction-pulse {
+   0%, 100% {
+      opacity: 0.3;
+      transform: scale(1);
+   }
+   50% {
+      opacity: 0.8;
+      transform: scale(1.2);
+   }
+}
+
+.construction-banner-container {
+   position: relative;
+   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+   background-size: 200% 100%;
+   animation: gradientShift 3s ease-in-out infinite;
+}
+
+.construction-banner {
+   animation: slide-infinite 25s linear infinite;
+   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+   letter-spacing: 2px;
+   display: flex;
+   align-items: center;
+   min-width: 200%;
+}
+
+.construction-dot {
+   position: absolute;
+   width: 12px;
+   height: 12px;
+   background: rgba(255, 255, 255, 0.6);
+   border-radius: 50%;
+   animation: construction-pulse 2s ease-in-out infinite;
+}
+
+.construction-dot-1 {
+   top: 30%;
+   left: 10%;
+   animation-delay: 0s;
+}
+
+.construction-dot-2 {
+   top: 60%;
+   left: 60%;
+   animation-delay: 0.7s;
+}
+
+.construction-dot-3 {
+   top: 30%;
+   right: 20%;
+   animation-delay: 1.4s;
+}
+
+@keyframes gradientShift {
+   0% { background-position: 0% 50%; }
+   50% { background-position: 100% 50%; }
+   100% { background-position: 0% 50%; }
+}
+
+/* Add blinking effect to emojis */
+.construction-banner span:nth-child(odd) {
+   animation: blink 2s ease-in-out infinite;
+}
+
+@keyframes blink {
+   0%, 100% { opacity: 1; }
+   50% { opacity: 0.7; }
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+   .construction-banner {
+      font-size: 1.2rem;
+      animation: slide-infinite 20s linear infinite;
+      padding: 1rem 0;
+   }
+   
+   .construction-banner span {
+      padding-left: 2rem;
+      padding-right: 2rem;
+      margin-left: 1rem;
+      margin-right: 1rem;
+   }
+}
+</style>
+
+<!-- Hero Section -->
+<section class="relative py-32 overflow-hidden" style="background-image: url('../images2/gadget2.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+   <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+   <div class="relative px-4 text-center text-white">
+      <h1 class="text-5xl md:text-7xl font-bold mb-6" data-aos="fade-up">
+         <span class="title-line">Premium Tech</span>
+         <span class="title-line featured">Products</span>
+      </h1>
+      <p class="text-xl md:text-2xl mb-8 opacity-90" data-aos="fade-up" data-aos-delay="200">
+         Discover quality electronics and accessories for all your tech needs
+      </p>
+      <div class="flex flex-wrap justify-center gap-4" data-aos="fade-up" data-aos-delay="400">
+         <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-3">
+            <i class="fas fa-shield-alt text-yellow-400 mr-2"></i>
+            Quality Guaranteed
+         </div>
+         <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-3">
+            <i class="fas fa-shipping-fast text-green-400 mr-2"></i>
+            Fast Delivery
+         </div>
+         <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-3">
+            <i class="fas fa-tools text-blue-400 mr-2"></i>
+            Expert Support
+         </div>
+      </div>
+   </div>
+   
+   <!-- Floating particles -->
+   <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-1/4 left-1/4 w-4 h-4 bg-white bg-opacity-20 rounded-full animate-float"></div>
+      <div class="absolute top-3/4 right-1/4 w-6 h-6 bg-white bg-opacity-10 rounded-full animate-float" style="animation-delay: 1s;"></div>
+      <div class="absolute top-1/2 left-3/4 w-3 h-3 bg-white bg-opacity-30 rounded-full animate-float" style="animation-delay: 2s;"></div>
+   </div>
+</section>
+
+<!-- Main Product Section -->
+<section class="py-6 md:py-8 bg-gray-50 min-h-screen flex-grow">
+   <div class="w-full">
+      
+      <!-- Top Control Bar -->
+      <div class="bg-white shadow-md border-b border-gray-200 mb-6 sticky top-0 z-40">
+         <div class="container mx-auto px-4 md:px-6 py-4">
+            <div class="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
+               
+               <!-- Mobile Filter Toggle -->\n               <button id="filterToggleBtn" class="lg:hidden flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-white rounded-lg font-medium hover:bg-secondary transition-colors">
+                  <i class="fas fa-filter"></i>
+                  <span>Filters</span>
+               </button>
+               
+               <!-- Search Box -->
+               <div class="relative flex-1 md:max-w-md">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                     <i class="fas fa-search text-gray-400"></i>
+                  </div>
+                  <input
+                     type="text"
+                     id="searchInput"
+                     placeholder="Search products, brands..."
+                     class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary focus:ring-opacity-20 transition-all duration-200"
+                  >
+                  <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                     <button id="clearSearch" class="text-gray-400 hover:text-gray-600 hidden">
+                        <i class="fas fa-times"></i>
+                     </button>
+                  </div>
+               </div>
+               
+               <!-- View Toggle & Cart -->
+               <div class="flex items-center gap-3">
+                  <!-- Desktop View Toggle -->
+                  <div class="hidden md:flex items-center gap-1 bg-gray-100 rounded-lg p-1">
+                     <button id="gridView" class="view-toggle px-3 py-2 rounded-md transition-all active" title="Grid View">
+                        <i class="fas fa-th-large"></i>
+                     </button>
+                     <button id="listView" class="view-toggle px-3 py-2 rounded-md transition-all" title="List View">
+                        <i class="fas fa-list"></i>
+                     </button>
+                  </div>
+                  
+                  <!-- Cart Button -->
+                  <button id="cartButton" class="relative bg-primary hover:bg-secondary text-white px-4 md:px-5 py-2.5 rounded-lg transition-all duration-200 hover:shadow-lg flex items-center gap-2">
+                     <i class="fas fa-shopping-cart"></i>
+                     <span class="hidden sm:inline font-medium">Cart</span>
+                     <span id="cartCount" class="bg-red-500 text-white rounded-full min-w-[20px] h-5 px-1.5 flex items-center justify-center text-xs font-bold hidden">0</span>
+                  </button>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <!-- Main Content Area -->
+      <div class="container mx-auto px-4 md:px-6">
+         <div class="flex gap-6 items-start">
+            
+            <!-- Sidebar Filters -->
+            <aside id="filterSidebar" class="hidden lg:block w-72 flex-shrink-0">
+               <div class="bg-white rounded-lg shadow-md p-6 sticky top-20 max-h-[calc(100vh-84px)] overflow-y-auto">
+                  <div class="flex items-center justify-between mb-6">
+                     <h3 class="text-lg font-bold text-gray-800">Filters</h3>
+                     <button id="clearFilters" class="text-primary hover:text-secondary text-sm font-medium transition-colors">
+                        Clear All
+                     </button>
+                  </div>
+
+               <!-- Categories -->
+               <div class="mb-6">
+                  <h4 class="font-semibold text-gray-700 mb-3 flex items-center text-sm">
+                     <i class="fas fa-layer-group mr-2 text-primary"></i>
+                     Categories
+                  </h4>
+                  <div id="categoryFilters" class="space-y-2 max-h-48 overflow-y-auto filter-scroll">
+                     <!-- Categories will be populated by JavaScript -->
+                  </div>
+               </div>
+
+               <!-- Price Range -->
+               <div class="mb-6">
+                  <h4 class="font-semibold text-gray-700 mb-3 flex items-center text-sm">
+                     <i class="fas fa-tag mr-2 text-primary"></i>
+                     Price Range
+                  </h4>
+                  <div class="space-y-4">
+                     <div class="flex items-center gap-4">
+                        <input type="number" id="minPrice" placeholder="Min" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-primary transition-colors">
+                        <span class="text-gray-500">-</span>
+                        <input type="number" id="maxPrice" placeholder="Max" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-primary transition-colors">
+                     </div>
+                     <div class="relative">
+                        <input type="range" id="priceRange" min="0" max="10000" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer price-range-slider">
+                     </div>
+                     <div class="flex justify-between text-sm text-gray-500">
+                        <span>R0</span>
+                        <span>R10,000+</span>
+                     </div>
+                  </div>
+               </div>
+
+
+
+               <!-- Availability -->
+               <div class="mb-6">
+                  <h4 class="font-semibold text-gray-700 mb-3 flex items-center text-sm">
+                     <i class="fas fa-check-circle mr-2 text-primary"></i>
+                     Availability
+                  </h4>
+                  <div class="space-y-2">
+                     <label class="flex items-center cursor-pointer">
+                        <input type="checkbox" id="inStock" class="rounded border-gray-300 text-primary focus:ring-primary mr-2">
+                        <span class="text-sm text-gray-700">In Stock</span>
+                     </label>
+                     <label class="flex items-center cursor-pointer">
+                        <input type="checkbox" id="onSale" class="rounded border-gray-300 text-primary focus:ring-primary mr-2">
+                        <span class="text-sm text-gray-700">On Sale</span>
+                     </label>
+                  </div>
+               </div>
+
+               <!-- Rating -->
+               <div class="mb-4">
+                  <h4 class="font-semibold text-gray-700 mb-3 flex items-center text-sm">
+                     <i class="fas fa-star mr-2 text-primary"></i>
+                     Rating
+                  </h4>
+                  <div class="space-y-2">
+                     <label class="flex items-center cursor-pointer">
+                        <input type="radio" name="rating" value="4" class="text-primary focus:ring-primary mr-2">
+                        <div class="flex items-center">
+                           <div class="flex text-yellow-400 mr-2">
+                              <i class="fas fa-star"></i>
+                              <i class="fas fa-star"></i>
+                              <i class="fas fa-star"></i>
+                              <i class="fas fa-star"></i>
+                              <i class="far fa-star"></i>
+                           </div>
+                           <span class="text-sm text-gray-600">4+ Stars</span>
+                        </div>
+                     </label>
+                     <label class="flex items-center cursor-pointer">
+                        <input type="radio" name="rating" value="3" class="text-primary focus:ring-primary mr-2">
+                        <div class="flex items-center">
+                           <div class="flex text-yellow-400 mr-2">
+                              <i class="fas fa-star"></i>
+                              <i class="fas fa-star"></i>
+                              <i class="fas fa-star"></i>
+                              <i class="far fa-star"></i>
+                              <i class="far fa-star"></i>
+                           </div>
+                           <span class="text-sm text-gray-600">3+ Stars</span>
+                        </div>
+                     </label>
+                  </div>
+               </div>
+            </div>
+         </aside>
+
+         <!-- Products Area -->
+         <main id="productsMain" class="flex-1 min-w-0 overflow-y-auto" style="max-height:calc(100vh - 84px);padding-right:4px;scrollbar-width:thin;scrollbar-color:#b30ce6 #f1f1f1;">
+            
+            <!-- Sort and Results Info -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-5">
+               <div class="flex items-center gap-3 flex-wrap">
+                  <span id="resultsCount" class="text-gray-600 font-medium text-sm">Showing 0 products</span>
+                  <div class="hidden sm:block w-px h-4 bg-gray-300"></div>
+                  <div id="activeFilters" class="flex flex-wrap gap-2">
+                     <!-- Active filters will be shown here -->
+                  </div>
+               </div>
+               
+               <div class="flex items-center gap-2">
+                  <label class="text-gray-600 font-medium text-sm whitespace-nowrap">Sort:</label>
+                  <select id="sortSelect" class="border border-gray-300 rounded-lg px-3 py-2 focus:border-primary transition-colors bg-white text-sm">
+                     <option value="featured">Featured</option>
+                     <option value="price-low">Price: Low to High</option>
+                     <option value="price-high">Price: High to Low</option>
+                     <option value="name-az">Name: A to Z</option>
+                     <option value="name-za">Name: Z to A</option>
+                     <option value="newest">Newest First</option>
+                     <option value="rating">Highest Rated</option>
+                  </select>
+               </div>
+            </div>
+
+            <!-- Products Grid/List -->
+            <div id="productsContainer">
+               
+               <!-- Products Grid -->
+               <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 md:gap-5">
+                  <!-- Products will be populated by JavaScript -->
+               </div>
+               
+               <!-- Products List -->
+               <div id="productsList" class="space-y-4 hidden">
+                  <!-- List view products will be populated by JavaScript -->
+               </div>
+               
+               <!-- Loading Skeleton -->
+               <div id="loadingSkeleton" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 md:gap-5">
+                  <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                     <div class="skeleton h-48 bg-gray-200"></div>
+                     <div class="p-4 space-y-3">
+                        <div class="skeleton h-4 bg-gray-200 rounded w-3/4"></div>
+                        <div class="skeleton h-3 bg-gray-200 rounded w-1/2"></div>
+                        <div class="skeleton h-6 bg-gray-200 rounded w-1/4"></div>
+                     </div>
+                  </div>
+                  <!-- Repeat for more skeleton cards -->
+               </div>
+               
+               <!-- No Results -->
+               <div id="noResults" class="hidden text-center py-12">
+                  <div class="max-w-md mx-auto">
+                     <i class="fas fa-search text-6xl text-gray-300 mb-6"></i>
+                     <h3 class="text-2xl font-bold text-gray-700 mb-4">No products found</h3>
+                     <p class="text-gray-500 mb-6">Try adjusting your search or filters to find what you're looking for.</p>
+                     <button id="resetFilters" class="bg-primary hover:bg-secondary text-white px-6 py-3 rounded-lg transition-colors">
+                        Reset Filters
+                     </button>
+                  </div>
+               </div>
+            </div>
+         </main>
+         </div>
+      </div>
+   </div>
+</section>
+
+<!-- Mobile Filter Overlay -->\n<div id="mobileFilterOverlay" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden lg:hidden">
+   <div class="fixed inset-y-0 left-0 w-full max-w-sm bg-white shadow-xl overflow-y-auto transform transition-transform duration-300 -translate-x-full" id="mobileFilterPanel">
+      <div class="sticky top-0 bg-white border-b border-gray-200 px-4 py-4 flex items-center justify-between z-10">
+         <h3 class="text-lg font-bold text-gray-800">Filters</h3>
+         <button id="closeMobileFilters" class="text-gray-500 hover:text-gray-700 p-2">
+            <i class="fas fa-times text-xl"></i>
+         </button>
+      </div>
+      <div class="p-4">
+         <!-- Mobile filters will be cloned here via JavaScript -->
+      </div>
+   </div>
+</div>
+
+<!-- Shopping Cart Sidebar -->
+<div id="cartSidebar" class="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-[9999] flex flex-col">
+   <div class="flex items-center justify-between p-6 border-b border-gray-200">
+      <h2 class="text-2xl font-bold text-gray-800">
+         <i class="fas fa-shopping-cart mr-2 text-primary"></i>
+         Shopping Cart
+      </h2>
+      <button id="closeCart" class="text-gray-500 hover:text-gray-700 text-2xl transition-colors">
+         <i class="fas fa-times"></i>
+      </button>
+   </div>
+   
+   <div id="cartItems" class="flex-1 overflow-y-auto p-6">
+      <!-- Cart items will be populated here -->
+   </div>
+   
+   <div id="emptyCart" class="text-center py-16 hidden">
+      <i class="fas fa-shopping-cart text-6xl text-gray-300 mb-4"></i>
+      <h3 class="text-xl font-semibold text-gray-700 mb-2">Your cart is empty</h3>
+      <p class="text-gray-500">Start shopping to add items to your cart</p>
+   </div>
+   
+   <div id="cartFooter" class="border-t border-gray-200 p-6 bg-gray-50">
+      <div class="flex items-center justify-between mb-4">
+         <span class="text-lg font-semibold text-gray-700">Total:</span>
+         <span id="cartTotal" class="text-2xl font-bold text-primary">R0.00</span>
+      </div>
+      <div class="space-y-3">
+         <button id="checkoutBtn" class="w-full bg-primary hover:bg-secondary text-white py-4 rounded-xl font-semibold text-lg transition-all duration-200 hover:scale-105 shadow-lg">
+            <i class="fas fa-credit-card mr-2"></i>
+            Proceed to Checkout
+         </button>
+         <button id="continueShoppingBtn" class="w-full border-2 border-primary text-primary hover:bg-primary hover:text-white py-3 rounded-xl font-semibold transition-all duration-200">
+            Continue Shopping
+         </button>
+      </div>
+   </div>
+</div>
+
+<!-- Cart Overlay -->
+<div id="cartOverlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-[9998]"></div>
+
+<!-- Wishlist Sidebar (slides in from left) -->
+<div id="wishlistSidebar" class="fixed top-0 left-0 h-full w-full max-w-md bg-white shadow-2xl transform -translate-x-full transition-transform duration-300 z-[9999] flex flex-col">
+   <div class="flex items-center justify-between p-6 border-b border-gray-200">
+      <h2 class="text-2xl font-bold text-gray-800">
+         <i class="fas fa-heart mr-2 text-red-500"></i>
+         My Wishlist
+      </h2>
+      <button id="closeWishlist" class="text-gray-500 hover:text-gray-700 text-2xl transition-colors">
+         <i class="fas fa-times"></i>
+      </button>
+   </div>
+   <div id="wishlistItems" class="flex-1 overflow-y-auto">
+      <!-- Filled by JS -->
+   </div>
+   <div id="emptyWishlist" class="text-center py-16 px-6 hidden">
+      <i class="fas fa-heart text-6xl text-gray-200 mb-4 block"></i>
+      <h3 class="text-xl font-semibold text-gray-600 mb-2">Your wishlist is empty</h3>
+      <p class="text-gray-400 text-sm">Tap the <i class="fas fa-heart text-red-400"></i> on any product to save it here</p>
+   </div>
+</div>
+<!-- Wishlist Overlay -->
+<div id="wishlistOverlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-[9998]"></div>
+
+<!-- Quick View Modal -->
+<div id="quickViewModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-[9999] flex items-center justify-center p-4 quick-view-modal">
+   <div class="bg-white rounded-2xl max-w-6xl w-full max-h-[95vh] overflow-hidden shadow-2xl">
+      <div class="flex items-center justify-between p-8 border-b border-gray-200">
+         <h2 class="text-3xl font-bold text-gray-800">Quick View</h2>
+         <button id="closeQuickView" class="text-gray-500 hover:text-gray-700 text-2xl transition-colors">
+            <i class="fas fa-times"></i>
+         </button>
+      </div>
+      
+      <div id="quickViewContent" class="p-8 overflow-y-auto max-h-[calc(95vh-120px)]">
+         <!-- Quick view content will be populated here -->
+      </div>
+   </div>
+</div>
+
+<!-- Wishlist Toast Notification -->
+<div id="wishlistToast" class="toast bg-white shadow-lg rounded-lg p-4 border-l-4 border-red-500 max-w-sm cursor-pointer" onclick="this.classList.remove('show')">
+   <div class="flex items-center justify-between">
+      <div class="flex items-center">
+         <i class="fas fa-heart text-red-500 mr-3"></i>
+         <div>
+            <p class="font-semibold text-gray-800">Added to Wishlist</p>
+            <p class="text-sm text-gray-600">Item saved for later</p>
+         </div>
+      </div>
+      <button class="text-gray-400 hover:text-gray-600 ml-4" onclick="event.stopPropagation(); this.parentElement.parentElement.classList.remove('show')">
+         <i class="fas fa-times"></i>
+      </button>
+   </div>
+</div>
+
+<!-- Add to Cart Toast -->
+<div id="cartToast" class="toast bg-white shadow-lg rounded-lg p-4 border-l-4 border-green-500 max-w-sm cursor-pointer" onclick="this.classList.remove('show')">
+   <div class="flex items-center justify-between">
+      <div class="flex items-center">
+         <i class="fas fa-check-circle text-green-500 mr-3"></i>
+         <div>
+            <p class="font-semibold text-gray-800">Added to Cart</p>
+            <p class="text-sm text-gray-600">Item added successfully</p>
+         </div>
+      </div>
+      <button class="text-gray-400 hover:text-gray-600 ml-4" onclick="event.stopPropagation(); this.parentElement.parentElement.classList.remove('show')">
+         <i class="fas fa-times"></i>
+      </button>
+   </div>
+</div>
+
+<!-- Floating Action Buttons -->
+<div class="fixed bottom-6 right-6 flex flex-col gap-3 z-40">
+   <!-- Scroll to Top -->
+   <button id="scrollToTop" class="bg-white hover:bg-gray-100 text-gray-700 w-12 h-12 rounded-full shadow-lg border border-gray-200 transition-all duration-200 hover:scale-110 hidden">
+      <i class="fas fa-arrow-up"></i>
+   </button>
+   
+   <!-- Wishlist -->
+   <button id="wishlistBtn" class="bg-red-500 hover:bg-red-600 text-white w-12 h-12 rounded-full shadow-lg transition-all duration-200 hover:scale-110 relative">
+      <i class="fas fa-heart"></i>
+      <span id="wishlistCount" class="absolute -top-2 -right-2 bg-white text-red-500 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold hidden">0</span>
+   </button>
+</div>
+
+<!-- logo carousel section starts -->
+
+<section class="logo-carousel-section">
+   <div class="logo-carousel">
+      <div class="logo-track">
+         <!-- Set 1: Original Logos -->
+         <img src="../images2/corousel/samsung.png" alt="Samsung">
+         <img src="../images2/corousel/apple.png" alt="Apple">
+         <img src="../images2/corousel/huawei.png" alt="Huawei">
+         <img src="../images2/corousel/lg.png" alt="LG">
+         <img src="../images2/corousel/lenovo.png" alt="Lenovo">
+         <img src="../images2/corousel/sony.png" alt="Sony">
+         
+         <!-- Set 2: Exact Duplicates for seamless loop -->
+         <img src="../images2/corousel/samsung.png" alt="Samsung">
+         <img src="../images2/corousel/apple.png" alt="Apple">
+         <img src="../images2/corousel/huawei.png" alt="Huawei">
+         <img src="../images2/corousel/lg.png" alt="LG">
+         <img src="../images2/corousel/lenovo.png" alt="Lenovo">
+         <img src="../images2/corousel/sony.png" alt="Sony">
+      </div>
+   </div>
+</section>
+
+<!-- logo carousel section ends -->
+
+<!-- Footer -->
+<!-- footer section starts  -->
+
+<section class="footer">
+
+   <div class="box-container">
+
+      <div class="box">
+         <h3>quick links</h3>
+         <a class="link" href="/"> <i class="fas fa-angle-right"></i> home</a>
+         <a class="link" href="about"> <i class="fas fa-angle-right"></i> about</a>
+         <a class="link" href="services"> <i class="fas fa-angle-right"></i> services</a>
+         <a class="link" href="blog"> <i class="fas fa-angle-right"></i> blog</a>
+         <a class="link" href="webdev"> <i class="fas fa-angle-right"></i> Web/App Dev</a>
+         <!-- <a class="link" href="#team"> <i class="fas fa-angle-right"></i> team</a> -->
+         <a class="link" href="../index.html#reviews"> <i class="fas fa-angle-right"></i> reviews</a>
+         <a class="link" href="../index.html#contact"> <i class="fas fa-angle-right"></i> contact</a>
+      </div>
+
+      <div class="box">
+         <h3>legal</h3>
+         <a class="link" href="privacy-policy"> <i class="fas fa-shield-alt"></i> Privacy Policy</a>
+         <a class="link" href="terms-of-service"> <i class="fas fa-file-contract"></i> Terms of Service</a>
+         <a class="link" href="#" onclick="window.OmegatekCookieConsent.showSettings(); return false;"> <i class="fas fa-cookie-bite"></i> Cookie Preferences</a>
+      </div>
+
+      <div class="box">
+         <h3>opening hours</h3>
+         <p> <span>monday :</span> 09:00am to 07:00pm </p>
+         <p> <span>tuesday :</span> 09:00am to 07:00pm </p>
+         <p> <span>wednesday :</span> 09:00am to 07:00pm </p>
+         <p> <span>thursday :</span> 09:00am to 07:00pm </p>
+         <p> <span>friday :</span> 09:00am to 07:00pm </p>
+         <p> <span>saturday :</span> 09:00am to 07:00pm </p>
+         <p> <span>sunday :</span> closed </p>
+      </div>
+
+      <div class="box">
+         <h3>contact info</h3>
+         <a href="../index.html#contact" class="link"> <i class="fas fa-phone"></i> 073 653 8207 </a>
+         <a href="../index.html#contact" class="link"> <i class="fas fa-envelope"></i> sales@omegateksolutions.co.za </a>
+         <a href="../index.html#contact" class="link"> <i class="fas fa-map"></i> kaalfontein, Midrand, Gauteng, South Africa </a>
+      </div>
+
+      <div class="box">
+         <h3>newsletter</h3>
+         <p>subscribe for latest updates</p>
+         <form id="newsletterForm">
+            <input type="email" name="email" placeholder="enter your email" id="newsletterEmail" class="email" required>
+            <input type="submit" value="subscribe" class="btn">
+         </form>
+         <div id="newsletterMessage" style="margin-top: 1rem; font-size: 1.4rem; display: none;"></div>
+         <div class="share">
+            <a href="https://www.facebook.com/sandile.milanzi.10" class="fab fa-facebook-f"></a>
+            <a href="" class="fab fa-twitter"></a>
+            <a href="https://www.instagram.com/djx015/" class="fab fa-instagram"></a>
+            <a href="https://www.linkedin.com/in/sandile-milanzi-235692276/" class="fab fa-linkedin"></a>
+         </div>
+      </div>
+
+   </div>
+
+   <span class="text-gray-400 text-sm" style="font-family: 'Lucida Console', monospace;">created by <a href="https://www.facebook.com/sandile.milanzi.10" class="hover:text-secondary transition-colors" style="color: #b30ce6;">Sandile Milanzi</a> (Omegatek Solutions)™ | all rights reserved!©</span>
+
+</section>
+  
+<!-- footer section ends -->
+
+<!-- AOS Animation Library -->
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="../js/script.js"></script>
+<!-- Phase 1: Enhanced UI & Typography -->
+<script src="../js/enhanced-ui.js"></script>
+<!-- Phase 2: Cookie Consent -->
+<script src="../js/cookie-consent.js"></script>
+
+<script>
+   // Initialize AOS with performance optimizations
+   document.addEventListener('DOMContentLoaded', () => {
+      // Only initialize AOS on desktop for better performance
+      if (window.innerWidth >= 768) {
+         AOS.init({
+            duration: 400,
+            once: true,
+            offset: 50,
+            disable: function() {
+               return window.innerWidth < 768;
+            }
+         });
+      }
+   });
+</script>
+
+<script>
+// Admin helper functions (available in browser console)
+window.adminHelpers = {
+   // Add demo products to Firestore
+   async addDemoProducts() {
+      if (window.productManager) {
+         await window.productManager.addDemoProductsToFirestore();
+      } else {
+         console.error('ProductManager not initialized yet');
+      }
+   },
+   
+   // Clear all products from Firestore (be careful!)
+   async clearAllProducts() {
+      const confirmed = confirm('Are you sure you want to delete ALL products from Firestore? This cannot be undone!');
+      if (!confirmed) return;
+      
+      try {
+         await window.productManager.waitForFirebase();
+         const { deleteDoc, doc } = await import("https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js");
+         
+         const productsRef = window.firebase.collection(window.firebase.db, 'products');
+         const querySnapshot = await window.firebase.getDocs(productsRef);
+         
+         const deletePromises = [];
+         querySnapshot.forEach((docSnapshot) => {
+            deletePromises.push(deleteDoc(doc(window.firebase.db, 'products', docSnapshot.id)));
+         });
+         
+         await Promise.all(deletePromises);
+         
+         // Reload products
+         await window.productManager.loadProducts();
+         window.productManager.renderProducts();
+         
+      } catch (error) {
+         // console.error('Error clearing products:', error);
+      }
+   },
+
+   // Add a single product to Firestore
+   async addProduct(productData) {
+      try {
+         await window.productManager.waitForFirebase();
+         const { addDoc } = await import("https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js");
+         
+         const docRef = await addDoc(window.firebase.collection(window.firebase.db, 'products'), {
+            ...productData,
+            dateAdded: new Date()
+         });
+         
+         // Reload products
+         await window.productManager.loadProducts();
+         window.productManager.renderProducts();
+         
+         return docRef.id;
+      } catch (error) {
+         // console.error('Error adding product:', error);
+         throw error;
+      }
+   }
+};
+
+// Log admin instructions
+/*
+console.log(`
+🚀 OMEGATEK FIREBASE INTEGRATION READY!
+
+Admin Commands (run in console):
+- adminHelpers.addDemoProducts() - Add demo products to Firestore
+- adminHelpers.clearAllProducts() - Delete all products (careful!)
+- adminHelpers.addProduct(productData) - Add a single product
+
+Example product structure:
+{
+  name: "Product Name",
+  description: "Product description",
+  price: 99.99,
+  originalPrice: 149.99,
+  image: "products/image001.png",
+  category: "Electronics",
+  rating: 4.5,
+  reviews: 100,
+  inStock: true,
+  onSale: true,
+  tags: ["tag1", "tag2"],
+  featured: true
+}
+`);
+*/
+</script>
+
+   <!-- Newsletter subscription handler -->
+   <script>
+     document.addEventListener('DOMContentLoaded', function() {
+       const newsletterForm = document.getElementById('newsletterForm');
+       if (newsletterForm) {
+         newsletterForm.addEventListener('submit', async (e) => {
+           e.preventDefault();
+
+           const email = document.getElementById('newsletterEmail').value;
+           const messageDiv = document.getElementById('newsletterMessage');
+           const submitBtn = newsletterForm.querySelector('input[type="submit"]');
+
+           submitBtn.disabled = true;
+           submitBtn.value = 'Subscribing...';
+
+           const phpBase = (location.protocol === 'file:' || ((location.hostname === '127.0.0.1' || location.hostname === 'localhost') && location.port !== '8000')) ? 'http://127.0.0.1:8000' : '';
+           try {
+             const response = await fetch(phpBase + '/admin/newsletter-api.php?action=subscribe', {
+               method: 'POST',
+               headers: { 'Content-Type': 'application/json' },
+               body: JSON.stringify({ email, name: '' })
+             });
+
+             const data = await response.json();
+
+             messageDiv.style.display = 'block';
+             if (data.success) {
+               messageDiv.style.color = '#28a745';
+               messageDiv.textContent = '\u2705 ' + data.message;
+               newsletterForm.reset();
+             } else {
+               messageDiv.style.color = '#dc3545';
+               messageDiv.textContent = '\u274c ' + data.message;
+             }
+           } catch (error) {
+             messageDiv.style.display = 'block';
+             messageDiv.style.color = '#dc3545';
+             messageDiv.textContent = '\u274c Server error. Please try again later.';
+           } finally {
+             submitBtn.disabled = false;
+             submitBtn.value = 'subscribe';
+             setTimeout(() => { messageDiv.style.display = 'none'; }, 5000);
+           }
+         });
+       }
+     });
+   </script>
+
+   <!-- Auth Module -->
+   <script type="module" src="../js/auth.js"></script>
+</body>
+</html>
+
+

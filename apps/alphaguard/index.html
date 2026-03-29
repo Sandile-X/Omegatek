@@ -1,0 +1,635 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AlphaGuard "“ Smart Access Control for South Africa</title>
+  <meta name="description" content="AlphaGuard is a Chainway scanner-powered access control app that reads SA driver licences and vehicle disc barcodes in seconds. Built for South African security needs." />
+  <link rel="icon" href="/apps/alphaguard/alphaguard_logo.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    html { scroll-behavior: smooth; }
+
+    /* --- Gradient hero --- */
+    .hero-bg {
+      background: linear-gradient(135deg, #0d0421 0%, #1a0030 40%, #2d0060 70%, #050010 100%);
+    }
+
+    /* --- Animated grid overlay --- */
+    .hero-bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(179,12,230,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(179,12,230,0.07) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+
+    /* --- Glow pulse on badge --- */
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(179,12,230,0.4); }
+      50%       { box-shadow: 0 0 0 10px rgba(179,12,230,0); }
+    }
+    .badge-glow { animation: pulse-glow 2.5s infinite; }
+
+    /* --- Float animation for mockup card --- */
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-12px); }
+    }
+    .float { animation: float 4s ease-in-out infinite; }
+
+    /* --- Fade-in on scroll --- */
+    .fade-up { opacity: 0; transform: translateY(32px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* --- Step connector line --- */
+    .step-line::after {
+      content: '';
+      display: block;
+      width: 2px;
+      height: 40px;
+      background: linear-gradient(to bottom, #9333ea, transparent);
+      margin: 0 auto;
+    }
+
+    /* --- Scrollbar hide for stat ticker --- */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* --- Custom nav underline --- */
+    .nav-link { position: relative; }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0;
+      width: 0; height: 2px;
+      background: #e879f9;
+      transition: width 0.25s;
+    }
+    .nav-link:hover::after { width: 100%; }
+
+    /* WhatsApp button pulse */
+    @keyframes wa-pulse {
+      0%, 100% { transform: scale(1); }
+      50%       { transform: scale(1.04); }
+    }
+    .wa-btn { animation: wa-pulse 2s ease-in-out infinite; }
+  </style>
+</head>
+
+<body class="bg-white text-gray-800 antialiased">
+
+<!-- ===================== NAV ===================== -->
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-4 px-6" style="background: transparent;">
+  <div class="max-w-6xl mx-auto flex items-center justify-between">
+    <a href="#hero" class="flex items-center gap-2 group">
+      <img src="/apps/alphaguard/alphaguard_logo.png" class="w-9 h-9 rounded-lg object-cover" alt="AlphaGuard" />
+      <span class="text-white font-bold text-lg tracking-tight">AlphaGuard</span>
+    </a>
+
+    <!-- Desktop links -->
+    <div class="hidden md:flex items-center gap-8 text-sm font-medium text-purple-100">
+      <a href="/" class="nav-link hover:text-white transition-colors">← Omegatek</a>
+      <a href="#features" class="nav-link hover:text-white transition-colors">Features</a>
+      <a href="#how-it-works" class="nav-link hover:text-white transition-colors">How It Works</a>
+      <a href="#use-cases" class="nav-link hover:text-white transition-colors">Use Cases</a>
+      <a href="#contact" class="nav-link hover:text-white transition-colors">Contact</a>
+    </div>
+
+    <a href="#contact" class="hidden md:inline-flex items-center gap-2 bg-[#b30ce6] hover:bg-purple-400 text-white text-sm font-semibold px-5 py-2.5 rounded-full transition-all shadow-lg hover:shadow-purple-400/40">
+      Get Started
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+    </a>
+
+    <!-- Mobile hamburger -->
+    <button id="menuBtn" class="md:hidden text-white p-2 rounded-lg hover:bg-white/10 transition">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobileMenu" class="hidden md:hidden mt-4 bg-gray-900/95 backdrop-blur rounded-2xl px-4 py-4 text-sm font-medium text-purple-100 space-y-3 max-w-6xl mx-auto">
+    <a href="/" class="block py-2 hover:text-white transition-colors opacity-75" onclick="closeMobileMenu()">← Omegatek Solutions</a>
+    <a href="#features" class="block py-2 hover:text-white transition-colors" onclick="closeMobileMenu()">Features</a>
+    <a href="#how-it-works" class="block py-2 hover:text-white transition-colors" onclick="closeMobileMenu()">How It Works</a>
+    <a href="#use-cases" class="block py-2 hover:text-white transition-colors" onclick="closeMobileMenu()">Use Cases</a>
+    <a href="#contact" class="block py-2 hover:text-white transition-colors" onclick="closeMobileMenu()">Contact</a>
+    <a href="#contact" class="block mt-2 bg-[#b30ce6] text-white text-center py-3 rounded-xl font-semibold" onclick="closeMobileMenu()">Get Started</a>
+  </div>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<section id="hero" class="hero-bg relative min-h-screen flex items-center overflow-hidden">
+  <div class="max-w-6xl mx-auto px-6 py-32 grid md:grid-cols-2 gap-16 items-center w-full relative z-10">
+
+    <!-- Left copy -->
+    <div>
+      <span class="badge-glow inline-flex items-center gap-2 bg-purple-500/20 border border-purple-400/40 text-purple-300 text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
+        <span class="w-2 h-2 bg-blue-400 rounded-full inline-block"></span>
+        Made for South Africa
+      </span>
+
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
+        Access Control<br/>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300">in Seconds,</span><br/>
+        Not Minutes.
+      </h1>
+
+      <p class="text-purple-200 text-lg leading-relaxed mb-8 max-w-lg">
+        AlphaGuard reads South African driver licences and vehicle disc barcodes instantly on Chainway hardware. Log every arrival and departure with a verified, exportable record "” no internet required.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4">
+        <a href="#contact" class="bg-[#b30ce6] hover:bg-purple-700 text-white font-bold px-8 py-4 rounded-xl transition-all shadow-xl hover:shadow-purple-500/40 text-center">
+          Request a Demo
+        </a>
+        <a href="/api/apk-download.php?app=alphaguard" class="flex items-center justify-center gap-2 border-2 border-purple-400/60 hover:border-purple-300 text-white font-bold px-8 py-4 rounded-xl transition-all hover:bg-white/10">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.523 15.341l-5 2.887a1 1 0 01-1.046 0l-5-2.887A1 1 0 016 14.464V8.536a1 1 0 01.477-.877l5-2.887a1 1 0 011.046 0l5 2.887A1 1 0 0118 8.536v5.928a1 1 0 01-.477.877z"/></svg>
+          Download APK
+        </a>
+        <a href="https://wa.me/27736538207?text=Hi%20Sandile%2C%20I%27m%20interested%20in%20AlphaGuard.%20Please%20send%20me%20more%20info." target="_blank" class="wa-btn flex items-center justify-center gap-2 bg-green-500 hover:bg-green-400 text-white font-bold px-8 py-4 rounded-xl transition-all shadow-xl hover:shadow-green-500/40">
+          <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WhatsApp Us
+        </a>
+      </div>
+
+      <div class="flex items-center gap-6 mt-10 text-sm text-purple-300">
+        <div class="flex items-center gap-2">
+          <svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          Works offline
+        </div>
+        <div class="flex items-center gap-2">
+          <svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          POPI Act compliant
+        </div>
+        <div class="flex items-center gap-2">
+          <svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          CSV export
+        </div>
+      </div>
+    </div>
+
+    <!-- Right mockup -->
+    <div class="hidden md:flex justify-center">
+      <div class="float relative">
+        <!-- Phone frame -->
+        <div class="w-64 bg-gray-900 rounded-3xl shadow-2xl shadow-purple-900/60 border-4 border-gray-700 overflow-hidden p-1">
+          <!-- Screen area -->
+          <div class="bg-gray-950 rounded-2xl overflow-hidden">
+            <!-- Status bar -->
+            <div class="bg-[#1a0030] h-8 flex items-center justify-between px-4">
+              <span class="text-white text-xs font-semibold">AlphaGuard</span>
+              <span class="text-purple-300 text-xs">09:41</span>
+            </div>
+            <!-- Stats row -->
+            <div class="grid grid-cols-3 gap-1 p-2 bg-[#0d0421]">
+              <div class="bg-purple-900/60 rounded-lg p-2 text-center">
+                <div class="text-purple-300 text-xs">IN</div>
+                <div class="text-white font-bold text-lg">14</div>
+                <div class="text-purple-400 text-xs">Today</div>
+              </div>
+              <div class="bg-red-900/40 rounded-lg p-2 text-center">
+                <div class="text-red-300 text-xs">OUT</div>
+                <div class="text-white font-bold text-lg">11</div>
+                <div class="text-red-400 text-xs">Today</div>
+              </div>
+              <div class="bg-green-900/40 rounded-lg p-2 text-center">
+                <div class="text-green-300 text-xs">ACTIVE</div>
+                <div class="text-white font-bold text-lg">3</div>
+                <div class="text-green-400 text-xs">On-site</div>
+              </div>
+            </div>
+            <!-- Nav buttons mock -->
+            <div class="flex gap-2 p-2 bg-gray-950">
+              <div class="flex-1 bg-green-700/80 rounded-xl p-3 text-center">
+                <div class="text-white text-xs font-semibold">&#x2191; CAR IN</div>
+              </div>
+              <div class="flex-1 bg-red-700/80 rounded-xl p-3 text-center">
+                <div class="text-white text-xs font-semibold">&#x2193; CAR OUT</div>
+              </div>
+            </div>
+            <!-- Log entries mock -->
+            <div class="p-2 space-y-1 bg-gray-950">
+              <div class="bg-gray-800 rounded-lg p-2 flex items-center gap-2">
+                <span class="text-green-400 text-xs font-bold">IN</span>
+                <div class="flex-1">
+                  <div class="text-white text-xs font-semibold">J. DLAMINI</div>
+                  <div class="text-gray-400 text-xs">CA 722 260 "” 08:53</div>
+                </div>
+              </div>
+              <div class="bg-gray-800 rounded-lg p-2 flex items-center gap-2">
+                <span class="text-red-400 text-xs font-bold">OUT</span>
+                <div class="flex-1">
+                  <div class="text-white text-xs font-semibold">S. NKOSI</div>
+                  <div class="text-gray-400 text-xs">GP 31 XK "” 08:41</div>
+                </div>
+              </div>
+              <div class="bg-gray-800 rounded-lg p-2 flex items-center gap-2">
+                <span class="text-green-400 text-xs font-bold">IN</span>
+                <div class="flex-1">
+                  <div class="text-white text-xs font-semibold">T. MTHEMBU</div>
+                  <div class="text-gray-400 text-xs">WP 114 443 "” 07:58</div>
+                </div>
+                <span class="text-xs bg-red-700 text-white rounded px-1 py-0.5 font-bold">FLAG</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Glow under phone -->
+        <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 w-40 h-8 bg-purple-600/30 blur-xl rounded-full"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Decorative orbs -->
+  <div class="absolute top-20 right-20 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="absolute bottom-10 left-10 w-64 h-64 bg-cyan-600/10 rounded-full blur-3xl pointer-events-none"></div>
+</section>
+
+<!-- ===================== TRUST BAR ===================== -->
+<div class="bg-gray-50 border-y border-gray-100 py-5 overflow-hidden">
+  <div class="max-w-6xl mx-auto px-6">
+    <p class="text-center text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4">Trusted for access control at</p>
+    <div class="flex flex-wrap justify-center gap-8 items-center text-gray-400 text-sm font-semibold">
+      <span>Industrial Sites</span>
+      <span class="text-gray-200">&#x2022;</span>
+      <span>Logistics Yards</span>
+      <span class="text-gray-200">&#x2022;</span>
+      <span>Construction Sites</span>
+      <span class="text-gray-200">&#x2022;</span>
+      <span>Office Parks</span>
+      <span class="text-gray-200">&#x2022;</span>
+      <span>Warehouses</span>
+      <span class="text-gray-200">&#x2022;</span>
+      <span>Residential Estates</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== FEATURES ===================== -->
+<section id="features" class="py-24 px-6 bg-white">
+  <div class="max-w-6xl mx-auto">
+
+    <div class="text-center mb-16 fade-up">
+      <span class="inline-block bg-purple-50 text-purple-600 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest mb-4">Features</span>
+      <h2 class="text-3xl sm:text-4xl font-black text-gray-900 mb-4">Everything You Need at the Gate</h2>
+      <p class="text-gray-500 max-w-xl mx-auto text-lg">Purpose-built for South African conditions "” works on Chainway hardware, reads both driver licences and vehicle discs, stores everything locally.</p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+      <!-- Feature 1 -->
+      <div class="fade-up group bg-gradient-to-br from-blue-50 to-white rounded-2xl p-6 border border-purple-100 hover:shadow-xl hover:shadow-purple-100 transition-all hover:-translate-y-1">
+        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 mb-4 group-hover:bg-purple-700 group-hover:text-white transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"/></svg>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900 mb-2">SA Driver Licence Decode</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Reads the encrypted RSA barcode on the back of any South African driver licence card. Extracts name, ID number, licence categories, and expiry instantly.</p>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="fade-up group bg-gradient-to-br from-blue-50 to-white rounded-2xl p-6 border border-purple-100 hover:shadow-xl hover:shadow-purple-100 transition-all hover:-translate-y-1">
+        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 mb-4 group-hover:bg-purple-700 group-hover:text-white transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/></svg>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900 mb-2">Vehicle Disc Barcode Read</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Scans the NATIS PDF417 barcode on the windscreen licence disc. Captures registration, VIN, engine number, make, and disc expiry date.</p>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="fade-up group bg-gradient-to-br from-green-50 to-white rounded-2xl p-6 border border-green-100 hover:shadow-xl hover:shadow-green-100 transition-all hover:-translate-y-1">
+        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-green-600 mb-4 group-hover:bg-green-600 group-hover:text-white transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900 mb-2">IN / OUT Session Logging</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Every vehicle gets a paired IN and OUT session with exact timestamps. Active sessions show who is currently on-site. Session duration is calculated automatically.</p>
+      </div>
+
+      <!-- Feature 4 -->
+      <div class="fade-up group bg-gradient-to-br from-red-50 to-white rounded-2xl p-6 border border-red-100 hover:shadow-xl hover:shadow-red-100 transition-all hover:-translate-y-1">
+        <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center text-red-600 mb-4 group-hover:bg-red-600 group-hover:text-white transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900 mb-2">Automatic Expiry Flagging</h3>
+        <p class="text-gray="500 text-sm leading-relaxed">Expired driver licences or vehicle discs are automatically flagged with a red badge. Flagged entries appear in the log and are marked in CSV export for easy reporting.</p>
+      </div>
+
+      <!-- Feature 5 -->
+      <div class="fade-up group bg-gradient-to-br from-purple-50 to-white rounded-2xl p-6 border border-purple-100 hover:shadow-xl hover:shadow-purple-100 transition-all hover:-translate-y-1">
+        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 mb-4 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900 mb-2">One-Tap CSV Export</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">Export all session data to a CSV file saved directly to your chosen location "” Downloads, USB drive, or network folder. No cloud upload required.</p>
+      </div>
+
+      <!-- Feature 6 -->
+      <div class="fade-up group bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 border border-gray-200 hover:shadow-xl hover:shadow-gray-100 transition-all hover:-translate-y-1">
+        <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center text-gray-600 mb-4 group-hover:bg-gray-800 group-hover:text-white transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900 mb-2">100% Offline Operation</h3>
+        <p class="text-gray-500 text-sm leading-relaxed">No internet connection required. All data stays on the device. Works in remote sites, signal-dead zones, or secure environments where connectivity is restricted.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===================== HOW IT WORKS ===================== -->
+<section id="how-it-works" class="py-24 px-6 bg-gradient-to-b from-gray-50 to-white">
+  <div class="max-w-4xl mx-auto">
+
+    <div class="text-center mb-16 fade-up">
+      <span class="inline-block bg-purple-50 text-purple-600 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest mb-4">Workflow</span>
+      <h2 class="text-3xl sm:text-4xl font-black text-gray-900 mb-4">From Gate to Report in 3 Steps</h2>
+      <p class="text-gray-500 text-lg max-w-lg mx-auto">The entire flow takes under 15 seconds per vehicle. No typing, no paper forms.</p>
+    </div>
+
+    <div class="space-y-8">
+
+      <!-- Step 1 -->
+      <div class="fade-up flex gap-6 items-start">
+        <div class="flex-shrink-0 flex flex-col items-center">
+          <div class="w-12 h-12 rounded-full bg-purple-600 text-white text-lg font-black flex items-center justify-center shadow-lg shadow-purple-200">1</div>
+          <div class="w-0.5 h-16 bg-gradient-to-b from-blue-600 to-transparent mt-2"></div>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex-1 hover:shadow-md transition-shadow">
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Scan the Driver Licence</h3>
+          <p class="text-gray-500 leading-relaxed">Point the Chainway scanner at the barcode on the back of the driver licence card. Pull the trigger. The app reads the encrypted data in under a second and displays the driver's name, ID number, licence categories, and expiry date.</p>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="fade-up flex gap-6 items-start">
+        <div class="flex-shrink-0 flex flex-col items-center">
+          <div class="w-12 h-12 rounded-full bg-purple-600 text-white text-lg font-black flex items-center justify-center shadow-lg shadow-purple-200">2</div>
+          <div class="w-0.5 h-16 bg-gradient-to-b from-blue-600 to-transparent mt-2"></div>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex-1 hover:shadow-md transition-shadow">
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Scan the Vehicle Disc</h3>
+          <p class="text-gray-500 leading-relaxed">Scan the PDF417 barcode on the windscreen licence disc. The app retrieves the vehicle registration number, VIN, engine number, make, and disc expiry date. If no disc is available, tap Skip.</p>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="fade-up flex gap-6 items-start">
+        <div class="flex-shrink-0">
+          <div class="w-12 h-12 rounded-full bg-green-600 text-white text-lg font-black flex items-center justify-center shadow-lg shadow-green-200">3</div>
+        </div>
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex-1 hover:shadow-md transition-shadow">
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Confirm and Log</h3>
+          <p class="text-gray-500 leading-relaxed">Review the captured details and tap Confirm. The session is logged with a timestamp. At the end of the shift, tap Export to save a full CSV report to your device.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===================== STATS ===================== -->
+<section class="bg-[#1a0030] py-20 px-6">
+  <div class="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+    <div class="fade-up">
+      <div class="text-4xl font-black text-white mb-1">&lt;1s</div>
+      <div class="text-purple-300 text-sm font-medium">Scan to result</div>
+    </div>
+    <div class="fade-up">
+      <div class="text-4xl font-black text-white mb-1">2</div>
+      <div class="text-purple-300 text-sm font-medium">Barcodes per vehicle</div>
+    </div>
+    <div class="fade-up">
+      <div class="text-4xl font-black text-white mb-1">0</div>
+      <div class="text-purple-300 text-sm font-medium">Internet required</div>
+    </div>
+    <div class="fade-up">
+      <div class="text-4xl font-black text-white mb-1">100%</div>
+      <div class="text-purple-300 text-sm font-medium">Local data storage</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== USE CASES ===================== -->
+<section id="use-cases" class="py-24 px-6 bg-white">
+  <div class="max-w-6xl mx-auto">
+
+    <div class="text-center mb-16 fade-up">
+      <span class="inline-block bg-purple-50 text-purple-600 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest mb-4">Use Cases</span>
+      <h2 class="text-3xl sm:text-4xl font-black text-gray-900 mb-4">Built for Real SA Environments</h2>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <!-- Use case cards -->
+      <div class="fade-up flex gap-4 items-start bg-gray-50 rounded-2xl p-5 border border-gray-100">
+        <div class="text-3xl">&#x1F3ED;</div>
+        <div>
+          <h4 class="font-bold text-gray-900 mb-1">Industrial &amp; Mining Sites</h4>
+          <p class="text-gray-500 text-sm leading-relaxed">Track every contractor and supplier vehicle. Verify licences before allowing access to hazardous zones.</p>
+        </div>
+      </div>
+
+      <div class="fade-up flex gap-4 items-start bg-gray-50 rounded-2xl p-5 border border-gray-100">
+        <div class="text-3xl">&#x1F69A;</div>
+        <div>
+          <h4 class="font-bold text-gray-900 mb-1">Logistics &amp; Distribution</h4>
+          <p class="text-gray-500 text-sm leading-relaxed">Log delivery truck arrivals and departures. Confirm driver and vehicle details match the delivery manifest.</p>
+        </div>
+      </div>
+
+      <div class="fade-up flex gap-4 items-start bg-gray-50 rounded-2xl p-5 border border-gray-100">
+        <div class="text-3xl">&#x1F3D7;</div>
+        <div>
+          <h4 class="font-bold text-gray-900 mb-1">Construction Sites</h4>
+          <p class="text-gray-500 text-sm leading-relaxed">Control access at site entrances. Maintain an auditable record for insurance and compliance purposes.</p>
+        </div>
+      </div>
+
+      <div class="fade-up flex gap-4 items-start bg-gray-50 rounded-2xl p-5 border border-gray-100">
+        <div class="text-3xl">&#x1F3E2;</div>
+        <div>
+          <h4 class="font-bold text-gray-900 mb-1">Office Parks &amp; Estates</h4>
+          <p class="text-gray-500 text-sm leading-relaxed">Replace paper visitor registers with a digital, timestamped log that can be searched and exported instantly.</p>
+        </div>
+      </div>
+
+      <div class="fade-up flex gap-4 items-start bg-gray-50 rounded-2xl p-5 border border-gray-100">
+        <div class="text-3xl">&#x1F6E1;</div>
+        <div>
+          <h4 class="font-bold text-gray-900 mb-1">Security Companies</h4>
+          <p class="text-gray-500 text-sm leading-relaxed">Equip guards with a professional digital tool. Exportable reports make client reporting fast and credible.</p>
+        </div>
+      </div>
+
+      <div class="fade-up flex gap-4 items-start bg-gray-50 rounded-2xl p-5 border border-gray-100">
+        <div class="text-3xl">&#x26BD;</div>
+        <div>
+          <h4 class="font-bold text-gray-900 mb-1">Events &amp; Venues</h4>
+          <p class="text-gray-500 text-sm leading-relaxed">Manage parking and VIP vehicle access at events with a fast, reliable digital log instead of manual lists.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CONTACT ===================== -->
+<section id="contact" class="py-24 px-6 bg-gradient-to-br from-gray-900 via-[#0d0421] to-gray-900">
+  <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-16 items-start">
+
+    <!-- Left: contact info -->
+    <div class="fade-up">
+      <span class="inline-block bg-purple-500/20 border border-purple-400/30 text-purple-300 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest mb-6">Get in Touch</span>
+      <h2 class="text-3xl sm:text-4xl font-black text-white mb-6">Ready to Secure Your Gate?</h2>
+      <p class="text-purple-200 text-lg leading-relaxed mb-8">Contact Sandile at Omegatek Solutions to discuss pricing, customisation, or to request a live demo on your Chainway hardware.</p>
+
+      <div class="space-y-4 text-sm">
+        <a href="mailto:access@omegateksolutions.co.za" class="flex items-center gap-3 text-purple-200 hover:text-white transition-colors group">
+          <div class="w-10 h-10 rounded-xl bg-purple-600/30 flex items-center justify-center group-hover:bg-purple-600/60 transition-colors">
+            <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          </div>
+          access@omegateksolutions.co.za
+        </a>
+
+        <a href="mailto:sandile@omegateksolutions.co.za" class="flex items-center gap-3 text-purple-200 hover:text-white transition-colors group">
+          <div class="w-10 h-10 rounded-xl bg-purple-600/30 flex items-center justify-center group-hover:bg-purple-600/60 transition-colors">
+            <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/></svg>
+          </div>
+          sandile@omegateksolutions.co.za
+        </a>
+
+        <a href="https://wa.me/27736538207" target="_blank" class="flex items-center gap-3 text-purple-200 hover:text-white transition-colors group">
+          <div class="w-10 h-10 rounded-xl bg-green-600/30 flex items-center justify-center group-hover:bg-green-600/60 transition-colors">
+            <svg class="w-5 h-5 text-green-400 fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          </div>
+          073 653 8207
+        </a>
+
+        <a href="https://omegateksolutions.co.za" target="_blank" class="flex items-center gap-3 text-purple-200 hover:text-white transition-colors group">
+          <div class="w-10 h-10 rounded-xl bg-purple-600/30 flex items-center justify-center group-hover:bg-purple-600/60 transition-colors">
+            <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+          </div>
+          omegateksolutions.co.za
+        </a>
+      </div>
+    </div>
+
+    <!-- Right: WhatsApp form -->
+    <div class="fade-up">
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur">
+        <h3 class="text-white text-xl font-bold mb-6">Send Us a Message</h3>
+        <form id="contactForm" class="space-y-4">
+          <div>
+            <label class="block text-purple-200 text-sm font-medium mb-1.5">Your Name *</label>
+            <input id="f_name" type="text" required placeholder="e.g. Thabo Mokoena" class="w-full bg-white/10 border border-white/20 text-white placeholder-blue-400/60 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:bg-white/20 transition-all" />
+          </div>
+          <div>
+            <label class="block text-purple-200 text-sm font-medium mb-1.5">Company / Site Name</label>
+            <input id="f_company" type="text" placeholder="e.g. Acme Logistics (Pty) Ltd" class="w-full bg-white/10 border border-white/20 text-white placeholder-blue-400/60 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:bg-white/20 transition-all" />
+          </div>
+          <div>
+            <label class="block text-purple-200 text-sm font-medium mb-1.5">Message *</label>
+            <textarea id="f_msg" rows="4" required placeholder="Describe your site, number of gates, current setup..." class="w-full bg-white/10 border border-white/20 text-white placeholder-blue-400/60 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-400 focus:bg-white/20 transition-all resize-none"></textarea>
+          </div>
+          <button type="submit" class="wa-btn w-full flex items-center justify-center gap-3 bg-green-500 hover:bg-green-400 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-lg hover:shadow-green-500/40">
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Continue on WhatsApp
+          </button>
+        </form>
+        <p class="text-center text-purple-400/60 text-xs mt-4">Opens WhatsApp with your message pre-filled. No data is collected by this website.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="bg-gray-950 text-gray-500 py-10 px-6">
+  <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-2">
+      <img src="/apps/alphaguard/alphaguard_logo.png" class="w-7 h-7 rounded object-cover" alt="AlphaGuard" />
+      <span class="text-gray-300 font-semibold text-sm">AlphaGuard</span>
+      <span class="text-gray-600 text-xs ml-2">by Omegatek Solutions</span>
+    </div>
+    <p class="text-xs text-center">
+      &copy; 2025 Omegatek Solutions (Pty) Ltd. All rights reserved. &nbsp;&#x2022;&nbsp;
+      This app complies with the Protection of Personal Information Act, 2013 (POPIA).
+    </p>
+    <div class="flex items-center gap-4 text-xs">
+      <a href="mailto:access@omegateksolutions.co.za" class="hover:text-gray-300 transition-colors">access@omegateksolutions.co.za</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ===================== SCRIPTS ===================== -->
+<script>
+  // --- Nav background on scroll ---
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 40) {
+      navbar.style.background = 'rgba(10,14,40,0.95)';
+      navbar.style.backdropFilter = 'blur(12px)';
+      navbar.style.boxShadow = '0 1px 0 rgba(255,255,255,0.08)';
+      navbar.style.paddingTop = '12px';
+      navbar.style.paddingBottom = '12px';
+    } else {
+      navbar.style.background = 'transparent';
+      navbar.style.backdropFilter = 'none';
+      navbar.style.boxShadow = 'none';
+      navbar.style.paddingTop = '16px';
+      navbar.style.paddingBottom = '16px';
+    }
+  });
+
+  // --- Mobile menu toggle ---
+  document.getElementById('menuBtn').addEventListener('click', () => {
+    const m = document.getElementById('mobileMenu');
+    m.classList.toggle('hidden');
+  });
+  function closeMobileMenu() {
+    document.getElementById('mobileMenu').classList.add('hidden');
+  }
+
+  // --- Fade-up on scroll (IntersectionObserver) ---
+  const fadeEls = document.querySelectorAll('.fade-up');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  fadeEls.forEach(el => observer.observe(el));
+
+  // --- WhatsApp form submit ---
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name    = document.getElementById('f_name').value.trim();
+    const company = document.getElementById('f_company').value.trim();
+    const msg     = document.getElementById('f_msg').value.trim();
+    if (!name || !msg) return;
+
+    const lines = [
+      'Hi Sandile, I am interested in AlphaGuard.',
+      '',
+      'Name: ' + name,
+      company ? 'Company: ' + company : null,
+      '',
+      'Message: ' + msg
+    ].filter(l => l !== null).join('\n');
+
+    window.open('https://wa.me/27736538207?text=' + encodeURIComponent(lines), '_blank');
+  });
+</script>
+
+</body>
+</html>
+
+

@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newsletter Admin | Omegatek Solutions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="icon" type="image/png" href="../../images2/favicon.png">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .login-container, .admin-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 4rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1400px;
+            width: 100%;
+        }
+        
+        .login-container {
+            max-width: 450px;
+            text-align: center;
+        }
+        
+        .login-container h1 {
+            font-size: 3rem;
+            color: #b30ce6;
+            margin-bottom: 1rem;
+        }
+        
+        .login-container p {
+            color: #666;
+            margin-bottom: 3rem;
+        }
+        
+        .form-group {
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #334;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 1.2rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #b30ce6;
+            box-shadow: 0 0 0 4px rgba(179, 12, 230, 0.1);
+        }
+        
+        .btn {
+            padding: 1.2rem 3rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.6rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #b30ce6, #9333ea);
+            color: white;
+            width: 100%;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(179, 12, 230, 0.4);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #334;
+            border: 2px solid #334;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .admin-header h1 {
+            font-size: 2.8rem;
+            color: #b30ce6;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .tab {
+            padding: 1rem 2rem;
+            border: none;
+            background: #f0f0f0;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, #b30ce6, #9333ea);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .newsletter-list {
+            display: grid;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .newsletter-item {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 2px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .newsletter-info h3 {
+            font-size: 1.8rem;
+            color: #334;
+            margin-bottom: 0.5rem;
+        }
+        
+        .newsletter-info p {
+            color: #666;
+            font-size: 1.4rem;
+        }
+        
+        .newsletter-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .newsletter-actions button {
+            padding: 0.8rem 1.5rem;
+            font-size: 1.4rem;
+        }
+        
+        .subscribers-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+        }
+        
+        .subscribers-table th,
+        .subscribers-table td {
+            padding: 1.2rem;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .subscribers-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #334;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .badge-active {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-draft {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge-sent {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .modal-header h2 {
+            font-size: 2.4rem;
+            color: #334;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 2.4rem;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            padding: 1.2rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.5rem;
+            font-family: inherit;
+            resize: vertical;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #b30ce6;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .alert {
+            padding: 1.2rem 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            
+            .login-container, .admin-container {
+                padding: 2rem;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .newsletter-item {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .newsletter-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+            
+            .newsletter-actions button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Login Screen -->
+    <div class="login-container" id="loginScreen">
+        <h1><i class="fas fa-newspaper"></i> Newsletter Admin</h1>
+        <p>Omate Solutions Newsletter Management</p>
+        <div id="loginAlert"></div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter admin password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+        </form>
+    </div>
+    
+    <!-- Admin Dashboard -->
+    <div class="admin-container hidden" id="adminDashboard">
+        <div class="admin-header">
+            <h1><i class="fas fa-newspaper"></i> Newsletter Management</h1>
+            <button class="btn btn-secondary" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+        
+        <div id="alert"></div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('newsletters')">
+                <i class="fas fa-newspaper"></i> Newsletters
+            </button>
+            <button class="tab" onclick="switchTab('subscribers')">
+                <i class="fas fa-users"></i> Subscribers
+            </button>
+        </div>
+        
+        <!-- Newsletters Tab -->
+        <div class="tab-content active" id="newsletters-tab">
+            <button class="btn btn-primary" onclick="showNewNewsletterModal()">
+                <i class="fas fa-plus"></i> Create Newsletter
+            </button>
+            <div class="newsletter-list" id="newslettersList"></div>
+        </div>
+        
+        <!-- Subscribers Tab -->
+        <div class="tab-content" id="subscribers-tab">
+            <table class="subscribers-table" id="subscribersTable">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Name</th>
+                        <th>Subscribed</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="subscribersBody"></tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Newsletter Modal -->
+    <div class="modal" id="newsletterModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Create Newsletter</h2>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="newsletterForm">
+                <input type="hidden" id="newsletterId">
+                <div class="form-group">
+                    <label for="newsletterTitle">Title</label>
+                    <input type="text" id="newsletterTitle" placeholder="Newsletter title" required>
+                </div>
+                <div class="form-group">
+                    <label for="newsletterSubject">Email Subject</label>
+                    <input type="text" id="newsletterSubject" placeholder="Email subject line" required>
+                </div>
+                <div class="form-group">
+                    <label for="newsletterContent">Content (HTML allowed)</label>
+                    <textarea id="newsletterContent" placeholder="Newsletter content..." required></textarea>
+                    <small style="color: #666; display: block; margin-top: 0.5rem;">
+                        You can use {{name}} and {{email}} placeholders
+                    </small>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        let currentNewsletterId = null;
+        
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            
+            try {
+                const res = await fetch('../newsletter-api.php?action=login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    document.getElementById('loginScreen').classList.add('hidden');
+                    document.getElementById('adminDashboard').classList.remove('hidden');
+                    loadNewsletters();
+                    loadSubscribers();
+                } else {
+                    showLoginAlert(data.message, 'error');
+                }
+            } catch (error) {
+                showLoginAlert('Server error', 'error');
+            }
+        });
+        
+        // Logout
+        async function logout() {
+            await fetch('../newsletter-api.php?action=logout');
+            location.reload();
+        }
+        
+        // Switch tabs
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(`${tab}-tab`).classList.add('active');
+            
+            if (tab === 'subscribers') {
+                loadSubscribers();
+            } else {
+                loadNewsletters();
+            }
+        }
+        
+        // Load newsletters
+        async function loadNewsletters() {
+            try {
+                const res = await fetch('../newsletter-api.php?action=get_newsletters');
+                const data = await res.json();
+                
+                if (data.success) {
+                    const list = document.getElementById('newslettersList');
+                    list.innerHTML = data.newsletters.map(n => `
+                        <div class="newsletter-item">
+                            <div class="newsletter-info">
+                                <h3>${n.title}</h3>
+                                <p><strong>Subject:</strong> ${n.subject}</p>
+                                <p>
+                                    <span class="badge badge-${n.status}">${n.status}</span>
+                                    ${n.sent_at ? ` Sent: ${new Date(n.sent_at).toLocaleString()} (${n.sent_count} recipients)` : ''}
+                                </p>
+                            </div>
+                            <div class="newsletter-actions">
+                                ${n.status === 'draft' ? `
+                                    <button class="btn btn-secondary" onclick='editNewsletter(${JSON.stringify(n)})'>
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
+                                    <button class="btn btn-success" onclick="sendNewsletter('${n.id}')">
+                                        <i class="fas fa-paper-plane"></i> Send
+                                    </button>
+                                ` : ''}
+                                <button class="btn btn-danger" onclick="deleteNewsletter('${n.id}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                showAlert('Error loading newsletters', 'error');
+            }
+        }
+        
+        // Load subscribers
+        async function loadSubscribers() {
+            try {
+                const response = await fetch('../newsletter-api.php?action=get_subscribers');
+                const data = await res.json();
+                
+                if (data.success) {
+                    const tbody = document.getElementById('subscribersBody');
+                    tbody.innerHTML = data.subscribers.map(s => `
+                        <tr>
+                            <td>${s.email}</td>
+                            <td>${s.name || '-'}</td>
+                            <td>${new Date(s.subscribed_at).toLocaleDateString()}</td>
+                            <td><span class="badge badge-${s.status}">${s.status}</span></td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (error) {
+                showAlert('Error loading subscribers', 'error');
+            }
+        }
+        
+        // Show new newsletter modal
+        function showNewNewsletterModal() {
+            currentNewsletterId = null;
+            document.getElementById('modalTitle').textContent = 'Create Newsletter';
+            document.getElementById('newsletterId').value = '';
+            document.getElementById('newsletterTitle').value = '';
+            document.getElementById('newsletterSubject').value = '';
+            document.getElementById('newsletterContent').value = '';
+            document.getElementById('newsletterModal').classList.add('active');
+        }
+        
+        // Edit newsletter
+        function editNewsletter(newsletter) {
+            currentNewsletterId = newsletter.id;
+            document.getElementById('modalTitle').textContent = 'Edit Newsletter';
+            document.getElementById('newsletterId').value = newsletter.id;
+            document.getElementById('newsletterTitle').value = newsletter.title;
+            document.getElementById('newsletterSubject').value = newsletter.subject;
+            document.getElementById('newsletterContent').value = newsletter.content;
+            document.getElementById('newsletterModal').classList.add('active');
+        }
+        
+        // Close modal
+        function closeModal() {
+            document.getElementById('newsletterModal').classList.remove('active');
+        }
+        
+        // Save newsletter
+        document.getElementById('newsletterForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const data = {
+                id: document.getElementById('newsletterId').value,
+                title: document.getElementById('newsletterTitle').value,
+                subject: document.getElementById('newsletterSubject').value,
+                content: document.getElementById('newsletterContent').value
+            };
+            
+            const action = currentNewsletterId ? 'update_newsletter' : 'create_newsletter';
+            
+            try {
+                const res = await fetch(`../newsletter-api.php?action=${action}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                
+                if (result.success) {
+                    showAlert('Newsletter saved successfully', 'success');
+                    closeModal();
+                    loadNewsletters();
+                } else {
+                    showAlert(result.message, 'error');
+                }
+            } catch (error) {
+                showAlert('Error saving newsletter', 'error');
+            }
+        });
+        
+        // Send newsletter
+        async function sendNewsletter(id) {
+            if (!confirm('Are you sure you want to send this newsletter to all subscribers?')) return;
+            
+            try {
+                const res = await fetch('../newsletter-api.php?action=send_newsletter', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    loadNewsletters();
+                } else {
+                    showAlert(data.message, 'error');
+                }
+            } catch (error) {
+                showAlert('Error sending newsletter', 'error');
+            }
+        }
+        
+        // Delete newsletter
+        async function deleteNewsletter(id) {
+            if (!confirm('Are you sure you want to delete this newsletter?')) return;
+            
+            try {
+                const res = await fetch('../newsletter-api.php?action=delete_newsletter', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showAlert('Newsletter deleted', 'success');
+                    loadNewsletters();
+                } else {
+                    showAlert(data.message, 'error');
+                }
+            } catch (error) {
+                showAlert('Error deleting newsletter', 'error');
+            }
+        }
+        
+        // Show alert
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => alert.innerHTML = '', 5000);
+        }
+        
+        function showLoginAlert(message, type) {
+            const alert = document.getElementById('loginAlert');
+            alert.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => alert.innerHTML = '', 5000);
+        }
+    </script>
+</body>
+</html>
+

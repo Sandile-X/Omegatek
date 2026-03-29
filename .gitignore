@@ -1,0 +1,73 @@
+# ================================================================
+# Omegatek Solutions — .gitignore
+# Security-hardened: secrets, user data, and dev tools excluded
+# ================================================================
+
+# ── Credentials & Secret Files ───────────────────────────────
+.env
+*ftp-sync.json
+*.pem
+*.p12
+*.key
+*.pfx
+firebase*.txt
+firebase*.json
+*api key*.txt
+*API key*.txt
+*API Key*.txt
+*credentials*.txt
+*credentials*.json
+*secret*.txt
+config/database.php
+
+# ── Runtime User / PII Data ───────────────────────────────────
+admin/order_data/
+admin/newsletter_data/
+payfast/order_data/
+data/orders*.json
+data/users*.json
+logs/
+
+# ── IDE & Editor ──────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Development & Build Tools ─────────────────────────────────
+dev/
+node_modules/
+demo/frames/
+
+# ── Archives, Spreadsheets & Data Dumps ─────────────────────
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.xlsx
+*.xls
+~$*
+products/*.csv
+*.pdf
+
+# ── Internal / Operational Documentation ─────────────────────
+CLEAN-STRUCTURE.txt
+launchPhpServer.txt
+SCROLL-ANIMATION-GUIDE.md
+DATABASE-SETUP.md
+QUICK_START.md
+BACKEND-SUMMARY.txt
+performance-optimization.md
+security-config.md
+*-migration.sql
+
+# ── OS Generated Files ───────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
