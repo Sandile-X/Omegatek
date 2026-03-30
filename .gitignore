@@ -40,6 +40,16 @@ dev/
 node_modules/
 demo/frames/
 
+# ── Video & Large Binary Assets (too large for git) ─────────
+*.mp4
+*.3gp
+*.mov
+*.avi
+*.mkv
+*.webm
+*.flv
+*.jfif
+
 # ── Archives, Spreadsheets & Data Dumps ─────────────────────
 *.zip
 *.tar.gz
