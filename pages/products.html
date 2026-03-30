@@ -4,6 +4,14 @@
    <meta charset="UTF-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <!--
+      DEPLOYMENT NOTE: The web server (Apache/PHP) must inject the Firebase API
+      key via a meta tag before this page is served. Add this to your server
+      config or a PHP wrapper:
+        <meta name="fb-ak" content="<?= htmlspecialchars(env('FIREBASE_API_KEY')) ?>">
+      Add FIREBASE_API_KEY to your server .env file.
+      NEVER hardcode the key directly in this HTML file.
+   -->
    
    <!-- SEO Meta Tags -->
    <meta name="description" content="Browse our latest tech products and accessories at Omegatek Solutions. Quality electronics and replacement parts in Midrand, Gauteng.">
@@ -1295,9 +1303,11 @@ document.addEventListener('DOMContentLoaded', () => {
       import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
       import { getFirestore, collection, getDocs, query, orderBy, where, limit } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
       
-      // Your web app's Firebase configuration
+      // Firebase config — key loaded from meta tag injected server-side
+      // NEVER hardcode API keys in frontend source files
+      const _ak = document.querySelector('meta[name="fb-ak"]')?.content || '';
       const firebaseConfig = {
-         apiKey: "REDACTED_ROTATE_THIS_KEY",
+         apiKey: _ak,
          authDomain: "omegatek-products.firebaseapp.com",
          projectId: "omegatek-products",
          storageBucket: "omegatek-products.firebasestorage.app",
