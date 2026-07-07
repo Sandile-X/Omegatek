@@ -126,9 +126,20 @@ class ProductManager {
         this.updateCartUI();
         this.updateWishlistUI();
         this.populateFilters();
+        this.renderCategoryChips();
         this.renderProducts();
         this.hideLoadingState();
         initializeAos();
+    }
+
+    renderCategoryChips() {
+        const bar = document.getElementById('catChipsBar');
+        if (!bar) return;
+        const categories = [...new Set(this.products.map((p) => p.category))].sort((a, b) => a.localeCompare(b));
+        bar.innerHTML = [
+            '<button class="cat-chip active" data-cat="">All Products</button>',
+            ...categories.map((cat) => `<button class="cat-chip" data-cat="${escapeHtml(cat)}">${escapeHtml(cat)}</button>`)
+        ].join('');
     }
 
     normalizeProduct(product) {
@@ -371,6 +382,16 @@ class ProductManager {
 
         document.getElementById('clearFilters')?.addEventListener('click', () => this.clearAllFilters());
         document.getElementById('resetFilters')?.addEventListener('click', () => this.clearAllFilters());
+
+        document.getElementById('catChipsBar')?.addEventListener('click', (event) => {
+            const chip = event.target.closest('.cat-chip');
+            if (!chip) return;
+            document.querySelectorAll('.cat-chip').forEach((c) => c.classList.remove('active'));
+            chip.classList.add('active');
+            const cat = chip.dataset.cat;
+            this.filters.categories = cat ? [cat] : [];
+            this.applyFilters();
+        });
 
         document.getElementById('cartButton')?.addEventListener('click', () => this.openCart());
         document.getElementById('closeCart')?.addEventListener('click', () => this.closeCart());
@@ -734,95 +755,72 @@ class ProductManager {
     }
 
     buildGridMedia(product) {
-        const categoryBadge = `<span class="store-badge">${escapeHtml(product.category)}</span>`;
-        const wishlistMarkup = `
-            <button class="wishlist-btn store-icon-chip absolute top-4 right-4 z-10 ${this.isInWishlist(product.id) ? 'active' : ''}"
-                    type="button"
-                    data-product-action="toggle-wishlist"
-                    data-product-id="${escapeHtml(product.id)}">
-                <i class="fas fa-heart"></i>
-            </button>
-        `;
+        const isWishlisted = this.isInWishlist(product.id);
+        const badges = [
+            product.onSale ? '<span class="prd-badge prd-badge-sale"><i class="fas fa-bolt-lightning"></i> Sale</span>' : '',
+            product.isNew  ? '<span class="prd-badge prd-badge-new">New</span>' : ''
+        ].filter(Boolean).join('');
 
-        if (product.image) {
-            return `
-                <div class="store-media product-image-container">
-                    <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" class="w-full h-44 object-cover" loading="lazy">
-                    <div class="absolute left-4 top-4 z-10 flex flex-wrap gap-2">
-                        ${categoryBadge}
-                        ${this.getSaleBadge(product)}
-                    </div>
-                    ${wishlistMarkup}
-                    <div class="absolute left-4 bottom-4 z-10">
-                        ${this.getAvailabilityBadge(product)}
-                    </div>
-                </div>
-            `;
-        }
+        const stockHtml = product.inStock
+            ? `<span class="prd-avail prd-avail-in"><span class="prd-avail-dot"></span>${product.stockQuantity > 0 ? product.stockQuantity + ' ready' : 'Available'}</span>`
+            : '<span class="prd-avail prd-avail-out"><i class="fas fa-clock"></i> Order in</span>';
+
+        const mediaContent = product.image
+            ? `<img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" loading="lazy">`
+            : `<div class="prd-img-fallback"><i class="fas fa-microchip"></i><p>${escapeHtml(product.category)}</p></div>`;
 
         return `
-            <div class="store-media store-media-fallback product-image-container">
-                <div class="text-center text-white p-6">
-                    <i class="fas fa-microchip text-6xl mb-4 opacity-50"></i>
-                    <h4 class="text-lg font-semibold">${escapeHtml(product.name)}</h4>
-                    <p class="text-sm opacity-80 mt-2">${escapeHtml(product.category)}</p>
-                </div>
-                <div class="absolute left-4 top-4 z-10 flex flex-wrap gap-2">
-                    ${categoryBadge}
-                    ${this.getSaleBadge(product)}
-                </div>
-                ${wishlistMarkup}
-                <div class="absolute left-4 bottom-4 z-10">
-                    ${this.getAvailabilityBadge(product)}
-                </div>
+            <div class="prd-img-wrap">
+                ${mediaContent}
+                ${badges ? `<div class="prd-badges">${badges}</div>` : ''}
+                <button class="prd-wish ${isWishlisted ? 'active' : ''}"
+                        type="button"
+                        data-product-action="toggle-wishlist"
+                        data-product-id="${escapeHtml(product.id)}">
+                    <i class="fas fa-heart"></i>
+                </button>
+                <div class="prd-img-foot">${stockHtml}</div>
+                <div class="prd-hover-cta"><span>Quick View &nbsp;<i class="fas fa-arrow-right"></i></span></div>
             </div>
         `;
     }
 
     renderGridView(container) {
-        container.innerHTML = this.filteredProducts.map((product) => `
-            <article class="product-card store-card group"
-                     data-aos="fade-up"
-                     data-product-action="open-quick-view"
-                     data-product-id="${escapeHtml(product.id)}"
-                     style="cursor:pointer;">
-                ${this.buildGridMedia(product)}
-                <div class="store-card-body">
-                    <div class="min-w-0 mb-2">
-                        <p class="store-meta mb-1.5">${escapeHtml(product.partNo ? `Part ${product.partNo}` : product.supplier)}</p>
-                        <h3 class="text-lg font-bold leading-snug line-clamp-2" style="color:var(--store-ink);">${escapeHtml(product.name)}</h3>
-                    </div>
+        container.innerHTML = this.filteredProducts.map((product) => {
+            const stars = this.renderStaticStars(product.rating);
+            const discount = (product.originalPrice && product.originalPrice > product.price)
+                ? Math.round((1 - product.price / product.originalPrice) * 100)
+                : 0;
 
-                    <div class="flex flex-wrap gap-1.5 mb-2">
-                        ${this.renderTagPills(product, 2)}
-                    </div>
-
-                    <p class="text-sm mb-3 line-clamp-2 leading-relaxed" style="color:var(--store-muted);">${escapeHtml(product.description)}</p>
-
-                    <div class="flex items-center gap-3 mb-3">
-                        <div class="flex text-yellow-400 text-xs gap-0.5">
-                            ${this.renderInteractiveStars(product.id, product.rating)}
+            return `
+                <article class="prd-card"
+                         data-aos="fade-up"
+                         data-product-action="open-quick-view"
+                         data-product-id="${escapeHtml(product.id)}">
+                    ${this.buildGridMedia(product)}
+                    <div class="prd-body">
+                        <p class="prd-cat">${escapeHtml(product.category)}</p>
+                        <h3 class="prd-name">${escapeHtml(product.name)}</h3>
+                        ${product.rating ? `
+                        <div class="prd-stars-row">
+                            <span class="prd-stars">${stars}</span>
+                            <span class="prd-reviews">(${product.reviews || 0})</span>
+                        </div>` : ''}
+                        <div class="prd-price-row">
+                            <span class="prd-price">R${product.price.toFixed(2)}</span>
+                            ${product.originalPrice ? `<span class="prd-orig">R${product.originalPrice.toFixed(2)}</span>` : ''}
+                            ${discount >= 10 ? `<span class="prd-disc">-${discount}%</span>` : ''}
                         </div>
-                        <span class="text-xs" style="color:var(--store-muted);">${product.reviews || 0} reviews</span>
+                        <button class="prd-btn-cart"
+                                type="button"
+                                data-product-action="add-to-cart"
+                                data-product-id="${escapeHtml(product.id)}">
+                            <i class="fas fa-shopping-bag"></i><span>Add to Cart</span>
+                        </button>
                     </div>
-
-                    <div class="mb-3">
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <span class="text-2xl font-bold" style="color:#b30ce6;">R${product.price.toFixed(2)}</span>
-                            ${product.originalPrice ? `<span class="text-sm line-through" style="color:var(--store-muted);">R${product.originalPrice.toFixed(2)}</span>` : ''}
-                        </div>
-                        <p class="text-xs mt-0.5 store-inventory">${escapeHtml(this.getInventoryCopy(product))}</p>
-                    </div>
-
-                    <button class="store-button-primary text-white py-3 w-full" style="background:linear-gradient(135deg,#b30ce6,#7c2d92);box-shadow:0 8px 24px rgba(179,12,230,0.28);border-radius:10px;"
-                            type="button"
-                            data-product-action="add-to-cart"
-                            data-product-id="${escapeHtml(product.id)}">
-                        <i class="fas fa-shopping-cart"></i>Add to Cart
-                    </button>
-                </div>
-            </article>
-        `).join('');
+                </article>
+            `;
+        }).join('');
     }
 
     renderListView(container) {
@@ -1187,30 +1185,32 @@ class ProductManager {
                         ${this.renderTagPills(product, 3)}
                     </div>
                     <p class="store-meta mb-3">${escapeHtml(product.partNo ? `Part ${product.partNo}` : product.supplier)}</p>
-                    <h2 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4 leading-tight">${escapeHtml(product.name)}</h2>
+                    <h2 style="font-size:clamp(1.6rem,3vw,2.4rem);font-weight:800;color:var(--ot-ink,#1c1c1e);margin-bottom:1rem;line-height:1.25;">${escapeHtml(product.name)}</h2>
                     <div class="flex items-center flex-wrap gap-4 mb-6">
                         <div class="flex text-yellow-400 text-xl gap-0.5">
                             ${this.renderStaticStars(product.rating, 'mr-1')}
                         </div>
-                        <span class="text-slate-500 text-lg">${product.reviews || 0} reviews</span>
+                        <span style="color:var(--ot-muted,#6c7384);font-size:1rem;">${product.reviews || 0} reviews</span>
                         ${this.getAvailabilityBadge(product)}
                     </div>
-                    <p class="text-slate-600 mb-6 text-lg leading-relaxed">${escapeHtml(product.description)}</p>
+                    <p style="color:var(--ot-muted,#6c7384);font-size:1rem;line-height:1.7;margin-bottom:1.5rem;">${escapeHtml(product.description)}</p>
                     ${detailPills ? `<div class="flex flex-wrap gap-2 mb-6">${detailPills}</div>` : ''}
                     ${specificationGrid}
                     <div class="flex items-end justify-between gap-4 flex-wrap mt-8 mb-8">
                         <div class="flex items-center gap-3 flex-wrap">
-                            <span class="text-5xl font-bold text-primary">R${product.price.toFixed(2)}</span>
-                            ${product.originalPrice ? `<span class="text-2xl text-slate-400 line-through">R${product.originalPrice.toFixed(2)}</span>` : ''}
+                            <span style="font-size:2.8rem;font-weight:800;color:#b30ce6;line-height:1;">R${product.price.toFixed(2)}</span>
+                            ${product.originalPrice ? `<span style="font-size:1.3rem;color:var(--ot-faint,#94a3b8);text-decoration:line-through;">R${product.originalPrice.toFixed(2)}</span>` : ''}
                         </div>
                         <span class="store-inventory">${escapeHtml(this.getInventoryCopy(product))}</span>
                     </div>
                     <div class="store-quick-view-actions">
-                        <button class="store-button-primary bg-primary hover:bg-secondary text-white py-4 px-6 text-lg shadow-lg"
+                        <button style="background:linear-gradient(135deg,#b30ce6,#7c2d92);color:#fff;border:none;border-radius:14px;padding:1rem 1.5rem;font-size:1rem;font-weight:700;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 28px rgba(179,12,230,0.35);transition:opacity .2s,transform .2s;"
+                                onmouseover="this.style.opacity='.88';this.style.transform='translateY(-2px)'"
+                                onmouseout="this.style.opacity='1';this.style.transform='none'"
                                 type="button"
                                 data-product-action="quickview-add-to-cart"
                                 data-product-id="${escapeHtml(product.id)}">
-                            <i class="fas fa-shopping-cart"></i>Add to Cart
+                            <i class="fas fa-shopping-bag"></i>Add to Cart
                         </button>
                         <button class="store-button-secondary store-button-secondary-outline px-6 py-4 text-lg ${this.isInWishlist(product.id) ? 'active' : ''}"
                                 type="button"
@@ -1316,6 +1316,8 @@ class ProductManager {
         document.getElementById('inStock').checked = false;
         document.getElementById('onSale').checked = false;
         document.querySelectorAll('input[name="rating"]').forEach((radio) => { radio.checked = false; });
+        document.querySelectorAll('.cat-chip').forEach((c) => c.classList.remove('active'));
+        document.querySelector('.cat-chip[data-cat=""]')?.classList.add('active');
         this.applyFilters();
     }
 

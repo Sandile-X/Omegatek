@@ -289,25 +289,197 @@
       /* ─── PRODUCT GRID ──────────────────────────────────────── */
       .ot-grid {
          display: grid;
-         grid-template-columns: repeat(5, 1fr);
-         gap: 14px;
+         grid-template-columns: repeat(4, 1fr);
+         gap: 22px;
       }
-      /* Grid responsive breakpoints */
-      @media (max-width: 1500px) { .ot-grid { grid-template-columns: repeat(4, 1fr); } }
-      @media (max-width: 1200px) { .ot-grid { grid-template-columns: repeat(3, 1fr); } }
-      @media (max-width: 768px)  { .ot-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
-      @media (max-width: 420px)  { .ot-grid { grid-template-columns: 1fr; } }
+      @media (max-width: 1400px) { .ot-grid { grid-template-columns: repeat(3, 1fr); gap: 18px; } }
+      @media (max-width: 960px)  { .ot-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; } }
+      @media (max-width: 520px)  { .ot-grid { grid-template-columns: 1fr; gap: 12px; } }
 
-      /* ─── PRODUCT CARD ──────────────────────────────────────── */
-      /* Card image height – override Tailwind h-72 for 5-col layout */
-      .ot-grid .store-media img { height: 160px !important; width: 100%; object-fit: cover; }
-      .ot-grid .store-media-fallback { height: 160px !important; }
-      /* Whole card is clickable */
-      .product-card { cursor: pointer; }
-      /* Compact card body for narrow cards */
-      .ot-grid .store-card-body { padding: 10px 12px 12px; }
-      .ot-grid .store-card-body .text-lg { font-size: .88rem !important; }
-      .ot-grid .store-card-body .text-2xl { font-size: 1.05rem !important; }
+      /* ─── PRD CARD SYSTEM ───────────────────────────────────── */
+      .prd-card {
+         background: #ffffff;
+         border-radius: 24px;
+         overflow: hidden;
+         border: 1px solid rgba(0,0,0,0.07);
+         box-shadow: 0 2px 20px rgba(0,0,0,0.06), 0 1px 4px rgba(0,0,0,0.04);
+         transition: transform 0.34s cubic-bezier(0.175,0.885,0.32,1.275),
+                     box-shadow 0.28s ease, border-color 0.28s ease;
+         cursor: pointer; position: relative;
+      }
+      .prd-card:hover {
+         transform: translateY(-10px) scale(1.012);
+         box-shadow: 0 32px 72px rgba(179,12,230,0.2), 0 10px 28px rgba(0,0,0,0.09);
+         border-color: rgba(179,12,230,0.36);
+      }
+
+      .prd-img-wrap {
+         position: relative; height: 240px; overflow: hidden;
+         background: linear-gradient(145deg, #f5f0fc, #ede4f8);
+      }
+      .prd-img-wrap img {
+         width: 100%; height: 100%; object-fit: cover; display: block;
+         transition: transform 0.5s ease;
+      }
+      .prd-card:hover .prd-img-wrap img { transform: scale(1.08); }
+
+      .prd-img-fallback {
+         width: 100%; height: 100%;
+         display: flex; flex-direction: column;
+         align-items: center; justify-content: center;
+         background: linear-gradient(135deg, #b30ce6 0%, #6d28d9 55%, #1e1b4b 100%);
+         color: #fff; gap: 10px;
+      }
+      .prd-img-fallback i { font-size: 3.2rem; opacity: 0.55; }
+      .prd-img-fallback p { font-size: 0.8rem; font-weight: 600; opacity: 0.7; text-align: center; padding: 0 12px; }
+
+      .prd-badges {
+         position: absolute; top: 12px; left: 12px; z-index: 2;
+         display: flex; flex-direction: column; gap: 5px;
+      }
+      .prd-badge {
+         display: inline-flex; align-items: center; gap: 4px;
+         padding: 4px 11px; border-radius: 999px;
+         font-size: 0.67rem; font-weight: 800; letter-spacing: 0.06em;
+         backdrop-filter: blur(14px); text-transform: uppercase;
+      }
+      .prd-badge-sale { background: rgba(220,38,38,0.9); color: #fff; box-shadow: 0 2px 10px rgba(220,38,38,0.35); }
+      .prd-badge-new  { background: rgba(179,12,230,0.9); color: #fff; box-shadow: 0 2px 10px rgba(179,12,230,0.35); }
+
+      .prd-wish {
+         position: absolute; top: 12px; right: 12px; z-index: 2;
+         width: 38px; height: 38px; border-radius: 999px;
+         background: rgba(255,255,255,0.9); backdrop-filter: blur(14px);
+         border: 1px solid rgba(255,255,255,0.6);
+         display: flex; align-items: center; justify-content: center;
+         color: rgba(0,0,0,0.38); font-size: 0.85rem;
+         cursor: pointer; transition: all 0.22s;
+         box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+      }
+      .prd-wish:hover { color: #ef4444; transform: scale(1.1); }
+      .prd-wish.active { color: #ef4444; background: rgba(255,255,255,0.95); }
+
+      .prd-img-foot {
+         position: absolute; bottom: 0; left: 0; right: 0;
+         padding: 48px 12px 12px;
+         background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%);
+      }
+      .prd-avail {
+         display: inline-flex; align-items: center; gap: 5px;
+         padding: 4px 11px; border-radius: 999px;
+         font-size: 0.69rem; font-weight: 700;
+         backdrop-filter: blur(12px);
+      }
+      .prd-avail-dot {
+         width: 6px; height: 6px; border-radius: 999px; flex-shrink: 0;
+         background: currentColor; opacity: 0.9;
+         animation: pulse-dot 2s ease-in-out infinite;
+      }
+      @keyframes pulse-dot {
+         0%,100% { opacity: 0.9; transform: scale(1); }
+         50%      { opacity: 0.5; transform: scale(0.75); }
+      }
+      .prd-avail-in  { background: rgba(22,163,74,0.88); color: #fff; }
+      .prd-avail-out { background: rgba(180,83,9,0.88); color: #fff; }
+
+      .prd-hover-cta {
+         position: absolute; inset: 0; top: auto;
+         height: 0; overflow: hidden;
+         background: linear-gradient(135deg, rgba(179,12,230,0.92), rgba(109,40,217,0.92));
+         backdrop-filter: blur(4px);
+         display: flex; align-items: center; justify-content: center;
+         color: #fff; font-size: 0.88rem; font-weight: 700; letter-spacing: 0.04em;
+         transition: height 0.28s cubic-bezier(0.22,1,0.36,1);
+      }
+      .prd-card:hover .prd-hover-cta { height: 48px; }
+
+      .prd-body { padding: 18px 18px 20px; }
+
+      .prd-cat {
+         font-size: 0.63rem; font-weight: 800; letter-spacing: 0.2em;
+         text-transform: uppercase; color: #b30ce6; margin-bottom: 6px;
+      }
+      .prd-name {
+         font-size: 0.97rem; font-weight: 700; line-height: 1.4;
+         color: #1c1c1e; margin-bottom: 9px;
+         display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+         overflow: hidden;
+      }
+      .prd-stars-row {
+         display: flex; align-items: center; gap: 6px; margin-bottom: 11px;
+      }
+      .prd-stars { color: #f59e0b; font-size: 0.72rem; letter-spacing: 1px; }
+      .prd-reviews { color: #9ca3af; font-size: 0.72rem; }
+
+      .prd-price-row {
+         display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
+         margin-bottom: 15px;
+      }
+      .prd-price { font-size: 1.45rem; font-weight: 800; color: #b30ce6; line-height: 1; }
+      .prd-orig  { font-size: 0.83rem; text-decoration: line-through; color: #9ca3af; }
+      .prd-disc  {
+         font-size: 0.7rem; font-weight: 800; padding: 2px 8px;
+         background: rgba(220,38,38,0.1); color: #dc2626; border-radius: 999px;
+      }
+
+      .prd-btn-cart {
+         width: 100%; padding: 0.8rem 1rem; border-radius: 14px; border: none;
+         background: linear-gradient(135deg, #b30ce6 0%, #7c2d92 100%);
+         color: #fff; font-weight: 700; font-size: 0.88rem; font-family: inherit;
+         cursor: pointer; display: flex; align-items: center; justify-content: center;
+         gap: 8px; transition: opacity 0.2s, transform 0.22s;
+         box-shadow: 0 6px 24px rgba(179,12,230,0.32);
+      }
+      .prd-btn-cart:hover { opacity: 0.92; transform: translateY(-1px); }
+
+      /* ─── CATEGORY CHIPS BAR ─────────────────────────────── */
+      .cat-chips-bar {
+         padding: 10px 24px;
+         display: flex; gap: 8px; overflow-x: auto;
+         scrollbar-width: none; -ms-overflow-style: none;
+         background: var(--ot-bg);
+         border-bottom: 1px solid var(--ot-border);
+         align-items: center;
+      }
+      .cat-chips-bar::-webkit-scrollbar { display: none; }
+      .cat-chip {
+         flex-shrink: 0; padding: 7px 18px;
+         border-radius: 999px; font-size: 0.82rem; font-weight: 700;
+         font-family: inherit; cursor: pointer; white-space: nowrap;
+         border: 1.5px solid var(--ot-border); background: transparent;
+         color: var(--ot-muted); transition: all 0.22s;
+      }
+      .cat-chip:hover { border-color: rgba(179,12,230,0.35); color: #b30ce6; background: rgba(179,12,230,0.06); }
+      .cat-chip.active {
+         background: linear-gradient(135deg, #b30ce6, #7c2d92);
+         color: #fff; border-color: transparent;
+         box-shadow: 0 4px 16px rgba(179,12,230,0.32);
+      }
+      [data-theme="dark"] .cat-chip { border-color: rgba(255,255,255,0.09); }
+      [data-theme="dark"] .cat-chip:hover { border-color: rgba(179,12,230,0.35); }
+
+      /* ─── PRD DARK MODE ──────────────────────────────────── */
+      [data-theme="dark"] .prd-card {
+         background: rgba(22,22,30,0.92);
+         border-color: rgba(255,255,255,0.07);
+         box-shadow: 0 4px 22px rgba(0,0,0,0.45);
+      }
+      [data-theme="dark"] .prd-card:hover {
+         border-color: rgba(179,12,230,0.44);
+         box-shadow: 0 32px 72px rgba(179,12,230,0.25), 0 10px 28px rgba(0,0,0,0.6);
+      }
+      [data-theme="dark"] .prd-img-wrap { background: linear-gradient(145deg, #1a1a22, #12121a); }
+      [data-theme="dark"] .prd-wish {
+         background: rgba(28,28,38,0.9); border-color: rgba(255,255,255,0.1);
+         color: rgba(255,255,255,0.42);
+      }
+      [data-theme="dark"] .prd-wish:hover { color: #ef4444; }
+      [data-theme="dark"] .prd-wish.active { color: #ef4444; background: rgba(30,20,20,0.92); }
+      [data-theme="dark"] .prd-name { color: #f5f5f7; }
+      [data-theme="dark"] .prd-reviews { color: #6e6e73; }
+      [data-theme="dark"] .prd-orig { color: #6e6e73; }
+
+      /* ─── RESPONSIVE PATCH ───────────────────────────────── */
       .ot-card {
          background: var(--ot-card);
          border: 1px solid var(--ot-border);
@@ -732,13 +904,13 @@
       @media (max-width: 1024px) {
          .ot-sidebar { display: none; }
          .ot-toolbar { top: 0; }
-         .ot-grid { grid-template-columns: repeat(3, 1fr); }
       }
-      @media (max-width: 768px) {
-         .ot-grid { grid-template-columns: repeat(2, 1fr) !important; }
+      @media (max-width: 960px) {
+         .ot-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 14px !important; }
       }
-      @media (max-width: 480px) {
-         .ot-grid { grid-template-columns: 1fr !important; }
+      @media (max-width: 520px) {
+         .ot-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+         .prd-img-wrap { height: 220px; }
       }
       @media (max-width: 768px) {
          .store-quick-view-grid { grid-template-columns: 1fr; }
@@ -1116,6 +1288,9 @@
       <span id="cartCount" class="hidden" style="background:#ef4444;color:#fff;border-radius:999px;min-width:20px;height:20px;padding:0 5px;display:inline-flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;margin-left:2px;">0</span>
    </button>
 </div>
+
+<!-- ═══ CATEGORY CHIPS ════════════════════════════════════════════ -->
+<div id="catChipsBar" class="cat-chips-bar"></div>
 
 <!-- ═══ MAIN LAYOUT ═══════════════════════════════════════════════ -->
 <section class="ot-section flex-grow pb-16">
