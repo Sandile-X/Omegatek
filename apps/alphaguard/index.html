@@ -14,13 +14,11 @@
     * { font-family: 'Inter', sans-serif; }
     html { scroll-behavior: smooth; }
 
-    /* --- Gradient hero --- */
-    .hero-bg {
+.hero-bg {
       background: linear-gradient(135deg, #0d0421 0%, #1a0030 40%, #2d0060 70%, #050010 100%);
     }
 
-    /* --- Animated grid overlay --- */
-    .hero-bg::before {
+.hero-bg::before {
       content: '';
       position: absolute;
       inset: 0;
@@ -31,26 +29,22 @@
       pointer-events: none;
     }
 
-    /* --- Glow pulse on badge --- */
-    @keyframes pulse-glow {
+@keyframes pulse-glow {
       0%, 100% { box-shadow: 0 0 0 0 rgba(179,12,230,0.4); }
       50%       { box-shadow: 0 0 0 10px rgba(179,12,230,0); }
     }
     .badge-glow { animation: pulse-glow 2.5s infinite; }
 
-    /* --- Float animation for mockup card --- */
-    @keyframes float {
+@keyframes float {
       0%, 100% { transform: translateY(0px); }
       50%       { transform: translateY(-12px); }
     }
     .float { animation: float 4s ease-in-out infinite; }
 
-    /* --- Fade-in on scroll --- */
-    .fade-up { opacity: 0; transform: translateY(32px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.fade-up { opacity: 0; transform: translateY(32px); transition: opacity 0.6s ease, transform 0.6s ease; }
     .fade-up.visible { opacity: 1; transform: translateY(0); }
 
-    /* --- Step connector line --- */
-    .step-line::after {
+.step-line::after {
       content: '';
       display: block;
       width: 2px;
@@ -59,12 +53,10 @@
       margin: 0 auto;
     }
 
-    /* --- Scrollbar hide for stat ticker --- */
-    .no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-    /* --- Custom nav underline --- */
-    .nav-link { position: relative; }
+.nav-link { position: relative; }
     .nav-link::after {
       content: '';
       position: absolute;
@@ -75,8 +67,7 @@
     }
     .nav-link:hover::after { width: 100%; }
 
-    /* WhatsApp button pulse */
-    @keyframes wa-pulse {
+@keyframes wa-pulse {
       0%, 100% { transform: scale(1); }
       50%       { transform: scale(1.04); }
     }
@@ -86,7 +77,6 @@
 
 <body class="bg-white text-gray-800 antialiased">
 
-<!-- ===================== NAV ===================== -->
 <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-4 px-6" style="background: transparent;">
   <div class="max-w-6xl mx-auto flex items-center justify-between">
     <a href="#hero" class="flex items-center gap-2 group">
@@ -94,8 +84,7 @@
       <span class="text-white font-bold text-lg tracking-tight">AlphaGuard</span>
     </a>
 
-    <!-- Desktop links -->
-    <div class="hidden md:flex items-center gap-8 text-sm font-medium text-purple-100">
+<div class="hidden md:flex items-center gap-8 text-sm font-medium text-purple-100">
       <a href="/" class="nav-link hover:text-white transition-colors">← Omegatek</a>
       <a href="#features" class="nav-link hover:text-white transition-colors">Features</a>
       <a href="#how-it-works" class="nav-link hover:text-white transition-colors">How It Works</a>
@@ -108,14 +97,12 @@
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
     </a>
 
-    <!-- Mobile hamburger -->
-    <button id="menuBtn" class="md:hidden text-white p-2 rounded-lg hover:bg-white/10 transition">
+<button id="menuBtn" class="md:hidden text-white p-2 rounded-lg hover:bg-white/10 transition">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
     </button>
   </div>
 
-  <!-- Mobile menu -->
-  <div id="mobileMenu" class="hidden md:hidden mt-4 bg-gray-900/95 backdrop-blur rounded-2xl px-4 py-4 text-sm font-medium text-purple-100 space-y-3 max-w-6xl mx-auto">
+<div id="mobileMenu" class="hidden md:hidden mt-4 bg-gray-900/95 backdrop-blur rounded-2xl px-4 py-4 text-sm font-medium text-purple-100 space-y-3 max-w-6xl mx-auto">
     <a href="/" class="block py-2 hover:text-white transition-colors opacity-75" onclick="closeMobileMenu()">← Omegatek Solutions</a>
     <a href="#features" class="block py-2 hover:text-white transition-colors" onclick="closeMobileMenu()">Features</a>
     <a href="#how-it-works" class="block py-2 hover:text-white transition-colors" onclick="closeMobileMenu()">How It Works</a>
@@ -125,12 +112,10 @@
   </div>
 </nav>
 
-<!-- ===================== HERO ===================== -->
 <section id="hero" class="hero-bg relative min-h-screen flex items-center overflow-hidden">
   <div class="max-w-6xl mx-auto px-6 py-32 grid md:grid-cols-2 gap-16 items-center w-full relative z-10">
 
-    <!-- Left copy -->
-    <div>
+<div>
       <span class="badge-glow inline-flex items-center gap-2 bg-purple-500/20 border border-purple-400/40 text-purple-300 text-xs font-semibold px-3 py-1.5 rounded-full mb-6">
         <span class="w-2 h-2 bg-blue-400 rounded-full inline-block"></span>
         Made for South Africa
@@ -176,19 +161,18 @@
       </div>
     </div>
 
-    <!-- Right mockup -->
-    <div class="hidden md:flex justify-center">
+<div class="hidden md:flex justify-center">
       <div class="float relative">
-        <!-- Phone frame -->
+        
         <div class="w-64 bg-gray-900 rounded-3xl shadow-2xl shadow-purple-900/60 border-4 border-gray-700 overflow-hidden p-1">
-          <!-- Screen area -->
+          
           <div class="bg-gray-950 rounded-2xl overflow-hidden">
-            <!-- Status bar -->
+            
             <div class="bg-[#1a0030] h-8 flex items-center justify-between px-4">
               <span class="text-white text-xs font-semibold">AlphaGuard</span>
               <span class="text-purple-300 text-xs">09:41</span>
             </div>
-            <!-- Stats row -->
+            
             <div class="grid grid-cols-3 gap-1 p-2 bg-[#0d0421]">
               <div class="bg-purple-900/60 rounded-lg p-2 text-center">
                 <div class="text-purple-300 text-xs">IN</div>
@@ -206,7 +190,7 @@
                 <div class="text-green-400 text-xs">On-site</div>
               </div>
             </div>
-            <!-- Nav buttons mock -->
+            
             <div class="flex gap-2 p-2 bg-gray-950">
               <div class="flex-1 bg-green-700/80 rounded-xl p-3 text-center">
                 <div class="text-white text-xs font-semibold">&#x2191; CAR IN</div>
@@ -215,7 +199,7 @@
                 <div class="text-white text-xs font-semibold">&#x2193; CAR OUT</div>
               </div>
             </div>
-            <!-- Log entries mock -->
+            
             <div class="p-2 space-y-1 bg-gray-950">
               <div class="bg-gray-800 rounded-lg p-2 flex items-center gap-2">
                 <span class="text-green-400 text-xs font-bold">IN</span>
@@ -242,19 +226,17 @@
             </div>
           </div>
         </div>
-        <!-- Glow under phone -->
+        
         <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 w-40 h-8 bg-purple-600/30 blur-xl rounded-full"></div>
       </div>
     </div>
 
   </div>
 
-  <!-- Decorative orbs -->
-  <div class="absolute top-20 right-20 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute top-20 right-20 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none"></div>
   <div class="absolute bottom-10 left-10 w-64 h-64 bg-cyan-600/10 rounded-full blur-3xl pointer-events-none"></div>
 </section>
 
-<!-- ===================== TRUST BAR ===================== -->
 <div class="bg-gray-50 border-y border-gray-100 py-5 overflow-hidden">
   <div class="max-w-6xl mx-auto px-6">
     <p class="text-center text-xs font-semibold text-gray-400 uppercase tracking-widest mb-4">Trusted for access control at</p>
@@ -274,7 +256,6 @@
   </div>
 </div>
 
-<!-- ===================== FEATURES ===================== -->
 <section id="features" class="py-24 px-6 bg-white">
   <div class="max-w-6xl mx-auto">
 
@@ -286,8 +267,7 @@
 
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
-      <!-- Feature 1 -->
-      <div class="fade-up group bg-gradient-to-br from-blue-50 to-white rounded-2xl p-6 border border-purple-100 hover:shadow-xl hover:shadow-purple-100 transition-all hover:-translate-y-1">
+<div class="fade-up group bg-gradient-to-br from-blue-50 to-white rounded-2xl p-6 border border-purple-100 hover:shadow-xl hover:shadow-purple-100 transition-all hover:-translate-y-1">
         <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 mb-4 group-hover:bg-purple-700 group-hover:text-white transition-colors">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"/></svg>
         </div>
@@ -295,8 +275,7 @@
         <p class="text-gray-500 text-sm leading-relaxed">Reads the encrypted RSA barcode on the back of any South African driver licence card. Extracts name, ID number, licence categories, and expiry instantly.</p>
       </div>
 
-      <!-- Feature 2 -->
-      <div class="fade-up group bg-gradient-to-br from-blue-50 to-white rounded-2xl p-6 border border-purple-100 hover:shadow-xl hover:shadow-purple-100 transition-all hover:-translate-y-1">
+<div class="fade-up group bg-gradient-to-br from-blue-50 to-white rounded-2xl p-6 border border-purple-100 hover:shadow-xl hover:shadow-purple-100 transition-all hover:-translate-y-1">
         <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 mb-4 group-hover:bg-purple-700 group-hover:text-white transition-colors">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/></svg>
         </div>
@@ -304,8 +283,7 @@
         <p class="text-gray-500 text-sm leading-relaxed">Scans the NATIS PDF417 barcode on the windscreen licence disc. Captures registration, VIN, engine number, make, and disc expiry date.</p>
       </div>
 
-      <!-- Feature 3 -->
-      <div class="fade-up group bg-gradient-to-br from-green-50 to-white rounded-2xl p-6 border border-green-100 hover:shadow-xl hover:shadow-green-100 transition-all hover:-translate-y-1">
+<div class="fade-up group bg-gradient-to-br from-green-50 to-white rounded-2xl p-6 border border-green-100 hover:shadow-xl hover:shadow-green-100 transition-all hover:-translate-y-1">
         <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-green-600 mb-4 group-hover:bg-green-600 group-hover:text-white transition-colors">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
         </div>
@@ -313,8 +291,7 @@
         <p class="text-gray-500 text-sm leading-relaxed">Every vehicle gets a paired IN and OUT session with exact timestamps. Active sessions show who is currently on-site. Session duration is calculated automatically.</p>
       </div>
 
-      <!-- Feature 4 -->
-      <div class="fade-up group bg-gradient-to-br from-red-50 to-white rounded-2xl p-6 border border-red-100 hover:shadow-xl hover:shadow-red-100 transition-all hover:-translate-y-1">
+<div class="fade-up group bg-gradient-to-br from-red-50 to-white rounded-2xl p-6 border border-red-100 hover:shadow-xl hover:shadow-red-100 transition-all hover:-translate-y-1">
         <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center text-red-600 mb-4 group-hover:bg-red-600 group-hover:text-white transition-colors">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
         </div>
@@ -322,8 +299,7 @@
         <p class="text-gray="500 text-sm leading-relaxed">Expired driver licences or vehicle discs are automatically flagged with a red badge. Flagged entries appear in the log and are marked in CSV export for easy reporting.</p>
       </div>
 
-      <!-- Feature 5 -->
-      <div class="fade-up group bg-gradient-to-br from-purple-50 to-white rounded-2xl p-6 border border-purple-100 hover:shadow-xl hover:shadow-purple-100 transition-all hover:-translate-y-1">
+<div class="fade-up group bg-gradient-to-br from-purple-50 to-white rounded-2xl p-6 border border-purple-100 hover:shadow-xl hover:shadow-purple-100 transition-all hover:-translate-y-1">
         <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600 mb-4 group-hover:bg-purple-600 group-hover:text-white transition-colors">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
         </div>
@@ -331,8 +307,7 @@
         <p class="text-gray-500 text-sm leading-relaxed">Export all session data to a CSV file saved directly to your chosen location "” Downloads, USB drive, or network folder. No cloud upload required.</p>
       </div>
 
-      <!-- Feature 6 -->
-      <div class="fade-up group bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 border border-gray-200 hover:shadow-xl hover:shadow-gray-100 transition-all hover:-translate-y-1">
+<div class="fade-up group bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 border border-gray-200 hover:shadow-xl hover:shadow-gray-100 transition-all hover:-translate-y-1">
         <div class="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center text-gray-600 mb-4 group-hover:bg-gray-800 group-hover:text-white transition-colors">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
         </div>
@@ -344,7 +319,6 @@
   </div>
 </section>
 
-<!-- ===================== HOW IT WORKS ===================== -->
 <section id="how-it-works" class="py-24 px-6 bg-gradient-to-b from-gray-50 to-white">
   <div class="max-w-4xl mx-auto">
 
@@ -356,8 +330,7 @@
 
     <div class="space-y-8">
 
-      <!-- Step 1 -->
-      <div class="fade-up flex gap-6 items-start">
+<div class="fade-up flex gap-6 items-start">
         <div class="flex-shrink-0 flex flex-col items-center">
           <div class="w-12 h-12 rounded-full bg-purple-600 text-white text-lg font-black flex items-center justify-center shadow-lg shadow-purple-200">1</div>
           <div class="w-0.5 h-16 bg-gradient-to-b from-blue-600 to-transparent mt-2"></div>
@@ -368,8 +341,7 @@
         </div>
       </div>
 
-      <!-- Step 2 -->
-      <div class="fade-up flex gap-6 items-start">
+<div class="fade-up flex gap-6 items-start">
         <div class="flex-shrink-0 flex flex-col items-center">
           <div class="w-12 h-12 rounded-full bg-purple-600 text-white text-lg font-black flex items-center justify-center shadow-lg shadow-purple-200">2</div>
           <div class="w-0.5 h-16 bg-gradient-to-b from-blue-600 to-transparent mt-2"></div>
@@ -380,8 +352,7 @@
         </div>
       </div>
 
-      <!-- Step 3 -->
-      <div class="fade-up flex gap-6 items-start">
+<div class="fade-up flex gap-6 items-start">
         <div class="flex-shrink-0">
           <div class="w-12 h-12 rounded-full bg-green-600 text-white text-lg font-black flex items-center justify-center shadow-lg shadow-green-200">3</div>
         </div>
@@ -395,7 +366,6 @@
   </div>
 </section>
 
-<!-- ===================== STATS ===================== -->
 <section class="bg-[#1a0030] py-20 px-6">
   <div class="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
     <div class="fade-up">
@@ -417,7 +387,6 @@
   </div>
 </section>
 
-<!-- ===================== USE CASES ===================== -->
 <section id="use-cases" class="py-24 px-6 bg-white">
   <div class="max-w-6xl mx-auto">
 
@@ -427,7 +396,7 @@
     </div>
 
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      <!-- Use case cards -->
+      
       <div class="fade-up flex gap-4 items-start bg-gray-50 rounded-2xl p-5 border border-gray-100">
         <div class="text-3xl">&#x1F3ED;</div>
         <div>
@@ -479,12 +448,10 @@
   </div>
 </section>
 
-<!-- ===================== CONTACT ===================== -->
 <section id="contact" class="py-24 px-6 bg-gradient-to-br from-gray-900 via-[#0d0421] to-gray-900">
   <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-16 items-start">
 
-    <!-- Left: contact info -->
-    <div class="fade-up">
+<div class="fade-up">
       <span class="inline-block bg-purple-500/20 border border-purple-400/30 text-purple-300 text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-widest mb-6">Get in Touch</span>
       <h2 class="text-3xl sm:text-4xl font-black text-white mb-6">Ready to Secure Your Gate?</h2>
       <p class="text-purple-200 text-lg leading-relaxed mb-8">Contact Sandile at Omegatek Solutions to discuss pricing, customisation, or to request a live demo on your Chainway hardware.</p>
@@ -520,8 +487,7 @@
       </div>
     </div>
 
-    <!-- Right: WhatsApp form -->
-    <div class="fade-up">
+<div class="fade-up">
       <div class="bg-white/5 border border-white/10 rounded-2xl p-8 backdrop-blur">
         <h3 class="text-white text-xl font-bold mb-6">Send Us a Message</h3>
         <form id="contactForm" class="space-y-4">
@@ -549,7 +515,6 @@
   </div>
 </section>
 
-<!-- ===================== FOOTER ===================== -->
 <footer class="bg-gray-950 text-gray-500 py-10 px-6">
   <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
     <div class="flex items-center gap-2">
@@ -567,9 +532,8 @@
   </div>
 </footer>
 
-<!-- ===================== SCRIPTS ===================== -->
 <script>
-  // --- Nav background on scroll ---
+  
   const navbar = document.getElementById('navbar');
   window.addEventListener('scroll', () => {
     if (window.scrollY > 40) {
@@ -587,8 +551,7 @@
     }
   });
 
-  // --- Mobile menu toggle ---
-  document.getElementById('menuBtn').addEventListener('click', () => {
+document.getElementById('menuBtn').addEventListener('click', () => {
     const m = document.getElementById('mobileMenu');
     m.classList.toggle('hidden');
   });
@@ -596,8 +559,7 @@
     document.getElementById('mobileMenu').classList.add('hidden');
   }
 
-  // --- Fade-up on scroll (IntersectionObserver) ---
-  const fadeEls = document.querySelectorAll('.fade-up');
+const fadeEls = document.querySelectorAll('.fade-up');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting) {
@@ -608,8 +570,7 @@
   }, { threshold: 0.12 });
   fadeEls.forEach(el => observer.observe(el));
 
-  // --- WhatsApp form submit ---
-  document.getElementById('contactForm').addEventListener('submit', function(e) {
+document.getElementById('contactForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const name    = document.getElementById('f_name').value.trim();
     const company = document.getElementById('f_company').value.trim();
@@ -631,5 +592,4 @@
 
 </body>
 </html>
-
 

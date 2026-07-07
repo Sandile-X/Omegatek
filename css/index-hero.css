@@ -1,6 +1,5 @@
-/* Index Page Specific Styles - Extracted from inline CSS for better performance */
+﻿
 
-/* Base responsive fixes */
 html, body {
    overflow-x: hidden;
    width: 100%;
@@ -42,7 +41,6 @@ img, video, iframe {
    }
 }
 
-/* Accessibility - Skip nav */
 .skip-nav {
    position: absolute;
    top: -40px;
@@ -60,19 +58,16 @@ img, video, iframe {
    top: 6px;
 }
 
-/* Improve focus indicators */
 button:focus, a:focus, input:focus, textarea:focus, select:focus {
    outline: 3px solid #b30ce6;
    outline-offset: 2px;
 }
 
-/* Ensure proper color contrast */
 .btn:focus {
    outline: 3px solid #fff;
    outline-offset: 2px;
 }
 
-/* Modern Hero Section */
 .hero-modern {
     position: relative;
     height: 100vh;
@@ -417,7 +412,6 @@ button:focus, a:focus, input:focus, textarea:focus, select:focus {
     50% { opacity: 1; transform: scaleY(1.2); }
 }
 
-/* Slide-in animations for home/about images */
 .slide-in-on-scroll {
   opacity: 0;
   transform: translateX(80px);
@@ -433,7 +427,6 @@ button:focus, a:focus, input:focus, textarea:focus, select:focus {
   transform: translateX(0);
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
     .hero-content-inner {
         padding: 2rem 1rem;

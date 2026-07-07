@@ -42,6 +42,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 session_start();
 
+// Security headers
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: SAMEORIGIN');
+header('X-XSS-Protection: 1; mode=block');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+header("Content-Security-Policy: default-src 'self' https:; script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: https:;");
+
 // Configuration
 require_once __DIR__ . '/../config/secure-config.php';
 
@@ -50,12 +57,13 @@ require_once __DIR__ . '/../config/secure-config.php';
 function sbGet(string $table, array $queryParams = [], string $jwt = ''): array {
     $url    = SUPABASE_URL . '/rest/v1/' . $table;
     if ($queryParams) $url .= '?' . http_build_query($queryParams);
-    $bearer = $jwt ?: SUPABASE_ANON_KEY;
+    $bearer  = $jwt ?: SUPABASE_ANON_KEY;
+    $apikey  = $bearer; // apikey must match the bearer for RLS bypass
     $ch = curl_init($url);
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_HTTPHEADER     => [
-            'apikey: '              . SUPABASE_ANON_KEY,
+            'apikey: '              . $apikey,
             'Authorization: Bearer ' . $bearer,
             'Accept: application/json',
         ],
@@ -71,13 +79,14 @@ function sbGet(string $table, array $queryParams = [], string $jwt = ''): array 
 
 function sbInsert(string $table, array $data, string $jwt = ''): array {
     $bearer = $jwt ?: SUPABASE_ANON_KEY;
+    $apikey = $bearer;
     $ch = curl_init(SUPABASE_URL . '/rest/v1/' . $table);
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_POST           => true,
         CURLOPT_POSTFIELDS     => json_encode($data),
         CURLOPT_HTTPHEADER     => [
-            'apikey: '              . SUPABASE_ANON_KEY,
+            'apikey: '              . $apikey,
             'Authorization: Bearer ' . $bearer,
             'Content-Type: application/json',
             'Prefer: return=representation',
@@ -94,6 +103,7 @@ function sbInsert(string $table, array $data, string $jwt = ''): array {
 
 function sbPatch(string $table, string $column, string $value, array $data, string $jwt = ''): array {
     $bearer = $jwt ?: SUPABASE_ANON_KEY;
+    $apikey = $bearer;
     $url    = SUPABASE_URL . '/rest/v1/' . $table . '?' . urlencode($column) . '=eq.' . urlencode($value);
     $ch     = curl_init($url);
     curl_setopt_array($ch, [
@@ -101,7 +111,7 @@ function sbPatch(string $table, string $column, string $value, array $data, stri
         CURLOPT_CUSTOMREQUEST  => 'PATCH',
         CURLOPT_POSTFIELDS     => json_encode($data),
         CURLOPT_HTTPHEADER     => [
-            'apikey: '              . SUPABASE_ANON_KEY,
+            'apikey: '              . $apikey,
             'Authorization: Bearer ' . $bearer,
             'Content-Type: application/json',
             'Prefer: return=minimal',
@@ -196,28 +206,50 @@ try {
                 if (!$email) { $response = ['success' => false, 'message' => 'Invalid email address']; break; }
 
                 $clientIp = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-                if (!checkRateLimit($clientIp . ':subscribe', 5, 600)) {
+                if (!checkRateLimit($clientIp . ':subscribe', 5, 3600)) {
                     http_response_code(429);
-                    $response = ['success' => false, 'message' => 'Too many requests. Please try again later.'];
+                    $response = ['success' => false, 'message' => 'Too many signup attempts. Please try again in an hour.', 'error_code' => 'RATE_LIMIT'];
                     break;
                 }
 
                 // Try INSERT first (works for new subscribers via public INSERT RLS policy)
                 $token = bin2hex(random_bytes(32));
-                $ins   = sbInsert('newsletter_subscribers', [
+
+                // Geo-locate subscriber from IP (best-effort, non-blocking)
+                $geo = ['city' => null, 'lat' => null, 'lon' => null];
+                if ($clientIp !== 'unknown' && $clientIp !== '127.0.0.1') {
+                    $geoCtx = stream_context_create(['http' => ['timeout' => 2]]);
+                    $geoRaw = @file_get_contents("http://ip-api.com/json/{$clientIp}?fields=status,city,lat,lon", false, $geoCtx);
+                    if ($geoRaw) {
+                        $geoData = json_decode($geoRaw, true);
+                        if (($geoData['status'] ?? '') === 'success') {
+                            $geo['city'] = substr($geoData['city'] ?? '', 0, 100);
+                            $geo['lat']  = is_numeric($geoData['lat'] ?? null) ? (float)$geoData['lat'] : null;
+                            $geo['lon']  = is_numeric($geoData['lon'] ?? null) ? (float)$geoData['lon'] : null;
+                        }
+                    }
+                }
+
+                $insertData = [
                     'email'             => $email,
                     'name'              => $name,
                     'status'            => 'active',
                     'unsubscribe_token' => $token,
-                ]);
+                ];
+                if ($geo['city'])  $insertData['city']      = $geo['city'];
+                if ($geo['lat'] !== null)  $insertData['latitude']  = $geo['lat'];
+                if ($geo['lon'] !== null)  $insertData['longitude'] = $geo['lon'];
+
+                // Use service key to bypass RLS for server-side insert
+                $ins = sbInsert('newsletter_subscribers', $insertData, SUPABASE_SERVICE_KEY);
 
                 if ($ins['code'] >= 300) {
-                    // Already exists — re-activate if unsubscribed (uses public UPDATE RLS policy)
+                    // Already exists — re-activate if unsubscribed
                     $patch = sbPatch('newsletter_subscribers', 'email', $email, [
                         'status'          => 'active',
                         'name'            => $name ?: '',
                         'unsubscribed_at' => null,
-                    ]);
+                    ], SUPABASE_SERVICE_KEY);
                     if ($patch['code'] >= 300) {
                         $response = ['success' => false, 'message' => 'Subscription error — please try again later.'];
                         break;
@@ -290,7 +322,7 @@ try {
                 if (!$id) { $response = ['success' => false, 'message' => 'Newsletter ID required']; break; }
 
                 // Load newsletter (authenticated as admin)
-                $nlRes = sbGet('newsletters', ['id' => 'eq.' . $id, 'select' => 'id,subject,content'], $adminJwt);
+                $nlRes = sbGet('newsletters', ['id' => 'eq.' . $id, 'select' => 'id,subject,content'], SUPABASE_SERVICE_KEY);
                 if (empty($nlRes['data'][0])) {
                     $response = ['success' => false, 'message' => 'Newsletter not found'];
                     break;
@@ -301,7 +333,7 @@ try {
                 $subRes = sbGet('newsletter_subscribers', [
                     'status' => 'eq.active',
                     'select' => 'email,name,unsubscribe_token',
-                ], $adminJwt);
+                ], SUPABASE_SERVICE_KEY);
                 $subscribers = $subRes['data'] ?: [];
 
                 $sentCount = 0;
@@ -327,7 +359,7 @@ try {
                     'status'     => 'sent',
                     'sent_at'    => date('c'),
                     'sent_count' => $sentCount,
-                ], $adminJwt);
+                ], SUPABASE_SERVICE_KEY);
 
                 $response = ['success' => true, 'message' => "Newsletter sent to $sentCount subscriber" . ($sentCount !== 1 ? 's' : '')];
             }

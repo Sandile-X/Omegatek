@@ -1,5 +1,5 @@
-document.addEventListener("DOMContentLoaded", function() {
-    // Mobile navigation toggle functionality
+﻿document.addEventListener("DOMContentLoaded", function() {
+    
     const navToggle = document.querySelector(".blog-nav-toggle");
     const categoryList = document.querySelector(".blog-category-list");
     
@@ -8,12 +8,10 @@ document.addEventListener("DOMContentLoaded", function() {
             const isExpanded = categoryList.classList.contains("active");
             categoryList.classList.toggle("active");
             this.classList.toggle("active");
-            
-            // Update ARIA attributes
-            this.setAttribute("aria-expanded", !isExpanded);
-            
-            // Focus on first category if opening menu
-            if (!isExpanded) {
+
+this.setAttribute("aria-expanded", !isExpanded);
+
+if (!isExpanded) {
                 const firstCategory = categoryList.querySelector("li a");
                 if (firstCategory) {
                     setTimeout(() => {
@@ -23,25 +21,22 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     }
-    
-    // Handle search functionality for both mobile and desktop
-    const searchInputDesktop = document.getElementById("blog-search");
+
+const searchInputDesktop = document.getElementById("blog-search");
     const searchInputMobile = document.getElementById("blog-search-mobile");
     
     function handleSearch(searchTerm) {
         const posts = document.querySelectorAll(".post-card");
         const featuredPost = document.querySelector(".featured-post");
-        
-        // Clear category filter when searching
-        if (searchTerm.trim() !== "") {
+
+if (searchTerm.trim() !== "") {
             const categoryLinks = document.querySelectorAll(".blog-category-list li");
             categoryLinks.forEach(item => item.classList.remove("active"));
             const allPostsLink = document.querySelector(".blog-category-list li a[href='#all']");
             if (allPostsLink) allPostsLink.parentElement.classList.add("active");
         }
-        
-        // Search in featured post
-        if (featuredPost) {
+
+if (featuredPost) {
             const titleElement = featuredPost.querySelector("h2");
             const contentElement = featuredPost.querySelector("p");
             const categoryElement = featuredPost.querySelector(".category");
@@ -58,9 +53,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             }
         }
-        
-        // Search in regular posts
-        posts.forEach(post => {
+
+posts.forEach(post => {
             const titleElement = post.querySelector("h3");
             const contentElement = post.querySelector("p");
             const categoryElement = post.querySelector(".category");
@@ -94,54 +88,46 @@ document.addEventListener("DOMContentLoaded", function() {
             if (searchInputDesktop) searchInputDesktop.value = searchTerm;
         });
     }
-    
-    // Category navigation functionality
-    const categoryLinks = document.querySelectorAll(".blog-category-list li a");
+
+const categoryLinks = document.querySelectorAll(".blog-category-list li a");
     
     categoryLinks.forEach(link => {
         link.addEventListener("click", function(e) {
             e.preventDefault();
-            
-            // Remove active class from all links
-            categoryLinks.forEach(item => {
+
+categoryLinks.forEach(item => {
                 item.parentElement.classList.remove("active");
             });
-            
-            // Add active class to clicked link
-            this.parentElement.classList.add("active");
-            
-            // Get the category ID from href attribute
-            const category = this.getAttribute("href").substring(1);
-            
-            // Close mobile menu after selecting a category
-            if (categoryList && categoryList.classList.contains("active") && window.innerWidth <= 768) {
+
+this.parentElement.classList.add("active");
+
+const category = this.getAttribute("href").substring(1);
+
+if (categoryList && categoryList.classList.contains("active") && window.innerWidth <= 768) {
                 categoryList.classList.remove("active");
                 if (navToggle) navToggle.classList.remove("active");
             }
-            
-            // Clear any active search before filtering
-            if (searchInputDesktop) searchInputDesktop.value = "";
+
+if (searchInputDesktop) searchInputDesktop.value = "";
             if (searchInputMobile) searchInputMobile.value = "";
-            
-            // Filter posts based on category
-            if (category === "all") {
-                // Show all posts
+
+if (category === "all") {
+                
                 document.querySelectorAll(".post-card").forEach(post => {
                     post.style.display = "block";
                 });
                 const featuredPost = document.querySelector(".featured-post");
                 if (featuredPost) featuredPost.style.display = "block";
             } else {
-                // Filter featured post by category as well
+                
                 const featuredPost = document.querySelector(".featured-post");
                 if (featuredPost) {
                     const categoryElement = featuredPost.querySelector(".category");
                     if (categoryElement) {
                         const postCategory = categoryElement.textContent.toLowerCase().trim();
                         const targetCategory = category.toLowerCase().trim();
-                        
-                        // Apply same flexible matching logic for featured post
-                        let shouldShow = false;
+
+let shouldShow = false;
                         
                         switch(targetCategory) {
                             case "computers":
@@ -186,9 +172,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 } else {
                     if (featuredPost) featuredPost.style.display = "none";
                 }
-                
-                // Filter posts by category
-                document.querySelectorAll(".post-card").forEach(post => {
+
+document.querySelectorAll(".post-card").forEach(post => {
                     const categoryElement = post.querySelector(".category");
                     if (!categoryElement) {
                         post.style.display = "none";
@@ -197,9 +182,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     
                     const postCategory = categoryElement.textContent.toLowerCase().trim();
                     const targetCategory = category.toLowerCase().trim();
-                    
-                    // More flexible category matching
-                    let shouldShow = false;
+
+let shouldShow = false;
                     
                     switch(targetCategory) {
                         case "computers":
@@ -239,19 +223,16 @@ document.addEventListener("DOMContentLoaded", function() {
                     
                     post.style.display = shouldShow ? "block" : "none";
                 });
-                
-                // Check if any posts are visible and show message if none
-                const visiblePosts = document.querySelectorAll(".post-card[style*='block']");
+
+const visiblePosts = document.querySelectorAll(".post-card[style*='block']");
                 const featuredVisible = featuredPost && featuredPost.style.display !== "none";
                 
                 if (visiblePosts.length === 0 && !featuredVisible) {
-                    // Show a "no results" message or handle empty state
-                    // console.log(`No posts found for category: ${category}`);
-                }
+
+}
             }
-            
-            // Scroll to posts section with a small delay to ensure filtering is complete
-            setTimeout(() => {
+
+setTimeout(() => {
                 const postsSection = document.querySelector(".blog-posts");
                 if (postsSection) {
                     postsSection.scrollIntoView({
@@ -263,25 +244,20 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // Add a show all posts function for easy reset
-    window.showAllPosts = function() {
+window.showAllPosts = function() {
         document.querySelectorAll(".post-card").forEach(post => {
             post.style.display = "block";
         });
         const featuredPost = document.querySelector(".featured-post");
         if (featuredPost) featuredPost.style.display = "block";
-        
-        // Reset active category
-        const categoryLinks = document.querySelectorAll(".blog-category-list li");
+
+const categoryLinks = document.querySelectorAll(".blog-category-list li");
         categoryLinks.forEach(item => item.classList.remove("active"));
         const allPostsLink = document.querySelector(".blog-category-list li a[href='#all']");
         if (allPostsLink) allPostsLink.parentElement.classList.add("active");
     };
 
-    // We've already handled search functionality in the updated code above
-
-    // Newsletter form submission
-    const newsletterForm = document.querySelector(".newsletter-form");
+const newsletterForm = document.querySelector(".newsletter-form");
     if (newsletterForm) {
         newsletterForm.addEventListener("submit", function(e) {
             e.preventDefault();
@@ -293,27 +269,21 @@ document.addEventListener("DOMContentLoaded", function() {
                 showNotification("Please enter your email address", "error");
                 return;
             }
-            
-            // Validate email format
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
                 showNotification("Please enter a valid email address", "error");
                 return;
             }
-            
-            // Show success message
-            showNotification("Thank you for subscribing! We'll keep you updated with our latest tech tips.", "success");
-            
-            // Reset form
-            emailInput.value = "";
-            
-            // Here you would typically send the email to your backend
-            // console.log("Newsletter subscription:", email);
-        });
+
+showNotification("Thank you for subscribing! We'll keep you updated with our latest tech tips.", "success");
+
+emailInput.value = "";
+
+});
     }
-    
-    // Footer newsletter subscription
-    const footerNewsletterForm = document.querySelector(".footer form");
+
+const footerNewsletterForm = document.querySelector(".footer form");
     if (footerNewsletterForm) {
         footerNewsletterForm.addEventListener("submit", function(e) {
             e.preventDefault();
@@ -325,9 +295,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 showNotification("Please enter your email address", "error");
                 return;
             }
-            
-            // Validate email format
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
                 showNotification("Please enter a valid email address", "error");
                 return;
@@ -335,21 +304,18 @@ document.addEventListener("DOMContentLoaded", function() {
             
             showNotification("Thank you for subscribing! We'll keep you updated with our latest tech tips.", "success");
             emailInput.value = "";
-            // console.log("Footer newsletter subscription:", email);
+            
         });
     }
 
-    // Read More button functionality
-    // Only intercept links that don't have proper destinations
-    const readMoreButtons = document.querySelectorAll(".read-more");
+const readMoreButtons = document.querySelectorAll(".read-more");
     readMoreButtons.forEach(button => {
-        // Check if the link is just a placeholder "#" link
+        
         if (button.getAttribute("href") === "#") {
             button.addEventListener("click", function(e) {
                 e.preventDefault();
-                
-                // Get the post title
-                let postTitle;
+
+let postTitle;
                 if (this.closest(".featured-post")) {
                     postTitle = this.closest(".featured-post").querySelector("h2").textContent;
                 } else {
@@ -359,39 +325,34 @@ document.addEventListener("DOMContentLoaded", function() {
                 showNotification(`Full article for "${postTitle}" coming soon! This would normally link to the full blog post.`, "info");
             });
         }
-        // Let links with real destinations (like blog-post-maintenance-tips.html) work normally
+        
     });
 
-    // Pagination functionality (for demonstration)
-    const paginationLinks = document.querySelectorAll(".blog-pagination a");
+const paginationLinks = document.querySelectorAll(".blog-pagination a");
     paginationLinks.forEach(link => {
         link.addEventListener("click", function(e) {
-            // Don't prevent default for actual page links
+            
             const href = this.getAttribute("href");
             if (href && !href.includes("#")) {
-                // Let the page navigate normally
+                
                 return;
             }
             
             e.preventDefault();
-            
-            // Remove active class from all pagination links
-            paginationLinks.forEach(item => {
+
+paginationLinks.forEach(item => {
                 item.classList.remove("active");
             });
-            
-            // Add active class to clicked link
-            if (!this.classList.contains("next-page")) {
+
+if (!this.classList.contains("next-page")) {
                 this.classList.add("active");
             }
-            
-            // In a real implementation, this would load the next page of posts
-            showNotification("In a complete implementation, this would navigate to the next page of blog posts.", "info");
+
+showNotification("In a complete implementation, this would navigate to the next page of blog posts.", "info");
         });
     });
 
-    // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
@@ -403,8 +364,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    // Reading progress indicator
-    const progressBar = document.querySelector(".reading-progress");
+const progressBar = document.querySelector(".reading-progress");
     if (progressBar) {
         window.addEventListener("scroll", function() {
             const article = document.querySelector(".blog-single .post-content");
@@ -423,8 +383,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Back to top button
-    const backToTopBtn = document.querySelector(".back-to-top");
+const backToTopBtn = document.querySelector(".back-to-top");
     if (backToTopBtn) {
         window.addEventListener("scroll", function() {
             if (window.pageYOffset > 300) {
@@ -442,8 +401,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Add sticky behavior for category navigation
-    window.addEventListener("scroll", function() {
+window.addEventListener("scroll", function() {
         const categories = document.querySelector(".blog-categories");
         const header = document.querySelector(".header");
         
@@ -456,8 +414,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Copy article URL functionality
-    const copyUrlBtn = document.querySelector(".copy-url");
+const copyUrlBtn = document.querySelector(".copy-url");
     if (copyUrlBtn) {
         copyUrlBtn.addEventListener("click", function() {
             navigator.clipboard.writeText(window.location.href).then(function() {
@@ -466,8 +423,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Notification system
-    function showNotification(message, type = "info") {
+function showNotification(message, type = "info") {
         const notification = document.createElement("div");
         notification.className = `notification ${type}`;
         notification.innerHTML = `
@@ -479,19 +435,16 @@ document.addEventListener("DOMContentLoaded", function() {
         `;
         
         document.body.appendChild(notification);
-        
-        // Show notification
-        setTimeout(() => {
+
+setTimeout(() => {
             notification.classList.add("show");
         }, 100);
-        
-        // Auto hide after 5 seconds
-        setTimeout(() => {
+
+setTimeout(() => {
             hideNotification(notification);
         }, 5000);
-        
-        // Close button functionality
-        notification.querySelector(".close-notification").addEventListener("click", function() {
+
+notification.querySelector(".close-notification").addEventListener("click", function() {
             hideNotification(notification);
         });
     }
@@ -505,32 +458,29 @@ document.addEventListener("DOMContentLoaded", function() {
         }, 300);
     }
 
-    // Handle browser back button and URL hash changes
-    window.addEventListener('hashchange', function() {
+window.addEventListener('hashchange', function() {
         const hash = window.location.hash;
         if (hash) {
             const targetCategoryLink = document.querySelector(`.blog-category-list li a[href="${hash}"]`);
             if (targetCategoryLink) {
-                // Simulate click on the category link
+                
                 targetCategoryLink.click();
             }
         }
     });
 
-    // Check if there's a hash in URL on page load
-    window.addEventListener('load', function() {
+window.addEventListener('load', function() {
         const hash = window.location.hash;
         if (hash) {
             const targetCategoryLink = document.querySelector(`.blog-category-list li a[href="${hash}"]`);
             if (targetCategoryLink) {
-                // Simulate click on the category link
+                
                 targetCategoryLink.click();
             }
         }
     });
 
-    // Handle window resize to fix navigation visibility issues
-    window.addEventListener('resize', function() {
+window.addEventListener('resize', function() {
         const categoryList = document.querySelector(".blog-category-list");
         if (window.innerWidth > 768 && categoryList) {
             categoryList.classList.add("active");

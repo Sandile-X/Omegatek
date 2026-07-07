@@ -1,17 +1,12 @@
-/**
- * Enhanced UI Interactions - Phase 1
- * Sophisticated typography and UI enhancements
- * Backdrop blur effects and modern interactions
- */
+﻿
 
 document.addEventListener('DOMContentLoaded', function() {
-    
-    // Add backdrop blur to page when mobile menu is open
-    const menuBtn = document.querySelector('#menu-btn');
+
+const menuBtn = document.querySelector('#menu-btn');
     const navbarLinks = document.querySelector('.header .navbar .links');
     
     if (menuBtn && navbarLinks) {
-        // Create backdrop element
+        
         const backdrop = document.createElement('div');
         backdrop.className = 'mobile-menu-backdrop';
         backdrop.style.cssText = `
@@ -29,9 +24,8 @@ document.addEventListener('DOMContentLoaded', function() {
             transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         `;
         document.body.appendChild(backdrop);
-        
-        // Toggle backdrop when menu opens/closes
-        const observer = new MutationObserver(function(mutations) {
+
+const observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 if (mutation.attributeName === 'class') {
                     if (navbarLinks.classList.contains('active')) {
@@ -48,16 +42,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         observer.observe(navbarLinks, { attributes: true });
-        
-        // Close menu when clicking backdrop
-        backdrop.addEventListener('click', function() {
+
+backdrop.addEventListener('click', function() {
             menuBtn.classList.remove('fa-times');
             navbarLinks.classList.remove('active');
         });
     }
-    
-    // Enhanced button hover effects
-    const buttons = document.querySelectorAll('.btn, button[type="submit"]');
+
+const buttons = document.querySelectorAll('.btn, button[type="submit"]');
     buttons.forEach(button => {
         button.addEventListener('mouseenter', function(e) {
             const ripple = document.createElement('span');
@@ -84,9 +76,8 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => ripple.remove(), 600);
         });
     });
-    
-    // Add CSS for ripple animation
-    if (!document.querySelector('#ripple-animation-styles')) {
+
+if (!document.querySelector('#ripple-animation-styles')) {
         const style = document.createElement('style');
         style.id = 'ripple-animation-styles';
         style.textContent = `
@@ -103,11 +94,10 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         document.head.appendChild(style);
     }
-    
-    // Enhanced form input animations
-    const inputs = document.querySelectorAll('input, textarea, select');
+
+const inputs = document.querySelectorAll('input, textarea, select');
     inputs.forEach(input => {
-        // Add floating label effect
+        
         const parent = input.parentElement;
         
         input.addEventListener('focus', function() {
@@ -119,15 +109,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.parentElement.classList.remove('input-focused');
             }
         });
-        
-        // Check if already has value on load
-        if (input.value) {
+
+if (input.value) {
             input.parentElement.classList.add('input-focused');
         }
     });
-    
-    // Smooth scroll with offset for fixed header
-    const smoothScrollLinks = document.querySelectorAll('a[href^="#"]');
+
+const smoothScrollLinks = document.querySelectorAll('a[href^="#"]');
     smoothScrollLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             const href = this.getAttribute('href');
@@ -142,9 +130,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         top: targetPosition,
                         behavior: 'smooth'
                     });
-                    
-                    // Close mobile menu if open
-                    if (navbarLinks && navbarLinks.classList.contains('active')) {
+
+if (navbarLinks && navbarLinks.classList.contains('active')) {
                         menuBtn.classList.remove('fa-times');
                         navbarLinks.classList.remove('active');
                     }
@@ -152,9 +139,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    
-    // Add loading skeleton for images
-    const images = document.querySelectorAll('img[data-src]');
+
+const images = document.querySelectorAll('img[data-src]');
     if ('IntersectionObserver' in window) {
         const imageObserver = new IntersectionObserver((entries, observer) => {
             entries.forEach(entry => {
@@ -170,9 +156,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         images.forEach(img => imageObserver.observe(img));
     }
-    
-    // Enhanced card hover parallax effect
-    const cards = document.querySelectorAll('.services .box-container .box, .glass-card');
+
+const cards = document.querySelectorAll('.services .box-container .box, .glass-card');
     cards.forEach(card => {
         card.addEventListener('mousemove', function(e) {
             const rect = this.getBoundingClientRect();
@@ -192,9 +177,8 @@ document.addEventListener('DOMContentLoaded', function() {
             this.style.transform = '';
         });
     });
-    
-    // Add scroll progress indicator
-    const progressBar = document.createElement('div');
+
+const progressBar = document.createElement('div');
     progressBar.style.cssText = `
         position: fixed;
         top: 0;
@@ -213,9 +197,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const scrolled = (window.scrollY / windowHeight) * 100;
         progressBar.style.width = scrolled + '%';
     });
-    
-    // Enhance navbar on scroll
-    let lastScroll = 0;
+
+let lastScroll = 0;
     window.addEventListener('scroll', function() {
         const navbar = document.querySelector('.header .navbar');
         const currentScroll = window.pageYOffset;
@@ -228,9 +211,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         lastScroll = currentScroll;
     });
-    
-    // Add performance optimization: reduce animations on low-end devices
-    if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) {
+
+if (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4) {
         document.body.classList.add('reduce-animations');
         const style = document.createElement('style');
         style.textContent = `
@@ -242,11 +224,9 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         document.head.appendChild(style);
     }
-    
-    // console.log('✨ Phase 1: Enhanced UI Loaded - Sophisticated Typography & Interactions Active');
+
 });
 
-// Utility function for smooth animations
 function animateValue(obj, start, end, duration) {
     let startTimestamp = null;
     const step = (timestamp) => {
@@ -260,7 +240,6 @@ function animateValue(obj, start, end, duration) {
     window.requestAnimationFrame(step);
 }
 
-// Export for use in other scripts
 window.omegatekUI = {
     animateValue: animateValue
 };

@@ -24,7 +24,15 @@ RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
 RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
 
 # ---------------------------------------
-# GZIP Compression
+# Brotli Compression (preferred over gzip)
+# ---------------------------------------
+<IfModule mod_brotli.c>
+    AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css text/javascript application/javascript application/json application/rss+xml application/xhtml+xml image/svg+xml font/ttf font/otf font/woff font/woff2
+    BrotliCompressionQuality 6
+</IfModule>
+
+# ---------------------------------------
+# GZIP Compression (fallback)
 # ---------------------------------------
 <IfModule mod_deflate.c>
     # Compress HTML, CSS, JavaScript, Text, XML and fonts
@@ -143,7 +151,7 @@ RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
     
     # Content Security Policy
-    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://cdn.chatway.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://unpkg.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: blob: https:; media-src 'self' blob:; connect-src 'self' https://*.supabase.co https://openrouter.ai; frame-src https://www.google.com https://www.youtube.com https://player.vimeo.com; frame-ancestors 'self'; object-src 'none'; base-uri 'self';"
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://cdn.chatway.app https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://unpkg.com https://cdn.chatway.app; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: blob: https:; media-src 'self' blob:; connect-src 'self' https://*.supabase.co https://openrouter.ai https://www.cloudflare.com https://*.chatway.app https://firestore.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://identitytoolkit.googleapis.com; frame-src https://www.google.com https://www.youtube.com https://player.vimeo.com; frame-ancestors 'self'; object-src 'none'; base-uri 'self';"
     
     # Permissions Policy
     Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=(self)"
@@ -230,13 +238,7 @@ php_value post_max_size 10M
     RewriteEngine On
     RewriteBase /
 
-    # 1. Redirect /page.html → /page
-    #    Uses %{THE_REQUEST} (raw HTTP request line) to prevent redirect loops.
-    #    Change R=302 to R=301 only after testing — browsers cache 301 permanently.
-    RewriteCond %{THE_REQUEST} \s/(.+?)\.html[\s?] [NC]
-    RewriteRule ^ /%1 [R=302,L]
-
-    # 2. Internal rewrite /page → page.html
+    # Internal rewrite /page → page.html
     #    Checks: file doesn't already exist, directory with same name doesn't exist,
     #    and page.html actually exists — prevents conflicts (e.g. blog/ directory vs blog.html).
     RewriteCond %{REQUEST_FILENAME} !-f
@@ -306,49 +308,77 @@ Options +FollowSymLinks
 # END OF CONFIGURATION
 # ======================================
 
-# ---------------------------------------
-# Security Hardening
-# ---------------------------------------
+# ======================================
+# SECURITY HARDENING (expanded)
+# ======================================
 
-# Deny access to .env and other sensitive config files
-<Files ".env">
-    Order allow,deny
-    Deny from all
-</Files>
-
-<Files "*.sql">
-    Order allow,deny
-    Deny from all
-</Files>
-
-<Files "BACKEND-SUMMARY.txt">
-    Order allow,deny
-    Deny from all
-</Files>
-
-# Block ALL JSON data files from direct web access
-<FilesMatch "\.json$">
-    Order allow,deny
-    Deny from all
+# ── Deny all hidden files (.env, .git, etc.) ───────────────────────────────
+<FilesMatch "^\.">
+    Require all denied
 </FilesMatch>
 
-# Block access to config/ directory
+# ── Block sensitive file extensions ────────────────────────────────────────
+<FilesMatch "\.(env|sql|log|sh|bak|orig|dist|conf|ini|psd|fla|sw[op])$">
+    Require all denied
+</FilesMatch>
+
+# ── Block developer/debug files ────────────────────────────────────────────
+<FilesMatch "(BACKEND-SUMMARY|README|CHANGELOG|composer\.(json|lock)|package(-lock)?\.json|phpunit\.xml|\.editorconfig|\.gitignore|Makefile)$">
+    Require all denied
+</FilesMatch>
+
+# ── Block JSON data files from direct web access ───────────────────────────
+<FilesMatch "^data/.*\.json$">
+    Require all denied
+</FilesMatch>
+
+# ── Block rate-limit data directory ────────────────────────────────────────
 <IfModule mod_rewrite.c>
-    RewriteRule ^config/.*$ - [F,L]
-    RewriteRule ^logs/.*$ - [F,L]
-    RewriteRule ^admin/order_data/.*$ - [F,L]
-    RewriteRule ^admin/test-.*\.php$ - [F,L]
-    RewriteRule ^admin/setup\.html$ - [F,L]
-    RewriteRule ^admin/setup-verify\.php$ - [F,L]
-    RewriteRule ^config/database\.php$ - [F,L]
-    RewriteRule ^config/secure-config\.php$ - [F,L]
+    RewriteRule ^admin/rate_limit_data/.*$ - [F,L]
+    RewriteRule ^config/.*$                - [F,L]
+    RewriteRule ^logs/.*$                  - [F,L]
+    RewriteRule ^admin/order_data/.*$      - [F,L]
+    RewriteRule ^admin/newsletter_data/.*$ - [F,L]
+    # Block test, setup, and migration scripts from public access
+    RewriteRule ^admin/test-.*\.php$       - [F,L]
+    RewriteRule ^admin/setup.*\.(html|php)$       - [F,L]
+    RewriteRule ^admin/setup-verify\.php$  - [F,L]
+    RewriteRule ^admin/migrate-.*\.(html|php)$ - [F,L]
 </IfModule>
 
-# Security Headers
+# ── Prevent PHP execution in upload directories ─────────────────────────────
+<IfModule mod_rewrite.c>
+    RewriteRule ^(uploads|images|images2)/.*\.(php|phtml|php3|php4|php5|pl|py|jsp|asp|htm|shtml|sh|cgi)$ - [F,L]
+</IfModule>
+
+# ── Block bad bots and scanners ─────────────────────────────────────────────
+<IfModule mod_rewrite.c>
+    RewriteCond %{HTTP_USER_AGENT} (sqlmap|nikto|nmap|masscan|ZmEu|libwww|lwp-trivial|curl|python-requests|Go-http-client|java|aiohttp) [NC]
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# ── Block requests with no user-agent (automated scanners) ─────────────────
+<IfModule mod_rewrite.c>
+    RewriteCond %{HTTP_USER_AGENT} ^-?$
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# ── Block common exploit probing paths ─────────────────────────────────────
+<IfModule mod_rewrite.c>
+    RewriteRule ^(wp-admin|wp-login|xmlrpc|phpmyadmin|pma|myadmin|mysql|adminer|cpanel).*$ - [F,L]
+</IfModule>
+
+# ── Prevent directory traversal in query strings ────────────────────────────
+<IfModule mod_rewrite.c>
+    RewriteCond %{QUERY_STRING} \.\.[/\\] [NC]
+    RewriteRule .* - [F,L]
+</IfModule>
+
+# Security Headers (duplicate-safe — overrides earlier block)
 <IfModule mod_headers.c>
-    Header set X-Content-Type-Options "nosniff"
-    Header set X-Frame-Options "SAMEORIGIN"
-    Header set X-XSS-Protection "1; mode=block"
-    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 

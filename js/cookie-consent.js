@@ -1,16 +1,12 @@
-/**
- * Cookie Consent Banner - GDPR/POPIA Compliant
- * Phase 2: Legal & Compliance
- */
+﻿
 
 (function() {
     'use strict';
     
     const COOKIE_NAME = 'omegatek_cookie_consent';
     const COOKIE_EXPIRY_DAYS = 365;
-    
-    // Cookie categories
-    const cookieCategories = {
+
+const cookieCategories = {
         necessary: {
             required: true,
             name: 'Necessary',
@@ -30,23 +26,20 @@
             cookies: ['_fbp', 'fr']
         }
     };
-    
-    // Check if consent already given
-    function getCookieConsent() {
+
+function getCookieConsent() {
         const consent = getCookie(COOKIE_NAME);
         return consent ? JSON.parse(consent) : null;
     }
-    
-    // Set cookie helper
-    function setCookie(name, value, days) {
+
+function setCookie(name, value, days) {
         const date = new Date();
         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
         const expires = 'expires=' + date.toUTCString();
         document.cookie = name + '=' + value + ';' + expires + ';path=/;SameSite=Lax';
     }
-    
-    // Get cookie helper
-    function getCookie(name) {
+
+function getCookie(name) {
         const nameEQ = name + '=';
         const ca = document.cookie.split(';');
         for (let i = 0; i < ca.length; i++) {
@@ -56,50 +49,43 @@
         }
         return null;
     }
-    
-    // Delete cookie helper
-    function deleteCookie(name) {
+
+function deleteCookie(name) {
         document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/';
     }
-    
-    // Save consent
-    function saveConsent(preferences) {
+
+function saveConsent(preferences) {
         const consent = {
-            necessary: true, // Always true
+            necessary: true, 
             analytics: preferences.analytics || false,
             marketing: preferences.marketing || false,
             timestamp: new Date().toISOString()
         };
         
         setCookie(COOKIE_NAME, JSON.stringify(consent), COOKIE_EXPIRY_DAYS);
-        
-        // Apply consent settings
-        applyConsent(consent);
+
+applyConsent(consent);
         
         return consent;
     }
-    
-    // Apply consent settings
-    function applyConsent(consent) {
-        // If analytics not consented, remove analytics cookies
+
+function applyConsent(consent) {
+        
         if (!consent.analytics) {
             deleteCookie('_ga');
             deleteCookie('_gid');
             deleteCookie('_gat');
         }
-        
-        // If marketing not consented, remove marketing cookies
-        if (!consent.marketing) {
+
+if (!consent.marketing) {
             deleteCookie('_fbp');
             deleteCookie('fr');
         }
-        
-        // Dispatch event for other scripts to listen to
-        window.dispatchEvent(new CustomEvent('cookieConsentUpdated', { detail: consent }));
+
+window.dispatchEvent(new CustomEvent('cookieConsentUpdated', { detail: consent }));
     }
-    
-    // Create banner HTML
-    function createBanner() {
+
+function createBanner() {
         const banner = document.createElement('div');
         banner.id = 'cookie-consent-banner';
         banner.className = 'cookie-consent-banner';
@@ -129,18 +115,15 @@
         `;
         
         document.body.appendChild(banner);
-        
-        // Add event listeners
-        document.getElementById('cookie-accept-btn').addEventListener('click', acceptAll);
+
+document.getElementById('cookie-accept-btn').addEventListener('click', acceptAll);
         document.getElementById('cookie-reject-btn').addEventListener('click', rejectAll);
         document.getElementById('cookie-settings-btn').addEventListener('click', showSettings);
-        
-        // Animate in
-        setTimeout(() => banner.classList.add('show'), 100);
+
+setTimeout(() => banner.classList.add('show'), 100);
     }
-    
-    // Create settings modal
-    function createSettingsModal() {
+
+function createSettingsModal() {
         const modal = document.createElement('div');
         modal.id = 'cookie-settings-modal';
         modal.className = 'cookie-settings-modal';
@@ -207,56 +190,48 @@
         `;
         
         document.body.appendChild(modal);
-        
-        // Event listeners
-        document.getElementById('cookie-modal-close').addEventListener('click', closeModal);
+
+document.getElementById('cookie-modal-close').addEventListener('click', closeModal);
         document.querySelector('.cookie-modal-backdrop').addEventListener('click', closeModal);
         document.getElementById('cookie-save-settings').addEventListener('click', saveSettings);
         document.getElementById('cookie-accept-all-modal').addEventListener('click', acceptAllFromModal);
-        
-        // Show modal
-        setTimeout(() => modal.classList.add('show'), 100);
+
+setTimeout(() => modal.classList.add('show'), 100);
     }
-    
-    // Accept all cookies
-    function acceptAll() {
+
+function acceptAll() {
         saveConsent({ analytics: true, marketing: true });
         hideBanner();
     }
-    
-    // Reject all non-essential cookies
-    function rejectAll() {
+
+function rejectAll() {
         saveConsent({ analytics: false, marketing: false });
         hideBanner();
     }
-    
-    // Show settings modal
-    function showSettings() {
+
+function showSettings() {
         const existingModal = document.getElementById('cookie-settings-modal');
         if (existingModal) {
             existingModal.remove();
         }
         createSettingsModal();
-        
-        // Load current preferences
-        const consent = getCookieConsent();
+
+const consent = getCookieConsent();
         if (consent) {
             document.getElementById('analytics-toggle').checked = consent.analytics;
             document.getElementById('marketing-toggle').checked = consent.marketing;
         }
     }
-    
-    // Close settings modal
-    function closeModal() {
+
+function closeModal() {
         const modal = document.getElementById('cookie-settings-modal');
         if (modal) {
             modal.classList.remove('show');
             setTimeout(() => modal.remove(), 300);
         }
     }
-    
-    // Save custom settings
-    function saveSettings() {
+
+function saveSettings() {
         const preferences = {
             analytics: document.getElementById('analytics-toggle').checked,
             marketing: document.getElementById('marketing-toggle').checked
@@ -266,39 +241,35 @@
         closeModal();
         hideBanner();
     }
-    
-    // Accept all from modal
-    function acceptAllFromModal() {
+
+function acceptAllFromModal() {
         saveConsent({ analytics: true, marketing: true });
         closeModal();
         hideBanner();
     }
-    
-    // Hide banner
-    function hideBanner() {
+
+function hideBanner() {
         const banner = document.getElementById('cookie-consent-banner');
         if (banner) {
             banner.classList.remove('show');
             setTimeout(() => banner.remove(), 300);
         }
     }
-    
-    // Initialize
-    function init() {
-        // Check if consent already given
+
+function init() {
+        
         const consent = getCookieConsent();
         
         if (!consent) {
-            // Show banner if no consent
+            
             createBanner();
         } else {
-            // Apply existing consent
+            
             applyConsent(consent);
         }
     }
-    
-    // Public API
-    window.OmegatekCookieConsent = {
+
+window.OmegatekCookieConsent = {
         getConsent: getCookieConsent,
         showSettings: showSettings,
         resetConsent: function() {
@@ -306,12 +277,19 @@
             location.reload();
         }
     };
-    
-    // Initialize when DOM is ready
-    if (document.readyState === 'loading') {
+
+if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
         init();
     }
+
+    /* ── Load welcome popup on every page ──────────────────────────── */
+    (function () {
+        var s = document.createElement('script');
+        s.src = '/js/welcome-popup.js';
+        s.defer = true;
+        document.head.appendChild(s);
+    })();
     
 })();

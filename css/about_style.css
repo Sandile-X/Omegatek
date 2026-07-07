@@ -1,13 +1,11 @@
-/* About page specific styles */
+﻿
 
-/* General Styles */
 body {
     margin: 0;
     font-family: Arial, sans-serif;
     line-height: 1.6;
 }
 
-/* Hero Section Styles */
 .hero-section {
     position: relative;
     height: 80vh;
@@ -45,8 +43,6 @@ body {
     font-size: 1.2rem;
 }
 
-
-/* About Section */
 .about-section {
   background-color: #f9f9f9;
   padding: 50px 20px;
@@ -117,7 +113,6 @@ body {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Tiles Section */
 .about-section .tiles {
   margin-top: 50px;
   display: grid;
@@ -172,7 +167,6 @@ body {
   transform: translateX(20%);
 }
 
-/* About Page Styles */
 .about-page {
     padding: 6rem 5%;
     background: #fff;
@@ -182,12 +176,10 @@ body {
     font-family: 'Montserrat', sans-serif;
 }
 
-/* Ensure consistent section styling */
 .about-page .about-container {
     font-family: 'Montserrat', sans-serif;
 }
 
-/* Remove any unwanted shadow effects */
 .about-content h1,
 .about-content p,
 .about-title,
@@ -278,7 +270,6 @@ body {
     font-weight: 400;
 }
 
-/* Timeline Styles */
 .timeline {
     margin: 5rem 0;
 }
@@ -387,7 +378,6 @@ body {
     line-height: 1.6;
 }
 
-/* About Sandile Section */
 .about-sandile-section {
     margin: 5rem 0;
     padding: 4rem 0;
@@ -442,7 +432,6 @@ body {
     gap: 3rem;
 }
 
-/* Bio Intro Section */
 .bio-intro {
     display: flex;
     align-items: center;
@@ -476,7 +465,6 @@ body {
     margin: 0;
 }
 
-/* Bio Intro Text Section */
 .bio-intro-text {
     padding: 2rem;
     background: rgba(255, 255, 255, 0.9);
@@ -492,7 +480,6 @@ body {
     margin: 0;
 }
 
-/* Bio Highlight Section */
 .bio-highlight {
     display: flex;
     align-items: flex-start;
@@ -537,7 +524,6 @@ body {
     margin-bottom: 1.5rem;
 }
 
-/* Quality Grid */
 .bio-qualities {
     margin: 3rem 0;
 }
@@ -581,7 +567,6 @@ body {
     line-height: 1.6;
 }
 
-/* Bio Vision Section */
 .bio-vision {
     display: flex;
     align-items: flex-start;
@@ -628,7 +613,6 @@ body {
     margin-bottom: 1.5rem;
 }
 
-/* Personal Touch Section */
 .personal-touch {
     margin: 3rem 0;
     text-align: center;
@@ -667,10 +651,9 @@ body {
     opacity: 0.9;
 }
 
-/* Responsive Design for About Sandile Section */
 @media (max-width: 768px) {
     .about-sandile-section {
-        /* Force scroll behavior on mobile for better performance */
+        
         background-attachment: scroll !important;
     }
     
@@ -748,7 +731,6 @@ body {
     }
 }
 
-/* CTA Section */
 .cta-section {
     text-align: center;
     background-color: #f5f5f5;
@@ -774,7 +756,6 @@ body {
     padding: 1.2rem 3.5rem;
 }
 
-/* About Banner Styles */
 .about-banner {
     position: relative;
     height: 350px;
@@ -882,20 +863,17 @@ body {
     to { opacity: 1; }
 }
 
-/* Fix for about-content within about-page section to have black text */
 .about-page .about-content h1,
 .about-page .about-content h2,
 .about-page .about-content p {
-    color: #333; /* Dark gray/black text */
+    color: #333; 
 }
 
-/* Additional specificity for the about-banner content to ensure it stays white */
 .about-banner .about-content h1,
 .about-banner .about-content p {
-    color: #fff; /* White text for the hero banner */
+    color: #fff; 
 }
 
-/* Responsive Design */
 @media (max-width: 991px) {
     .timeline-container::after {
         left: 3.1rem;
@@ -1083,4 +1061,162 @@ body {
   cursor: pointer;
   color: #334;
   display: none;
+}
+
+/* ============================================================
+   DARK MODE — overrides all hardcoded light colours above
+   ============================================================ */
+[data-theme="dark"] body {
+  background-color: #0a0a0f;
+  color: #f5f5f7;
+}
+
+/* Navbar */
+[data-theme="dark"] .header .navbar {
+  background: rgba(18, 18, 22, 0.92);
+  border-bottom-color: rgba(255, 255, 255, 0.07);
+}
+[data-theme="dark"] .header .navbar .links a {
+  color: #c7c7cc;
+}
+[data-theme="dark"] .header .navbar .links a:hover {
+  color: #b30ce6;
+  text-decoration: none;
+}
+[data-theme="dark"] .header #menu-btn {
+  color: #f5f5f7;
+}
+[data-theme="dark"] .header .navbar .links {
+  background: rgba(18, 18, 22, 0.97);
+  border-color: rgba(255, 255, 255, 0.07);
+}
+
+/* Main about-page wrapper */
+[data-theme="dark"] .about-page {
+  background: #0a0a0f;
+}
+
+/* About section (old hero block) */
+[data-theme="dark"] .about-section {
+  background-color: #0a0a0f;
+}
+[data-theme="dark"] .about-section .text h2 {
+  color: #f5f5f7;
+}
+[data-theme="dark"] .about-section .text p {
+  color: #c7c7cc;
+}
+[data-theme="dark"] .about-section .tiles .tile {
+  background: rgba(28, 28, 35, 0.85);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+[data-theme="dark"] .about-section .tiles .tile h3 {
+  color: #f5f5f7;
+}
+[data-theme="dark"] .about-section .tiles .tile .tile-text {
+  color: #8e8e93;
+}
+[data-theme="dark"] .about-section .tiles .tile:hover {
+  background-color: rgba(40, 28, 55, 0.9);
+}
+
+/* Page headings */
+[data-theme="dark"] .about-title {
+  color: #f5f5f7;
+}
+
+/* About text block */
+[data-theme="dark"] .about-text h2 {
+  color: #f5f5f7;
+}
+[data-theme="dark"] .about-text p {
+  color: #c7c7cc;
+}
+
+/* Timeline */
+[data-theme="dark"] .timeline h2 {
+  color: #f5f5f7;
+}
+[data-theme="dark"] .timeline-dot {
+  background-color: #0a0a0f;
+}
+[data-theme="dark"] .timeline-content {
+  background-color: rgba(28, 28, 35, 0.9);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+[data-theme="dark"] .timeline-content h3 {
+  color: #f5f5f7;
+}
+[data-theme="dark"] .timeline-content p {
+  color: #c7c7cc;
+}
+
+/* Sandile bio section */
+[data-theme="dark"] .about-sandile-section::before {
+  background: linear-gradient(135deg, rgba(10, 10, 15, 0.82) 0%, rgba(26, 8, 38, 0.88) 100%);
+}
+[data-theme="dark"] .about-sandile-section h2 {
+  color: #f5f5f7;
+}
+[data-theme="dark"] .bio-intro {
+  background: rgba(28, 18, 40, 0.88);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+}
+[data-theme="dark"] .intro-text h3 {
+  color: #f5f5f7;
+}
+[data-theme="dark"] .bio-intro-text {
+  background: rgba(28, 18, 40, 0.88);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+}
+[data-theme="dark"] .bio-intro-text p {
+  color: #c7c7cc;
+}
+[data-theme="dark"] .bio-highlight {
+  background: rgba(28, 18, 40, 0.88);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+}
+[data-theme="dark"] .highlight-content h4 {
+  color: #f5f5f7;
+}
+[data-theme="dark"] .highlight-content p {
+  color: #c7c7cc;
+}
+[data-theme="dark"] .quality-item {
+  background: rgba(28, 18, 40, 0.88);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+}
+[data-theme="dark"] .quality-item h5 {
+  color: #f5f5f7;
+}
+[data-theme="dark"] .quality-item p {
+  color: #c7c7cc;
+}
+[data-theme="dark"] .bio-vision {
+  background: rgba(28, 18, 40, 0.88);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+}
+[data-theme="dark"] .vision-content h4 {
+  color: #f5f5f7;
+}
+[data-theme="dark"] .vision-content p {
+  color: #c7c7cc;
+}
+
+/* CTA section */
+[data-theme="dark"] .cta-section {
+  background-color: rgba(20, 12, 30, 0.9);
+}
+[data-theme="dark"] .cta-section h2 {
+  color: #f5f5f7;
+}
+[data-theme="dark"] .cta-section p {
+  color: #c7c7cc;
+}
+
+/* Blanket override for any about-page content with hardcoded #333 */
+[data-theme="dark"] .about-page .about-content h1,
+[data-theme="dark"] .about-page .about-content h2,
+[data-theme="dark"] .about-page .about-content p {
+  color: inherit;
 }

@@ -1,9 +1,5 @@
-/**
- * Cookie Consent Banner Styles
- * Phase 2: Legal & Compliance
- */
+﻿
 
-/* Cookie Consent Banner */
 .cookie-consent-banner {
     position: fixed;
     bottom: -100%;
@@ -143,7 +139,6 @@
     color: #fff;
 }
 
-/* Cookie Settings Modal */
 .cookie-settings-modal {
     position: fixed;
     top: 0;
@@ -293,7 +288,6 @@
     margin: 0;
 }
 
-/* Toggle Switch */
 .cookie-toggle {
     position: relative;
     display: inline-block;
@@ -355,7 +349,6 @@
     flex-wrap: wrap;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
     .cookie-consent-container {
         flex-direction: column;
@@ -420,7 +413,6 @@
     }
 }
 
-/* Print media - hide cookie banner */
 @media print {
     .cookie-consent-banner,
     .cookie-settings-modal {

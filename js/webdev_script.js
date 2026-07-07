@@ -1,100 +1,84 @@
-// Web Development Page JavaScript
+﻿
 document.addEventListener("DOMContentLoaded", function() {
-    // Device Showcase Slider
+    
     initSlider();
 
-    // Portfolio Filtering
-    initPortfolioFilter();
+initPortfolioFilter();
 
-    // Quote Form Submission
-    initQuoteForm();
+initQuoteForm();
 });
 
-// Initialize device showcase slider
 function initSlider() {
     const slides = document.querySelectorAll('.showcase-slider .slide');
     const dots = document.querySelectorAll('.slider-navigation .nav-dot');
     let currentSlide = 0;
     let slideshowInterval;
 
-    // Function to show a specific slide
-    function showSlide(slideIndex) {
-        // Hide all slides
+function showSlide(slideIndex) {
+        
         slides.forEach(slide => {
             slide.classList.remove('active');
         });
-        
-        // Remove active class from all dots
-        dots.forEach(dot => {
+
+dots.forEach(dot => {
             dot.classList.remove('active');
         });
-        
-        // Show the current slide and activate its dot
-        slides[slideIndex].classList.add('active');
+
+slides[slideIndex].classList.add('active');
         dots[slideIndex].classList.add('active');
         currentSlide = slideIndex;
     }
-    
-    // Function to advance to the next slide
-    function nextSlide() {
+
+function nextSlide() {
         let nextIndex = currentSlide + 1;
         if (nextIndex >= slides.length) {
-            nextIndex = 0; // Loop back to the first slide
+            nextIndex = 0; 
         }
         showSlide(nextIndex);
     }
-    
-    // Set up automatic slideshow
-    function startSlideshow() {
-        slideshowInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+
+function startSlideshow() {
+        slideshowInterval = setInterval(nextSlide, 5000); 
     }
-    
-    // Stop the slideshow (for when user interacts with slider)
-    function stopSlideshow() {
+
+function stopSlideshow() {
         clearInterval(slideshowInterval);
     }
-    
-    // Add click events to navigation dots
-    dots.forEach((dot, index) => {
+
+dots.forEach((dot, index) => {
         dot.addEventListener('click', function() {
-            stopSlideshow();  // Stop automatic slideshow when user clicks
-            showSlide(index); // Show selected slide
-            startSlideshow(); // Restart slideshow
+            stopSlideshow();  
+            showSlide(index); 
+            startSlideshow(); 
         });
     });
-    
-    // Initialize with the first slide and start the slideshow
-    if (slides.length > 0) {
+
+if (slides.length > 0) {
         showSlide(0);
         startSlideshow();
     }
 }
 
-// Initialize portfolio filtering
 function initPortfolioFilter() {
     const filterBtns = document.querySelectorAll('.portfolio-filter .filter-btn');
     const portfolioItems = document.querySelectorAll('.portfolio-item');
     
     filterBtns.forEach(btn => {
         btn.addEventListener('click', function() {
-            // Remove active class from all buttons
+            
             filterBtns.forEach(btn => {
                 btn.classList.remove('active');
             });
-            
-            // Add active class to clicked button
-            this.classList.add('active');
-            
-            // Get the filter value
-            const filter = this.getAttribute('data-filter');
-            
-            // Show/hide portfolio items based on filter
-            portfolioItems.forEach(item => {
+
+this.classList.add('active');
+
+const filter = this.getAttribute('data-filter');
+
+portfolioItems.forEach(item => {
                 if (filter === 'all' || item.classList.contains(filter)) {
                     item.style.display = 'block';
-                    
-                    // Animate items coming into view
-                    setTimeout(() => {
+
+setTimeout(() => {
                         item.style.opacity = '1';
                         item.style.transform = 'scale(1)';
                     }, 50);
@@ -104,37 +88,33 @@ function initPortfolioFilter() {
                     
                     setTimeout(() => {
                         item.style.display = 'none';
-                    }, 300); // Match this with CSS transition duration
+                    }, 300); 
                 }
             });
         });
     });
 }
 
-// Initialize quote form
 function initQuoteForm() {
     const quoteForm = document.getElementById('quoteForm');
     
     if (quoteForm) {
         quoteForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
-            
-            // Get form inputs
-            const name = document.getElementById('name').value.trim();
+            event.preventDefault(); 
+
+const name = document.getElementById('name').value.trim();
             const email = document.getElementById('email').value.trim();
             const phone = document.getElementById('phone').value.trim();
             const projectType = document.getElementById('projectType').value;
             const budget = document.getElementById('budget').value;
             const projectDescription = document.getElementById('projectDescription').value.trim();
-            
-            // Validate form
-            if (!name || !email || !phone || !projectType || !budget || !projectDescription) {
+
+if (!name || !email || !phone || !projectType || !budget || !projectDescription) {
                 alert('Please fill in all required fields.');
                 return;
             }
-            
-            // Create WhatsApp message content
-            const whatsappNumber = "27736538207"; 
+
+const whatsappNumber = "27736538207"; 
             const whatsappMessage = 
                 `*Web Development Quote Request*\n` +
                 `Name: ${name}\n` +
@@ -143,42 +123,35 @@ function initQuoteForm() {
                 `Project Type: ${projectType}\n` +
                 `Budget Range: ${budget}\n` +
                 `Project Description: ${projectDescription}`;
-            
-            // Create WhatsApp URL
-            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
-            
-            // Open WhatsApp with pre-filled message
-            window.open(whatsappUrl, '_blank');
-            
-            // Show success message
-            alert('Quote request sent! We will contact you shortly to discuss your project in detail.');
-            
-            // Reset form
-            quoteForm.reset();
+
+const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+
+window.open(whatsappUrl, '_blank');
+
+alert('Quote request sent! We will contact you shortly to discuss your project in detail.');
+
+quoteForm.reset();
         });
     }
 }
 
-// Animate elements on scroll
 document.addEventListener('DOMContentLoaded', function() {
-    // Select elements to animate
-    const animatedElements = document.querySelectorAll('.service-card, .timeline-item, .tech-category, .portfolio-item');
     
-    // Create intersection observer
-    const observer = new IntersectionObserver((entries) => {
+    const animatedElements = document.querySelectorAll('.service-card, .timeline-item, .tech-category, .portfolio-item');
+
+const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                // Add animation class when element is visible
+                
                 entry.target.classList.add('animate');
-                observer.unobserve(entry.target); // Stop observing once animated
+                observer.unobserve(entry.target); 
             }
         });
     }, {
-        threshold: 0.1 // Trigger when at least 10% of the element is visible
+        threshold: 0.1 
     });
-    
-    // Observe each element
-    animatedElements.forEach(element => {
+
+animatedElements.forEach(element => {
         observer.observe(element);
     });
 });

@@ -1,6 +1,7 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
+<style id="fouc-guard">html{opacity:0!important}</style><script>(function(){var t=localStorage.getItem('omegatek-theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';if(t==='dark')document.documentElement.setAttribute('data-theme','dark');function show(){var s=document.getElementById("fouc-guard");if(s){document.documentElement.style.transition="opacity 0.25s ease";s.parentNode.removeChild(s);}}if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",function(){requestAnimationFrame(function(){requestAnimationFrame(show);});});}else{show();}})();</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Confirmation | Omegatek Solutions</title>
@@ -19,9 +20,10 @@
        }
     </script>
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="../images2/favicon.png">
-    
+    <link rel="stylesheet" href="../css/revival.css">
+
     <style>
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -100,7 +102,7 @@
 <body>
     
     <div class="container max-w-4xl mx-auto px-4 py-16">
-        <!-- Success Animation -->
+        
         <div class="bg-white rounded-3xl shadow-2xl p-12 text-center">
             <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
                 <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
@@ -150,7 +152,7 @@
                    class="bg-gradient-to-r from-primary to-purple-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-lg transition-all transform hover:scale-105">
                     <i class="fas fa-search-location mr-2"></i> Track My Order
                 </a>
-                <a href="products" 
+                <a href="products.html" 
                    class="bg-gray-200 text-gray-800 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-300 transition-all">
                     <i class="fas fa-shopping-bag mr-2"></i> Continue Shopping
                 </a>
@@ -174,20 +176,18 @@
     </div>
     
     <script>
-        // Get order ID from URL
+        
         const urlParams = new URLSearchParams(window.location.search);
         const orderId = urlParams.get('order');
         
         if (!orderId) {
             window.location.href = 'products.html';
         }
-        
-        // Display order number
-        document.getElementById('orderNumber').textContent = orderId;
+
+document.getElementById('orderNumber').textContent = orderId;
         document.getElementById('trackOrderBtn').href += orderId;
-        
-        // Fetch order details
-        async function loadOrderDetails() {
+
+async function loadOrderDetails() {
             try {
                 const response = await fetch(`admin/orders-api.php?action=get_order&orderId=${orderId}`);
                 const data = await response.json();
@@ -243,9 +243,8 @@
                 document.getElementById('orderDetails').innerHTML = '<p class="text-red-600">Error loading order details: ' + error.message + '</p>';
             }
         }
-        
-        // Create confetti effect
-        function createConfetti() {
+
+function createConfetti() {
             const colors = ['#b30ce6', '#9333ea', '#ec4899', '#f97316', '#eab308'];
             for (let i = 0; i < 50; i++) {
                 setTimeout(() => {
@@ -261,13 +260,12 @@
                 }, i * 30);
             }
         }
-        
-        // Initialize
-        loadOrderDetails();
+
+loadOrderDetails();
         createConfetti();
     </script>
-    
+
+<script src="../js/theme-toggle.js" defer></script>
 </body>
 </html>
-
 

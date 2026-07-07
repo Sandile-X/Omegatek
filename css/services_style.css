@@ -1,6 +1,5 @@
-/* Services Page Styles */
+﻿
 
-/* Banner Section */
 .services-banner {
     position: relative;
     height: 300px;
@@ -103,7 +102,6 @@
     to { opacity: 1; }
 }
 
-/* Detailed Services Section */
 .services-detail {
     padding: 5rem 10%;
 }
@@ -199,7 +197,6 @@
     margin: 4rem 0;
 }
 
-/* Repair Process Section */
 .repair-process {
     background: #f5f5f5;
     padding: 5rem 10%;
@@ -275,7 +272,6 @@
     line-height: 1.6;
 }
 
-/* CTA Section */
 .services-cta {
     padding: 6rem 10%;
     background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../images2/A4.jpg');
@@ -315,7 +311,6 @@
     border-color: #fff;
 }
 
-/* Responsive Design */
 @media (max-width: 991px) {
     .services-banner {
         height: 250px;

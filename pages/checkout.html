@@ -1,95 +1,21 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
+<style id="fouc-guard">html{opacity:0!important}</style><script>(function(){var t=localStorage.getItem('omegatek-theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';if(t==='dark')document.documentElement.setAttribute('data-theme','dark');function show(){var s=document.getElementById("fouc-guard");if(s){document.documentElement.style.transition="opacity 0.25s ease";s.parentNode.removeChild(s);}}if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",function(){requestAnimationFrame(function(){requestAnimationFrame(show);});});}else{show();}})();</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout | Omegatek Solutions</title>
     <meta name="description" content="Complete your purchase securely at Omegatek Solutions">
     <meta name="robots" content="noindex, nofollow">
+
+<script src="https://cdn.tailwindcss.com"></script>
+     <script src="../js/tailwind-checkout-config.js"></script>
     
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-       tailwind.config = {
-          theme: {
-             extend: {
-                colors: {
-                   primary: '#b30ce6',
-                   secondary: '#334'
-                }
-             }
-          }
-       }
-    </script>
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="../images2/favicon.png">
     <link rel="stylesheet" href="../css/style.css">
-    
-    <!-- Supabase SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        const SUPABASE_URL = 'https://pefjkiijqratjixskmdx.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZmpraWlqcXJhdGppeHNrbWR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MzkwNDQsImV4cCI6MjA4ODAxNTA0NH0.x6s38k7avvoszJATabbUcp2zv9kjUVYRjKPT7n-pQJA';
-        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    <link rel="stylesheet" href="../css/revival.css">
 
-        // Sync order to Supabase so the customer portal can show it
-        async function syncOrderToSupabase(orderData, phpOrderId) {
-            try {
-                // Get current logged-in user (if any)
-                const { data: { user } } = await supabaseClient.auth.getUser();
-
-                // Insert into orders table
-                const { data: order, error: orderError } = await supabaseClient
-                    .from('orders')
-                    .insert({
-                        order_number: phpOrderId,
-                        customer_id: user?.id || null,
-                        customer_email: orderData.customer.email,
-                        customer_name: orderData.customer.fullName,
-                        customer_phone: orderData.customer.phone,
-                        status: 'pending',
-                        payment_status: 'pending',
-                        payment_method: orderData.paymentMethod,
-                        subtotal: orderData.subtotal,
-                        shipping_amount: orderData.deliveryFee,
-                        total_amount: orderData.total,
-                        shipping_address: JSON.stringify(orderData.address),
-                        notes: orderData.notes || ''
-                    })
-                    .select()
-                    .single();
-
-                if (orderError) {
-                    console.warn('Supabase order sync warning:', orderError.message);
-                    return;
-                }
-
-                // Insert order items
-                if (order && orderData.items?.length) {
-                    const items = orderData.items.map(item => ({
-                        order_id: order.id,
-                        product_id: item.id?.toString() || null,
-                        product_name: item.name,
-                        product_image: item.image || null,
-                        quantity: item.quantity,
-                        unit_price: item.price
-                    }));
-
-                    const { error: itemsError } = await supabaseClient
-                        .from('order_items')
-                        .insert(items);
-
-                    if (itemsError) {
-                        console.warn('Supabase order items sync warning:', itemsError.message);
-                    }
-                }
-            } catch (err) {
-                console.warn('Supabase sync failed (non-critical):', err.message);
-            }
-        }
-    </script>
-    
     <style>
         * {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -98,6 +24,30 @@
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
+        }
+
+        [data-theme="dark"] body {
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a0826 100%);
+        }
+
+        [data-theme="dark"] .checkout-card {
+            background: rgba(28, 28, 35, 0.92);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        }
+
+        [data-theme="dark"] .order-summary {
+            background: rgba(38, 38, 48, 0.8);
+        }
+
+        [data-theme="dark"] .form-input {
+            background: rgba(28, 28, 35, 0.9);
+            border-color: rgba(255, 255, 255, 0.12);
+            color: #f5f5f7;
+        }
+
+        [data-theme="dark"] .payment-method {
+            border-color: rgba(255, 255, 255, 0.12);
+            color: #f5f5f7;
         }
         
         .checkout-container {
@@ -210,25 +160,22 @@
 <body>
     
     <div class="checkout-container">
-        <!-- Header -->
+        
         <div class="text-center mb-8">
-            <a href="products" class="inline-flex items-center gap-2 text-primary hover:text-purple-600 transition-colors mb-4">
+            <a href="products.html" class="inline-flex items-center gap-2 text-primary hover:text-purple-600 transition-colors mb-4">
                 <i class="fas fa-arrow-left"></i> Back to Products
             </a>
             <h1 class="text-5xl font-bold text-gray-800 mb-2">Checkout</h1>
             <p class="text-xl text-gray-600">Complete your order securely</p>
         </div>
-        
-        <!-- Checkout Grid -->
-        <div class="checkout-card">
+
+<div class="checkout-card">
             <div class="grid md:grid-cols-3 gap-8 p-8">
-                
-                <!-- Left Section: Customer Details Form (2/3 width) -->
-                <div class="md:col-span-2">
+
+<div class="md:col-span-2">
                     <form id="checkoutForm">
-                        
-                        <!-- Contact Information -->
-                        <div class="mb-8">
+
+<div class="mb-8">
                             <h2 class="text-3xl font-bold text-gray-800 mb-6">Contact Information</h2>
                             
                             <div class="grid md:grid-cols-2 gap-4">
@@ -250,9 +197,8 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Delivery Address -->
-                        <div class="mb-8">
+
+<div class="mb-8">
                             <h2 class="text-3xl font-bold text-gray-800 mb-6">Delivery Address</h2>
                             
                             <div class="mb-4">
@@ -291,9 +237,8 @@
                                 <input type="text" name="postalCode" class="form-input" required placeholder="1685">
                             </div>
                         </div>
-                        
-                        <!-- Payment Method -->
-                        <div class="mb-8">
+
+<div class="mb-8">
                             <h2 class="text-3xl font-bold text-gray-800 mb-6">Payment Method</h2>
                             
                             <div class="space-y-4">
@@ -337,18 +282,16 @@
                                 </label>
                             </div>
                         </div>
-                        
-                        <!-- Order Notes -->
-                        <div class="mb-8">
+
+<div class="mb-8">
                             <h2 class="text-3xl font-bold text-gray-800 mb-6">Order Notes (Optional)</h2>
                             <textarea name="notes" class="form-input" rows="4" placeholder="Any special instructions for your order?"></textarea>
                         </div>
-                        
-                        <!-- Terms & Submit -->
-                        <div class="mb-6">
+
+<div class="mb-6">
                             <label class="flex items-start gap-3 text-gray-700">
                                 <input type="checkbox" name="terms" required class="mt-1 w-5 h-5">
-                                <span class="text-base">I agree to the <a href="terms-of-service" class="text-primary hover:underline">Terms of Service</a> and <a href="privacy-policy" class="text-primary hover:underline">Privacy Policy</a></span>
+                                <span class="text-base">I agree to the <a href="terms-of-service.html" class="text-primary hover:underline">Terms of Service</a> and <a href="privacy-policy.html" class="text-primary hover:underline">Privacy Policy</a></span>
                             </label>
                         </div>
                         
@@ -357,14 +300,13 @@
                         </button>
                     </form>
                 </div>
-                
-                <!-- Right Section: Order Summary (1/3 width) -->
-                <div class="md:col-span-1">
+
+<div class="md:col-span-1">
                     <div class="order-summary sticky top-8">
                         <h2 class="text-3xl font-bold text-gray-800 mb-6">Order Summary</h2>
                         
                         <div id="checkoutCartItems" class="mb-6">
-                            <!-- Cart items will be injected here -->
+                            
                         </div>
                         
                         <div class="border-t-2 border-gray-300 pt-4 space-y-3">
@@ -402,151 +344,8 @@
         </div>
     </div>
     
-    <script>
-        // Load cart from localStorage
-        const cart = JSON.parse(localStorage.getItem('omegatek_cart')) || [];
-        
-        // Check if cart is empty
-        if (cart.length === 0) {
-            window.location.href = 'products.html';
-        }
-        
-        // Delivery fee calculation
-        function calculateDeliveryFee(province, subtotal) {
-            if (subtotal >= 500) return 0; // Free delivery over R500
-            
-            const deliveryFees = {
-                'Gauteng': 50,
-                'Western Cape': 100,
-                'KwaZulu-Natal': 100,
-                'Eastern Cape': 120,
-                'Free State': 100,
-                'Limpopo': 120,
-                'Mpumalanga': 100,
-                'North West': 100,
-                'Northern Cape': 150
-            };
-            
-            return deliveryFees[province] || 100;
-        }
-        
-        // Render cart items
-        function renderCheckoutCart() {
-            const container = document.getElementById('checkoutCartItems');
-            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            
-            container.innerHTML = cart.map(item => `
-                <div class="cart-item">
-                    <img src="${item.image}" alt="${item.name}" onerror="this.onerror=null;this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27200%27 height=%27200%27 viewBox=%270 0 200 200%27%3E%3Crect width=%27200%27 height=%27200%27 fill=%27%23f3f4f6%27/%3E%3Cpath d=%27M65 70h70a10 10 0 0110 10v60a10 10 0 01-10 10H65a10 10 0 01-10-10V80a10 10 0 0110-10z%27 fill=%27none%27 stroke=%27%23d1d5db%27 stroke-width=%273%27/%3E%3Ccircle cx=%27100%27 cy=%27105%27 r=%2718%27 fill=%27none%27 stroke=%27%23d1d5db%27 stroke-width=%273%27/%3E%3C/svg%3E'">
-                    <div class="flex-1">
-                        <h3 class="font-semibold text-gray-800 mb-1">${item.name}</h3>
-                        <p class="text-gray-600">Qty: ${item.quantity}</p>
-                        <p class="text-primary font-bold mt-1">R${(item.price * item.quantity).toFixed(2)}</p>
-                    </div>
-                </div>
-            `).join('');
-            
-            document.getElementById('subtotalAmount').textContent = `R${subtotal.toFixed(2)}`;
-            updateTotal();
-        }
-        
-        // Update total based on province selection
-        function updateTotal() {
-            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            const province = document.querySelector('select[name="province"]').value;
-            const deliveryFee = province ? calculateDeliveryFee(province, subtotal) : 0;
-            const total = subtotal + deliveryFee;
-            
-            document.getElementById('deliveryFee').textContent = deliveryFee === 0 ? 'FREE' : `R${deliveryFee.toFixed(2)}`;
-            document.getElementById('totalAmount').textContent = `R${total.toFixed(2)}`;
-        }
-        
-        // Province change listener
-        document.querySelector('select[name="province"]').addEventListener('change', updateTotal);
-        
-        // Payment method selection
-        document.querySelectorAll('.payment-method').forEach(method => {
-            method.addEventListener('click', function() {
-                document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
-                this.classList.add('selected');
-                this.querySelector('input[type="radio"]').checked = true;
-            });
-        });
-        
-        // Form submission
-        document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const btn = document.getElementById('placeOrderBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
-            
-            const formData = new FormData(e.target);
-            const orderData = {
-                customer: {
-                    fullName: formData.get('fullName'),
-                    email: formData.get('email'),
-                    phone: formData.get('phone'),
-                    altPhone: formData.get('altPhone')
-                },
-                address: {
-                    street: formData.get('address'),
-                    suburb: formData.get('suburb'),
-                    city: formData.get('city'),
-                    province: formData.get('province'),
-                    postalCode: formData.get('postalCode')
-                },
-                paymentMethod: formData.get('paymentMethod'),
-                notes: formData.get('notes'),
-                items: cart,
-                subtotal: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-                deliveryFee: calculateDeliveryFee(formData.get('province'), cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)),
-                total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) + calculateDeliveryFee(formData.get('province'), cart.reduce((sum, item) => sum + (item.price * item.quantity), 0))
-            };
-            
-            try {
-                const response = await fetch('../admin/orders-api.php?action=place_order', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(orderData)
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    // Sync to Supabase so the customer portal shows the order
-                    await syncOrderToSupabase(orderData, data.orderId);
-
-                    // Check if PayFast payment
-                    if (data.payfast) {
-                        // Clear cart before redirect
-                        localStorage.removeItem('omegatek_cart');
-                        
-                        // Redirect to PayFast payment page
-                        window.location.href = data.redirectUrl;
-                    } else {
-                        // Clear cart for other payment methods
-                        localStorage.removeItem('omegatek_cart');
-                        
-                        // Redirect to order confirmation page
-                        window.location.href = `order-confirmation.html?order=${data.orderId}`;
-                    }
-                } else {
-                    alert('Error placing order: ' + data.message);
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-lock mr-2"></i> Place Order Securely';
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Server error. Please try again or contact support.');
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-lock mr-2"></i> Place Order Securely';
-            }
-        });
-        
-        // Initialize
-        renderCheckoutCart();
-    </script>
-    
+    <script type="module" src="../js/pages/checkout.js"></script>
+    <script src="../js/transitions.js" defer></script>
+    <script src="../js/theme-toggle.js" defer></script>
 </body>
 </html>

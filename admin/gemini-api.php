@@ -12,20 +12,17 @@ error_reporting(E_ALL);
 
 require_once __DIR__ . '/../config/secure-config.php';
 
-session_start();
+// Security headers
+header('X-Content-Type-Options: nosniff');
+header('X-Frame-Options: SAMEORIGIN');
+header('X-XSS-Protection: 1; mode=block');
+header('Referrer-Policy: strict-origin-when-cross-origin');
+header("Content-Security-Policy: default-src 'self' https:; script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' data: https:;");
 
-// ── Authentication ─────────────────────────────────────────
-// Method 1: existing PHP session (set on previous valid auth)
-// Method 2: Supabase JWT Bearer token (sent by aiFetch helper in dashboard JS)
-// Method 3: admin_pin in POST/GET (fallback for local/dev use)
+// ── Authentication ─────────────────────────────────────────────────────
+// Every request must supply a valid Supabase JWT belonging to an admin email.
+// No session caching — eliminates CSRF via cookie-only auth path.
 function checkAuth(): void {
-    if (!empty($_SESSION['admin_authenticated'])) {
-        return;
-    }
-
-    // Method 2: validate Supabase JWT against /auth/v1/user
-    // getallheaders() can be unreliable on PHP CLI server on Windows
-    // so also check $_SERVER which is always populated
     $headers    = getallheaders() ?: [];
     $authHeader = $headers['Authorization']
         ?? $headers['authorization']
@@ -35,13 +32,6 @@ function checkAuth(): void {
     if (preg_match('/Bearer\s+(.+)$/i', $authHeader, $m)) {
         $jwt = trim($m[1]);
         if (!empty($jwt)) {
-            // Cache successful JWT verifications in the PHP session so we
-            // don't hit Supabase on every single AI request
-            $jwtHash = substr(hash('sha256', $jwt), 0, 16);
-            if (!empty($_SESSION['ai_jwt_hash']) && $_SESSION['ai_jwt_hash'] === $jwtHash) {
-                $_SESSION['admin_authenticated'] = true;
-                return;
-            }
             $ch = curl_init(SUPABASE_URL . '/auth/v1/user');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_HTTPHEADER, [
@@ -56,20 +46,20 @@ function checkAuth(): void {
             curl_close($ch);
             if ($resp) {
                 $user = @json_decode($resp, true);
-                if (!empty($user['id'])) {
-                    $_SESSION['admin_authenticated'] = true;
-                    $_SESSION['ai_jwt_hash']         = $jwtHash;
-                    return;
+                if (!empty($user['id']) && !empty($user['email'])) {
+                    $adminEmail = trim(env('ADMIN_EMAIL', ''));
+                    if (empty($adminEmail)) {
+                        $adminEmail = trim(env('ADMIN_EMAILS', ''));
+                    }
+                    if (!empty($adminEmail)) {
+                        $adminEmails = array_map('trim', explode(',', strtolower($adminEmail)));
+                        if (in_array(strtolower(trim($user['email'])), $adminEmails, true)) {
+                            return;
+                        }
+                    }
                 }
             }
         }
-    }
-
-    // Method 3: PIN fallback (POST only — never accept via GET to avoid log/cache leakage)
-    $pin = trim($_POST['admin_pin'] ?? '');
-    if ($pin !== '' && hash_equals(ADMIN_PIN, $pin)) {
-        $_SESSION['admin_authenticated'] = true;
-        return;
     }
 
     http_response_code(401);

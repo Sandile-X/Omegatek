@@ -1,9 +1,8 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Add animation to timeline items
-    const timelineItems = document.querySelectorAll('.timeline-item');
+﻿document.addEventListener('DOMContentLoaded', function() {
     
-    // Function to check if an element is in viewport
-    function isInViewport(element) {
+    const timelineItems = document.querySelectorAll('.timeline-item');
+
+function isInViewport(element) {
         const rect = element.getBoundingClientRect();
         return (
             rect.top >= 0 &&
@@ -12,24 +11,20 @@ document.addEventListener('DOMContentLoaded', function() {
             rect.right <= (window.innerWidth || document.documentElement.clientWidth)
         );
     }
-    
-    // Function to add animation class when element is in viewport
-    function animateOnScroll() {
+
+function animateOnScroll() {
         timelineItems.forEach(item => {
             if (isInViewport(item)) {
                 item.classList.add('animate');
             }
         });
     }
-    
-    // Add animation on scroll
-    window.addEventListener('scroll', animateOnScroll);
-    
-    // Trigger once on page load
-    animateOnScroll();
-    
-    // Mobile menu toggle (aligning with the main site functionality)
-    let menu = document.querySelector('#menu-btn');
+
+window.addEventListener('scroll', animateOnScroll);
+
+animateOnScroll();
+
+let menu = document.querySelector('#menu-btn');
     let navbarLinks = document.querySelector('.header .navbar .links');
     
     menu.onclick = () => {
@@ -40,9 +35,8 @@ document.addEventListener('DOMContentLoaded', function() {
     window.onscroll = () => {
         menu.classList.remove('fa-times');
         navbarLinks.classList.remove('active');
-        
-        // Make navbar sticky
-        if(window.scrollY > 60){
+
+if(window.scrollY > 60){
             document.querySelector('.header .navbar').classList.add('active');
         } else {
             document.querySelector('.header .navbar').classList.remove('active');

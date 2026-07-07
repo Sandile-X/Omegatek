@@ -1,6 +1,5 @@
-/* Web Development Page Styles */
+﻿
 
-/* Banner Section */
 .webdev-banner {
     position: relative;
     height: 350px;
@@ -105,7 +104,6 @@
     to { opacity: 1; }
 }
 
-/* Container for all sections */
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -116,7 +114,6 @@ section {
     padding: 5rem 0;
 }
 
-/* Headings */
 h2.heading {
     font-size: 3.5rem;
     color: #334;
@@ -128,7 +125,6 @@ h2.heading span {
     color: #b30ce6;
 }
 
-/* Interactive Showcase Section */
 .showcase {
     background-color: #f8f8f8;
     padding: 6rem 0;
@@ -257,7 +253,6 @@ h2.heading span {
     background: #b30ce6;
 }
 
-/* Services Grid */
 .webdev-services {
     padding: 6rem 0;
 }
@@ -352,7 +347,6 @@ h2.heading span {
     transform: translateY(-3px);
 }
 
-/* Development Process Timeline */
 .dev-process {
     background: #f5f5f5;
     padding: 6rem 0;
@@ -437,7 +431,6 @@ h2.heading span {
     line-height: 1.7;
 }
 
-/* Technologies Section */
 .technologies {
     padding: 6rem 0;
     background: #fff;
@@ -503,7 +496,6 @@ h2.heading span {
     text-align: center;
 }
 
-/* Quote Section */
 .quote-section {
     padding: 6rem 0;
     background: #f9f9f9;
@@ -614,7 +606,6 @@ h2.heading span {
     transform: translateY(-3px);
 }
 
-/* Portfolio Section */
 .portfolio {
     padding: 6rem 0;
     background: #fff;
@@ -723,7 +714,6 @@ h2.heading span {
     color: #fff;
 }
 
-/* Responsive Styles */
 @media (max-width: 1200px) {
     .container {
         padding: 0 4rem;

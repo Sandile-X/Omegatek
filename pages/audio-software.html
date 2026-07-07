@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style id="fouc-guard">html{opacity:0!important}</style><script>(function(){var t=localStorage.getItem('omegatek-theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';if(t==='dark')document.documentElement.setAttribute('data-theme','dark');function show(){var s=document.getElementById("fouc-guard");if(s){document.documentElement.style.transition="opacity 0.25s ease";s.parentNode.removeChild(s);}}if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",function(){requestAnimationFrame(function(){requestAnimationFrame(show);});});}else{show();}})();</script>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+   <meta name="theme-color" content="#b30ce6">
+   <meta name="msapplication-TileColor" content="#b30ce6">
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+   <meta name="format-detection" content="telephone=yes">
+   <meta name="mobile-web-app-capable" content="yes">
+   <meta name="apple-mobile-web-app-capable" content="yes">
+   <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+   <meta name="description" content="Professional audio engineering plugins by Omegatek Solutions. Parametric EQs, compressors, limiters, synthesizers and more — studio-grade tools for music producers and engineers.">
+   <meta name="keywords" content="audio plugins, VST3, parametric EQ, compressor, limiter, synthesizer, music production, audio engineering, OmegaHertzEQ, Omegatek Solutions">
+   <meta name="author" content="Omegatek Solutions">
+   <meta name="robots" content="index, follow">
+
+   <meta property="og:title" content="Audio Software - Omegatek Solutions" />
+   <meta property="og:description" content="Studio-grade audio plugins. Parametric EQs, compressors, limiters and synthesizers built for professionals." />
+   <meta property="og:type" content="website" />
+   <meta property="og:url" content="https://omegateksolutions.co.za/pages/audio-software" />
+   <meta property="og:image" content="https://omegateksolutions.co.za/images2/Omegatek3.png" />
+
+   <meta name="twitter:card" content="summary_large_image" />
+   <meta name="twitter:title" content="Audio Software - Omegatek Solutions" />
+   <meta name="twitter:description" content="Studio-grade audio plugins. Parametric EQs, compressors, limiters and synthesizers built for professionals." />
+   <meta name="twitter:image" content="https://omegateksolutions.co.za/images2/Omegatek3.png" />
+
+   <link rel="canonical" href="https://omegateksolutions.co.za/pages/audio-software" />
+
+   <title>Audio Software | Omegatek Solutions</title>
+
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+   <script src="https://cdn.tailwindcss.com"></script>
+   <script src="../js/tailwind-main-site-config.js"></script>
+
+   <link rel="stylesheet" href="../css/style.css">
+   <link rel="stylesheet" href="../css/revival.css">
+   <link rel="stylesheet" href="../css/cookie-consent.css">
+   <link rel="stylesheet" href="../css/auth.css">
+
+   <link rel="icon" type="image/png" href="../images2/favicon.png">
+
+   <script id="chatway" async="true" src="https://cdn.chatway.app/widget.js?id=ZZTU6jAkfm7u"></script>
+
+   <style>
+      /* ─── AUDIO SOFTWARE PAGE ─────────────────────────────────── */
+      .audio-hero {
+         position: relative;
+         min-height: 70vh;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         text-align: center;
+         overflow: hidden;
+         background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 30%, #0d0d2a 60%, #0a0a1a 100%);
+      }
+      .audio-hero::before {
+         content: '';
+         position: absolute;
+         inset: 0;
+         background:
+            radial-gradient(ellipse 600px 400px at 30% 40%, rgba(179,12,230,0.15) 0%, transparent 70%),
+            radial-gradient(ellipse 500px 350px at 70% 60%, rgba(124,45,146,0.1) 0%, transparent 70%);
+         pointer-events: none;
+         z-index: 2;
+      }
+      .audio-hero-grid {
+         position: absolute;
+         inset: 0;
+         background-image:
+            linear-gradient(rgba(179,12,230,0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(179,12,230,0.04) 1px, transparent 1px);
+         background-size: 60px 60px;
+         mask-image: radial-gradient(ellipse 70% 70% at center, black, transparent);
+         -webkit-mask-image: radial-gradient(ellipse 70% 70% at center, black, transparent);
+         z-index: 3;
+      }
+      .audio-hero-content {
+         position: relative;
+         z-index: 4;
+         padding: 6rem 2rem 4rem;
+         max-width: 900px;
+      }
+      .audio-hero .label {
+         display: inline-flex;
+         align-items: center;
+         gap: 0.6rem;
+         font-size: 1.2rem;
+         font-weight: 700;
+         letter-spacing: 0.2em;
+         text-transform: uppercase;
+         color: #b30ce6;
+         margin-bottom: 1.5rem;
+      }
+      .audio-hero .label i {
+         font-size: 1rem;
+      }
+      .audio-hero h1 {
+         font-size: clamp(3rem, 6vw, 5.5rem);
+         font-weight: 800;
+         color: #fff;
+         line-height: 1.1;
+         margin-bottom: 1.5rem;
+         letter-spacing: -0.03em;
+      }
+      .audio-hero h1 span {
+         background: linear-gradient(135deg, #b30ce6 0%, #e040fb 50%, #b30ce6 100%);
+         background-size: 200% 100%;
+         -webkit-background-clip: text;
+         -webkit-text-fill-color: transparent;
+         background-clip: text;
+         animation: gradShift 4s ease-in-out infinite;
+      }
+      @keyframes gradShift {
+         0%, 100% { background-position: 0% 50%; }
+         50% { background-position: 100% 50%; }
+      }
+      .audio-hero p {
+         font-size: 1.7rem;
+         color: rgba(255,255,255,0.6);
+         line-height: 1.7;
+         max-width: 700px;
+         margin: 0 auto 2.5rem;
+      }
+      .audio-hero-btns {
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         gap: 1.5rem;
+         flex-wrap: wrap;
+      }
+      .audio-btn {
+         display: inline-flex;
+         align-items: center;
+         gap: 0.8rem;
+         padding: 1.4rem 3rem;
+         border-radius: 1.2rem;
+         font-size: 1.5rem;
+         font-weight: 700;
+         text-decoration: none;
+         transition: all 0.3s ease;
+         cursor: pointer;
+         border: none;
+         font-family: inherit;
+      }
+      .audio-btn-primary {
+         background: linear-gradient(135deg, #b30ce6, #7c2d92);
+         color: #fff;
+         box-shadow: 0 8px 30px rgba(179,12,230,0.35);
+      }
+      .audio-btn-primary:hover {
+         transform: translateY(-3px);
+         box-shadow: 0 12px 40px rgba(179,12,230,0.5);
+      }
+      .audio-btn-outline {
+         background: transparent;
+         color: #fff;
+         border: 2px solid rgba(255,255,255,0.2);
+      }
+      .audio-btn-outline:hover {
+         border-color: #b30ce6;
+         color: #b30ce6;
+         transform: translateY(-3px);
+      }
+
+      /* ─── FORMAT BADGES ─────────────────────────────────────── */
+      .format-badges {
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         gap: 2rem;
+         margin-top: 3rem;
+         flex-wrap: wrap;
+      }
+      .format-badge {
+         display: flex;
+         align-items: center;
+         gap: 0.6rem;
+         padding: 0.8rem 1.6rem;
+         border-radius: 999px;
+         font-size: 1.2rem;
+         font-weight: 600;
+         color: rgba(255,255,255,0.5);
+         border: 1px solid rgba(255,255,255,0.1);
+         background: rgba(255,255,255,0.03);
+      }
+      .format-badge i { color: #b30ce6; }
+
+      /* ─── FEATURED PLUGIN ───────────────────────────────────── */
+      .plugin-featured {
+         padding: 6rem 10%;
+         background: #fff;
+      }
+      .plugin-featured-grid {
+         display: grid;
+         grid-template-columns: 1fr 1fr;
+         gap: 5rem;
+         align-items: center;
+         max-width: 1200px;
+         margin: 0 auto;
+      }
+      .plugin-visual {
+         position: relative;
+         border-radius: 2rem;
+         overflow: hidden;
+         background: linear-gradient(135deg, #0a0a1a, #1a0a2e, #0d0d2a);
+         padding: 3rem;
+         box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+         aspect-ratio: 4/3;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+      }
+      .plugin-visual::before {
+         content: '';
+         position: absolute;
+         inset: 0;
+         border-radius: 2rem;
+         padding: 2px;
+         background: linear-gradient(135deg, #b30ce6, transparent, #7c2d92);
+         mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+         -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+         mask-composite: exclude;
+         -webkit-mask-composite: xor;
+         pointer-events: none;
+      }
+      .plugin-visual-bg {
+         position: absolute;
+         inset: 0;
+         width: 100%;
+         height: 100%;
+         object-fit: cover;
+         object-position: center;
+         border-radius: 2rem;
+         z-index: 0;
+      }
+      .eq-visualizer {
+         position: relative;
+         z-index: 1;
+         width: 100%;
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+         gap: 2rem;
+      }
+      .eq-bars {
+         display: flex;
+         align-items: flex-end;
+         justify-content: center;
+         gap: 6px;
+         height: 140px;
+         width: 100%;
+      }
+      .eq-bars-wrap {
+         opacity: 0.45;
+      }
+      .eq-bar {
+         width: 12px;
+         border-radius: 6px 6px 0 0;
+         animation: eqBounce 1.2s ease-in-out infinite alternate;
+      }
+      .eq-bar:nth-child(1)  { height: 35%; background: #b30ce6; animation-delay: 0s; }
+      .eq-bar:nth-child(2)  { height: 55%; background: #c23ef0; animation-delay: 0.1s; }
+      .eq-bar:nth-child(3)  { height: 80%; background: #d060f5; animation-delay: 0.2s; }
+      .eq-bar:nth-child(4)  { height: 95%; background: #e040fb; animation-delay: 0.15s; }
+      .eq-bar:nth-child(5)  { height: 70%; background: #d060f5; animation-delay: 0.25s; }
+      .eq-bar:nth-child(6)  { height: 100%; background: #b30ce6; animation-delay: 0.05s; }
+      .eq-bar:nth-child(7)  { height: 60%; background: #c23ef0; animation-delay: 0.3s; }
+      .eq-bar:nth-child(8)  { height: 85%; background: #e040fb; animation-delay: 0.12s; }
+      .eq-bar:nth-child(9)  { height: 45%; background: #d060f5; animation-delay: 0.22s; }
+      .eq-bar:nth-child(10) { height: 75%; background: #b30ce6; animation-delay: 0.08s; }
+      .eq-bar:nth-child(11) { height: 50%; background: #c23ef0; animation-delay: 0.18s; }
+      .eq-bar:nth-child(12) { height: 90%; background: #e040fb; animation-delay: 0.28s; }
+      @keyframes eqBounce {
+         0%   { transform: scaleY(0.4); }
+         100% { transform: scaleY(1); }
+      }
+      .eq-label {
+         font-size: 2.4rem;
+         font-weight: 800;
+         color: #fff;
+         letter-spacing: -0.02em;
+         text-align: center;
+      }
+      .eq-label small {
+         display: block;
+         font-size: 1.2rem;
+         font-weight: 500;
+         color: rgba(255,255,255,0.4);
+         letter-spacing: 0.15em;
+         text-transform: uppercase;
+         margin-top: 0.4rem;
+      }
+
+      .plugin-info h2 {
+         font-size: 3.6rem;
+         font-weight: 800;
+         color: #334;
+         line-height: 1.15;
+         margin-bottom: 1.2rem;
+         letter-spacing: -0.02em;
+      }
+      .plugin-info h2 span { color: #b30ce6; }
+      .plugin-tagline {
+         font-size: 1.6rem;
+         color: #b30ce6;
+         font-weight: 600;
+         margin-bottom: 1.5rem;
+      }
+      .plugin-desc {
+         font-size: 1.55rem;
+         color: #666;
+         line-height: 1.8;
+         margin-bottom: 2.5rem;
+      }
+
+      /* Feature chips */
+      .feature-chips {
+         display: flex;
+         flex-wrap: wrap;
+         gap: 1rem;
+         margin-bottom: 3rem;
+      }
+      .feature-chip {
+         display: inline-flex;
+         align-items: center;
+         gap: 0.6rem;
+         padding: 0.7rem 1.4rem;
+         background: rgba(179,12,230,0.06);
+         border: 1px solid rgba(179,12,230,0.15);
+         border-radius: 999px;
+         font-size: 1.3rem;
+         font-weight: 600;
+         color: #555;
+         transition: all 0.3s ease;
+      }
+      .feature-chip i { color: #b30ce6; font-size: 1.1rem; }
+      .feature-chip:hover {
+         background: rgba(179,12,230,0.12);
+         border-color: rgba(179,12,230,0.3);
+         transform: translateY(-2px);
+      }
+
+      .plugin-actions {
+         display: flex;
+         gap: 1.2rem;
+         flex-wrap: wrap;
+      }
+
+      /* ─── SPECS ─────────────────────────────────────────────── */
+      .plugin-specs {
+         padding: 5rem 10%;
+         background: #f8f8fc;
+      }
+      .specs-grid {
+         display: grid;
+         grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+         gap: 2.5rem;
+         max-width: 1200px;
+         margin: 0 auto;
+      }
+      .spec-card {
+         background: #fff;
+         border: 1px solid #eee;
+         border-radius: 1.6rem;
+         padding: 2.5rem;
+         transition: all 0.35s ease;
+      }
+      .spec-card:hover {
+         transform: translateY(-6px);
+         box-shadow: 0 15px 40px rgba(179,12,230,0.1);
+         border-color: rgba(179,12,230,0.3);
+      }
+      .spec-icon {
+         width: 5rem;
+         height: 5rem;
+         border-radius: 1.2rem;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         font-size: 2rem;
+         margin-bottom: 1.5rem;
+         background: rgba(179,12,230,0.08);
+         color: #b30ce6;
+      }
+      .spec-card h3 {
+         font-size: 1.8rem;
+         font-weight: 700;
+         color: #334;
+         margin-bottom: 0.8rem;
+      }
+      .spec-card p {
+         font-size: 1.4rem;
+         color: #777;
+         line-height: 1.7;
+      }
+
+      /* ─── MORE PLUGINS ──────────────────────────────────────── */
+      .more-plugins {
+         padding: 6rem 10%;
+         background: #fff;
+      }
+      .plugins-grid {
+         display: grid;
+         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+         gap: 3rem;
+         max-width: 1200px;
+         margin: 0 auto;
+      }
+      .plugin-card {
+         background: #fff;
+         border: 0.15rem solid #e8e8ee;
+         border-radius: 1.6rem;
+         overflow: hidden;
+         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .plugin-card:hover {
+         transform: translateY(-8px);
+         box-shadow: 0 20px 60px rgba(179,12,230,0.12);
+         border-color: rgba(179,12,230,0.35);
+      }
+      .plugin-card-visual {
+         height: 20rem;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         background: linear-gradient(135deg, #0a0a1a, #1a0a2e);
+         position: relative;
+         overflow: hidden;
+      }
+      .plugin-card-visual::after {
+         content: '';
+         position: absolute;
+         inset: 0;
+         background: radial-gradient(circle at 50% 50%, rgba(179,12,230,0.1), transparent 70%);
+      }
+      .plugin-card-visual i {
+         font-size: 5rem;
+         color: rgba(179,12,230,0.5);
+         position: relative;
+         z-index: 1;
+      }
+      .plugin-card-body {
+         padding: 2.5rem;
+      }
+      .plugin-card-body h3 {
+         font-size: 2rem;
+         font-weight: 700;
+         color: #334;
+         margin-bottom: 0.8rem;
+      }
+      .plugin-card-body .plugin-type {
+         font-size: 1.2rem;
+         font-weight: 600;
+         text-transform: uppercase;
+         letter-spacing: 0.1em;
+         color: #b30ce6;
+         margin-bottom: 1rem;
+      }
+      .plugin-card-body p {
+         font-size: 1.4rem;
+         color: #777;
+         line-height: 1.7;
+         margin-bottom: 1.5rem;
+      }
+      .plugin-status {
+         display: inline-flex;
+         align-items: center;
+         gap: 0.5rem;
+         padding: 0.5rem 1.2rem;
+         border-radius: 999px;
+         font-size: 1.15rem;
+         font-weight: 700;
+      }
+      .status-available {
+         background: rgba(5,150,105,0.1);
+         color: #059669;
+         border: 1px solid rgba(5,150,105,0.3);
+      }
+      .status-coming-soon {
+         background: rgba(179,12,230,0.08);
+         color: #b30ce6;
+         border: 1px solid rgba(179,12,230,0.2);
+      }
+
+      /* ─── CTA ───────────────────────────────────────────────── */
+      .audio-cta {
+         padding: 6rem 10%;
+         background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2e 50%, #0a0a1a 100%);
+         text-align: center;
+         position: relative;
+         overflow: hidden;
+      }
+      .audio-cta::before {
+         content: '';
+         position: absolute;
+         inset: 0;
+         background:
+            radial-gradient(ellipse 500px 300px at 50% 50%, rgba(179,12,230,0.12) 0%, transparent 70%);
+         pointer-events: none;
+      }
+      .audio-cta h2 {
+         font-size: 3.6rem;
+         font-weight: 800;
+         color: #fff;
+         margin-bottom: 1.5rem;
+         position: relative;
+         z-index: 1;
+      }
+      .audio-cta h2 span { color: #b30ce6; }
+      .audio-cta p {
+         font-size: 1.6rem;
+         color: rgba(255,255,255,0.5);
+         max-width: 600px;
+         margin: 0 auto 3rem;
+         line-height: 1.7;
+         position: relative;
+         z-index: 1;
+      }
+      .audio-cta .audio-btn { position: relative; z-index: 1; }
+
+      /* ─── RESPONSIVE ────────────────────────────────────────── */
+      @media (max-width: 992px) {
+         .plugin-featured-grid {
+            grid-template-columns: 1fr;
+            gap: 3rem;
+         }
+         .plugin-visual {
+            max-width: 500px;
+            margin: 0 auto;
+         }
+         .plugin-info h2 { font-size: 3rem; }
+      }
+      /* ─── HERO VIDEO & TYPEWRITER ────────────────────────── */
+      .audio-hero-video {
+         position: absolute;
+         inset: 0;
+         width: 100%;
+         height: 100%;
+         object-fit: cover;
+         z-index: 0;
+      }
+      .audio-hero-overlay {
+         position: absolute;
+         inset: 0;
+         background: rgba(5, 0, 15, 0.62);
+         z-index: 1;
+      }
+      #hero-line2 {
+         background: linear-gradient(135deg, #b30ce6 0%, #e040fb 50%, #b30ce6 100%);
+         background-size: 200% 100%;
+         -webkit-background-clip: text;
+         -webkit-text-fill-color: transparent;
+         background-clip: text;
+         animation: gradShift 4s ease-in-out infinite;
+      }
+      .typewriter-cursor {
+         display: inline;
+         color: #b30ce6;
+         font-weight: 300;
+         animation: cursorBlink 0.65s step-end infinite;
+      }
+      @keyframes cursorBlink {
+         0%, 100% { opacity: 1; }
+         50% { opacity: 0; }
+      }
+
+      @media (max-width: 600px) {
+         .audio-hero h1 { font-size: 3rem; }
+         .audio-hero p { font-size: 1.5rem; }
+         .plugin-info h2 { font-size: 2.4rem; }
+         .audio-cta h2 { font-size: 2.8rem; }
+         .plugins-grid { grid-template-columns: 1fr; }
+         .specs-grid { grid-template-columns: 1fr 1fr; }
+         .eq-bars { height: 100px; }
+         .eq-bar { width: 8px; }
+      }
+   </style>
+</head>
+
+<body>
+
+<header class="header">
+
+   <div class="contact-info">
+      <p> <i class="fas fa-map"></i> Midrand, Gauteng, South Africa </p>
+      <p> <i class="fas fa-envelope"></i> sales@omegateksolutions.co.za </p>
+      <p> <i class="fas fa-phone"></i> 073 653 8207 </p>
+   </div>
+
+   <nav class="navbar">
+      <div class="logo">
+         <a href="/">
+           <img src="../images2/OMEGATEK_SOLUTIONS_9-NO BG.png" alt="Omegatek Solutions Logo">
+         </a>
+      </div>
+
+      <div class="links">
+         <a href="/">home</a>
+         <a href="about.html">about</a>
+         <a href="services.html">services</a>
+         <a href="webdev.html">Web/App Dev</a>
+         <a href="audio-software.html" class="active">Audio Software</a>
+         <a href="blog.html">blog</a>
+         <a href="../index.html#contact">contact</a>
+         <a href="products.html">products</a>
+      </div>
+
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode" title="Toggle dark/light mode">
+         <span class="theme-icon-light"><i class="fas fa-sun"></i></span>
+         <span class="theme-icon-dark"><i class="fas fa-moon"></i></span>
+      </button>
+      <div id="menu-btn" class="fa fa-bars"></div>
+   </nav>
+</header>
+
+<!-- ═══ HERO ═══════════════════════════════════════════════════════ -->
+<section class="audio-hero">
+   <video class="audio-hero-video" autoplay muted loop playsinline>
+      <source src="../images2/music-hero.mp4" type="video/mp4">
+   </video>
+   <div class="audio-hero-overlay"></div>
+   <div class="audio-hero-grid"></div>
+   <div class="audio-hero-content" data-aos="fade-up">
+      <div class="label"><i class="fas fa-headphones-alt"></i> Audio Engineering Plugins</div>
+      <h1 id="hero-title"><span id="hero-line1"></span><br><span id="hero-line2"></span><b class="typewriter-cursor">|</b></h1>
+      <p>Professional VST3 plugins crafted for music producers, mixing engineers, and audio enthusiasts. Precision tools designed to elevate your sound.</p>
+      <div class="audio-hero-btns">
+         <a href="#featured" class="audio-btn audio-btn-primary">
+            <i class="fas fa-star"></i> Featured Plugin
+         </a>
+         <a href="#catalog" class="audio-btn audio-btn-outline">
+            <i class="fas fa-th-large"></i> Browse All
+         </a>
+      </div>
+      <div class="format-badges" data-aos="fade-up" data-aos-delay="100">
+         <span class="format-badge"><i class="fas fa-plug"></i> VST3</span>
+         <span class="format-badge"><i class="fas fa-desktop"></i> Standalone</span>
+         <span class="format-badge"><i class="fab fa-windows"></i> Windows</span>
+         <span class="format-badge"><i class="fas fa-code-branch"></i> JUCE 8</span>
+      </div>
+   </div>
+</section>
+
+<!-- ═══ FEATURED: OMEGAHERTZ EQ ═══════════════════════════════════ -->
+<section class="plugin-featured" id="featured">
+   <h1 class="heading" data-aos="fade-down">featured <span>plugin</span></h1>
+
+   <div class="plugin-featured-grid">
+      <div class="plugin-visual" data-aos="fade-right">
+         <img class="plugin-visual-bg" src="../images2/omegahertzcoverart.png" alt="OmegaHertzEQ Cover Art">
+         <div class="eq-visualizer">
+            <div class="eq-bars-wrap">
+            <div class="eq-bars">
+               <div class="eq-bar"></div>
+               <div class="eq-bar"></div>
+               <div class="eq-bar"></div>
+               <div class="eq-bar"></div>
+               <div class="eq-bar"></div>
+               <div class="eq-bar"></div>
+               <div class="eq-bar"></div>
+               <div class="eq-bar"></div>
+               <div class="eq-bar"></div>
+               <div class="eq-bar"></div>
+               <div class="eq-bar"></div>
+               <div class="eq-bar"></div>
+            </div>
+            </div>
+         </div>
+      </div>
+      <div class="plugin-info" data-aos="fade-left">
+         <h2>Omega<span>Hertz</span>EQ</h2>
+         <p class="plugin-tagline">8-Band Fully Parametric &amp; Dynamic Equalizer</p>
+         <p class="plugin-desc">
+            A professional-grade parametric equalizer built with JUCE 8. Featuring 8 fully configurable bands with per-band dynamic EQ controls, real-time spectrum analysis, A/B comparison, and a stunning RGB-animated UI. Shape your sound with surgical precision.
+         </p>
+
+         <div class="feature-chips">
+            <span class="feature-chip"><i class="fas fa-sliders-h"></i> 8 Parametric Bands</span>
+            <span class="feature-chip"><i class="fas fa-wave-square"></i> Dynamic EQ</span>
+            <span class="feature-chip"><i class="fas fa-chart-area"></i> Spectrum Analyser</span>
+            <span class="feature-chip"><i class="fas fa-exchange-alt"></i> A/B Compare</span>
+            <span class="feature-chip"><i class="fas fa-undo"></i> Undo / Redo</span>
+            <span class="feature-chip"><i class="fas fa-tachometer-alt"></i> Loudness Meter</span>
+            <span class="feature-chip"><i class="fas fa-save"></i> 8 Factory Presets</span>
+            <span class="feature-chip"><i class="fas fa-expand-arrows-alt"></i> Resizable UI</span>
+         </div>
+
+         <div class="plugin-actions">
+            <a href="https://drive.google.com/uc?export=download&id=1ggWt7WLL3dCEuk5oAwmWKfH4JyLn8jms&confirm=t" target="_blank" rel="noopener noreferrer" class="audio-btn audio-btn-primary" style="font-size:1.4rem;padding:1.2rem 2.5rem;">
+               <i class="fas fa-download"></i> Download Setup
+            </a>
+         </div>
+      </div>
+   </div>
+</section>
+
+<!-- ═══ SPECS ══════════════════════════════════════════════════════ -->
+<section class="plugin-specs">
+   <h1 class="heading" data-aos="fade-down">technical <span>specs</span></h1>
+
+   <div class="specs-grid">
+      <div class="spec-card" data-aos="fade-up" data-aos-delay="50">
+         <div class="spec-icon"><i class="fas fa-sliders-h"></i></div>
+         <h3>Band Types</h3>
+         <p>Low Shelf, Bell, High Shelf, Low Pass, High Pass, Notch, All Pass, and Band Pass — all fully selectable per band.</p>
+      </div>
+      <div class="spec-card" data-aos="fade-up" data-aos-delay="100">
+         <div class="spec-icon"><i class="fas fa-bolt"></i></div>
+         <h3>Dynamic Processing</h3>
+         <p>Per-band dynamic EQ with dedicated attack, release, threshold, and ratio controls for surgical frequency-dependent compression.</p>
+      </div>
+      <div class="spec-card" data-aos="fade-up" data-aos-delay="150">
+         <div class="spec-icon"><i class="fas fa-chart-line"></i></div>
+         <h3>Spectrum Analyser</h3>
+         <p>Real-time FFT spectrum display with pre, post, and delta viewing modes. See exactly how your EQ shapes the signal.</p>
+      </div>
+      <div class="spec-card" data-aos="fade-up" data-aos-delay="200">
+         <div class="spec-icon"><i class="fas fa-headphones"></i></div>
+         <h3>Band Solo &amp; Mute</h3>
+         <p>Isolate individual bands to fine-tune adjustments, or mute bands to quickly compare with and without processing.</p>
+      </div>
+      <div class="spec-card" data-aos="fade-up" data-aos-delay="250">
+         <div class="spec-icon"><i class="fas fa-th-list"></i></div>
+         <h3>Band Inspector</h3>
+         <p>Dedicated inspector panel for precise numeric editing of every parameter — frequency, gain, Q, and dynamic controls.</p>
+      </div>
+      <div class="spec-card" data-aos="fade-up" data-aos-delay="300">
+         <div class="spec-icon"><i class="fas fa-volume-up"></i></div>
+         <h3>Loudness Metering</h3>
+         <p>Integrated LUFS, peak, and RMS metering bridge for professional loudness monitoring during mastering sessions.</p>
+      </div>
+   </div>
+</section>
+
+<!-- ═══ MORE PLUGINS (CATALOG) ════════════════════════════════════ -->
+<section class="more-plugins" id="catalog">
+   <h1 class="heading" data-aos="fade-down">plugin <span>catalog</span></h1>
+   <p class="section-subtitle" data-aos="fade-up" data-aos-delay="50">Professional audio tools — more coming soon</p>
+
+   <div class="plugins-grid">
+
+      <!-- OmegaHertzEQ -->
+      <div class="plugin-card" data-aos="fade-up" data-aos-delay="100">
+         <div class="plugin-card-visual">
+            <i class="fas fa-wave-square"></i>
+         </div>
+         <div class="plugin-card-body">
+            <p class="plugin-type">Equalizer</p>
+            <h3>OmegaHertzEQ</h3>
+            <p>8-band fully parametric &amp; dynamic EQ with real-time spectrum analyser, A/B compare, and RGB-animated UI.</p>
+            <span class="plugin-status status-available"><i class="fas fa-check-circle"></i> Available</span>
+         </div>
+      </div>
+
+      <!-- Compressor (Coming Soon) -->
+      <div class="plugin-card" data-aos="fade-up" data-aos-delay="200">
+         <div class="plugin-card-visual">
+            <i class="fas fa-compress-alt"></i>
+         </div>
+         <div class="plugin-card-body">
+            <p class="plugin-type">Dynamics</p>
+            <h3>OmegaComp</h3>
+            <p>Transparent bus compressor with variable knee, sidechain HPF, and parallel mix. Glue your mix together effortlessly.</p>
+            <span class="plugin-status status-coming-soon"><i class="fas fa-clock"></i> Coming Soon</span>
+         </div>
+      </div>
+
+      <!-- Limiter (Coming Soon) -->
+      <div class="plugin-card" data-aos="fade-up" data-aos-delay="300">
+         <div class="plugin-card-visual">
+            <i class="fas fa-sort-amount-up"></i>
+         </div>
+         <div class="plugin-card-body">
+            <p class="plugin-type">Mastering</p>
+            <h3>OmegaLimit</h3>
+            <p>True-peak brickwall limiter with intelligent release, loudness targeting, and ISP oversampling for transparent masters.</p>
+            <span class="plugin-status status-coming-soon"><i class="fas fa-clock"></i> Coming Soon</span>
+         </div>
+      </div>
+
+      <!-- Synthesizer (Coming Soon) -->
+      <div class="plugin-card" data-aos="fade-up" data-aos-delay="400">
+         <div class="plugin-card-visual">
+            <i class="fas fa-keyboard"></i>
+         </div>
+         <div class="plugin-card-body">
+            <p class="plugin-type">Instrument</p>
+            <h3>OmegaSynth</h3>
+            <p>Wavetable synthesizer with multi-oscillator architecture, built-in FX chain, and macro controls for expressive sound design.</p>
+            <span class="plugin-status status-coming-soon"><i class="fas fa-clock"></i> Coming Soon</span>
+         </div>
+      </div>
+
+      <!-- Reverb (Coming Soon) -->
+      <div class="plugin-card" data-aos="fade-up" data-aos-delay="500">
+         <div class="plugin-card-visual">
+            <i class="fas fa-water"></i>
+         </div>
+         <div class="plugin-card-body">
+            <p class="plugin-type">Spatial</p>
+            <h3>OmegaVerb</h3>
+            <p>Algorithmic reverb with customisable room simulation, modulated tails, and smart ducking for clean, spacious mixes.</p>
+            <span class="plugin-status status-coming-soon"><i class="fas fa-clock"></i> Coming Soon</span>
+         </div>
+      </div>
+
+      <!-- Saturator (Coming Soon) -->
+      <div class="plugin-card" data-aos="fade-up" data-aos-delay="600">
+         <div class="plugin-card-visual">
+            <i class="fas fa-fire"></i>
+         </div>
+         <div class="plugin-card-body">
+            <p class="plugin-type">Distortion</p>
+            <h3>OmegaDrive</h3>
+            <p>Multi-stage saturation with tube, tape, and transistor emulations. Add warmth, grit, or full-on distortion to any signal.</p>
+            <span class="plugin-status status-coming-soon"><i class="fas fa-clock"></i> Coming Soon</span>
+         </div>
+      </div>
+
+   </div>
+</section>
+
+<!-- ═══ CTA ════════════════════════════════════════════════════════ -->
+<section class="audio-cta">
+   <h2 data-aos="fade-up">Ready to Elevate Your <span>Sound</span>?</h2>
+   <p data-aos="fade-up" data-aos-delay="50">Get in touch to request early access, report bugs, or suggest features for upcoming plugins.</p>
+   <a href="../index.html#contact" class="audio-btn audio-btn-primary" data-aos="fade-up" data-aos-delay="100">
+      <i class="fas fa-envelope"></i> Contact Us
+   </a>
+</section>
+
+<!-- ═══ FOOTER ═════════════════════════════════════════════════════ -->
+<section class="footer">
+
+   <div class="box-container">
+
+      <div class="box">
+         <h3>quick links</h3>
+         <a class="link" href="/"> <i class="fas fa-angle-right"></i> home</a>
+         <a class="link" href="about.html"> <i class="fas fa-angle-right"></i> about</a>
+         <a class="link" href="services.html"> <i class="fas fa-angle-right"></i> services</a>
+         <a class="link" href="blog.html"> <i class="fas fa-angle-right"></i> blog</a>
+         <a class="link" href="webdev.html"> <i class="fas fa-angle-right"></i> Web/App Dev</a>
+         <a class="link" href="audio-software.html"> <i class="fas fa-angle-right"></i> Audio Software</a>
+         <a class="link" href="../index.html#reviews"> <i class="fas fa-angle-right"></i> reviews</a>
+         <a class="link" href="../index.html#contact"> <i class="fas fa-angle-right"></i> contact</a>
+      </div>
+
+      <div class="box">
+         <h3>legal</h3>
+         <a class="link" href="privacy-policy.html"> <i class="fas fa-shield-alt"></i> Privacy Policy</a>
+         <a class="link" href="terms-of-service.html"> <i class="fas fa-file-contract"></i> Terms of Service</a>
+         <a class="link js-cookie-settings" href="#"> <i class="fas fa-cookie-bite"></i> Cookie Preferences</a>
+      </div>
+
+      <div class="box">
+         <h3>opening hours</h3>
+         <p> <span>monday :</span> 09:00am to 07:00pm </p>
+         <p> <span>tuesday :</span> 09:00am to 07:00pm </p>
+         <p> <span>wednesday :</span> 09:00am to 07:00pm </p>
+         <p> <span>thursday :</span> 09:00am to 07:00pm </p>
+         <p> <span>friday :</span> 09:00am to 07:00pm </p>
+         <p> <span>saturday :</span> 09:00am to 07:00pm </p>
+         <p> <span>sunday :</span> closed </p>
+      </div>
+
+      <div class="box">
+         <h3>contact info</h3>
+         <a href="../index.html#contact" class="link"> <i class="fas fa-phone"></i> 073 653 8207 </a>
+         <a href="../index.html#contact" class="link"> <i class="fas fa-envelope"></i> sales@omegateksolutions.co.za </a>
+         <a href="../index.html#contact" class="link"> <i class="fas fa-map"></i> kaalfontein, Midrand, Gauteng, South Africa </a>
+      </div>
+
+      <div class="box">
+         <h3>newsletter</h3>
+         <p>subscribe for latest updates</p>
+         <form id="newsletterForm">
+            <input type="email" name="email" placeholder="enter your email" id="newsletterEmail" class="email" required>
+            <input type="submit" value="subscribe" class="btn">
+         </form>
+         <div id="newsletterMessage" style="margin-top: 1rem; font-size: 1.4rem; display: none;"></div>
+         <div class="share">
+            <a href="https://www.facebook.com/sandile.milanzi.10" class="fab fa-facebook-f"></a>
+            <a href="" class="fab fa-twitter"></a>
+            <a href="https://www.instagram.com/djx015/" class="fab fa-instagram"></a>
+            <a href="https://www.linkedin.com/in/sandile-milanzi-235692276/" class="fab fa-linkedin"></a>
+         </div>
+      </div>
+   </div>
+
+   <span class="text-gray-400 text-sm" style="font-family: 'Lucida Console', monospace;">created by <a href="https://www.facebook.com/sandile.milanzi.10" class="hover:text-secondary transition-colors" style="color: #b30ce6;">Sandile Milanzi</a> (Omegatek Solutions)— | all rights reserved!—</span>
+</section>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script src="../js/cookie-consent.js"></script>
+<script type="module" src="../js/auth.js"></script>
+<script src="../js/transitions.js" defer></script>
+<script src="../js/theme-toggle.js" defer></script>
+<script>
+   // AOS init
+   AOS.init({ duration: 800, once: true, offset: 80 });
+
+   // Smooth scroll
+   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+         const target = document.querySelector(this.getAttribute('href'));
+         if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+         }
+      });
+   });
+
+   // Typewriter effect — continuous loop
+   (function () {
+      var line1Text = 'Studio-Grade';
+      var line2Text = 'Audio Software';
+      var el1 = document.getElementById('hero-line1');
+      var el2 = document.getElementById('hero-line2');
+      var typeSpeed = 80, deleteSpeed = 45;
+      var pauseAfterType = 2200, pauseBeforeLoop = 500;
+      var phase = 0, idx = 0;
+
+      function tick() {
+         if (phase === 0) {
+            // Type line 1
+            el1.textContent = line1Text.substring(0, ++idx);
+            if (idx >= line1Text.length) { idx = 0; phase = 1; setTimeout(tick, typeSpeed); }
+            else setTimeout(tick, typeSpeed);
+         } else if (phase === 1) {
+            // Type line 2
+            el2.textContent = line2Text.substring(0, ++idx);
+            if (idx >= line2Text.length) { idx = 0; phase = 2; setTimeout(tick, pauseAfterType); }
+            else setTimeout(tick, typeSpeed);
+         } else if (phase === 2) {
+            // Begin deleting line 2
+            idx = line2Text.length; phase = 3; tick();
+         } else if (phase === 3) {
+            // Delete line 2
+            el2.textContent = line2Text.substring(0, --idx);
+            if (idx <= 0) { idx = line1Text.length; phase = 4; setTimeout(tick, deleteSpeed); }
+            else setTimeout(tick, deleteSpeed);
+         } else if (phase === 4) {
+            // Delete line 1
+            el1.textContent = line1Text.substring(0, --idx);
+            if (idx <= 0) { phase = 0; idx = 0; setTimeout(tick, pauseBeforeLoop); }
+            else setTimeout(tick, deleteSpeed);
+         }
+      }
+      setTimeout(tick, 700);
+   })();
+</script>
+</body>
+</html>

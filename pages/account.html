@@ -1,504 +1,928 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
+<style id="fouc-guard">html{opacity:0!important}</style><script>(function(){var t=localStorage.getItem('omegatek-theme');if(!t)t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';if(t==='dark')document.documentElement.setAttribute('data-theme','dark');function show(){var s=document.getElementById("fouc-guard");if(s){document.documentElement.style.transition="opacity 0.25s ease";s.parentNode.removeChild(s);}}if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",function(){requestAnimationFrame(function(){requestAnimationFrame(show);});});}else{show();}})();</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Account | Omegatek Solutions</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>My Account | Omegatek Solutions</title>
+    <meta name="description" content="Manage your Omegatek account, orders, and repair tickets.">
     <link rel="icon" type="image/png" href="../images2/favicon.png">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/revival.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <style>
-        * {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        /* ─── Base ───────────────────────────────────────────────────────── */
+        *, *::before, *::after { box-sizing: border-box; }
+
+        :root {
+            --clr-brand:    #b30ce6;
+            --clr-brand2:   #7c3aed;
+            --clr-bg:       #f8f7ff;
+            --clr-surface:  #ffffff;
+            --clr-border:   #e8e3f0;
+            --clr-text:     #1a1035;
+            --clr-muted:    #6b7280;
+            --radius-lg:    16px;
+            --radius-md:    10px;
+            --shadow-sm:    0 1px 4px rgba(0,0,0,.06);
+            --shadow-md:    0 4px 20px rgba(0,0,0,.08);
+            --shadow-brand: 0 6px 24px rgba(179,12,230,.22);
+            --transition:   0.22s cubic-bezier(0.4,0,0.2,1);
         }
-        
+
+        html { scroll-behavior: smooth; }
+
         body {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--clr-bg);
+            color: var(--clr-text);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
-        
+
+        /* ─── Scrollbar ──────────────────────────────────────────────────── */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1c4e9; border-radius: 99px; }
+
+        /* ─── Navbar ─────────────────────────────────────────────────────── */
         .navbar {
-            background: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--clr-border);
             position: sticky;
             top: 0;
-            z-index: 40;
+            z-index: 100;
         }
-        
-        .navbar a {
-            color: #64748b;
+        .navbar-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 1.25rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .navbar-brand { display: flex; align-items: center; gap: .6rem; text-decoration: none; }
+        .navbar-brand img { width: 32px; height: 32px; border-radius: 8px; }
+        .navbar-brand span { font-weight: 700; font-size: 1rem; color: var(--clr-text); }
+        .navbar-links { display: flex; align-items: center; gap: 1.5rem; }
+        .navbar-links a {
+            color: var(--clr-muted);
             text-decoration: none;
-            transition: color 0.3s;
+            font-size: .9rem;
+            font-weight: 500;
+            transition: color var(--transition);
         }
-        
-        .navbar a:hover {
-            color: #b30ce6;
+        .navbar-links a:hover { color: var(--clr-brand); }
+
+        /* ─── Page wrapper ───────────────────────────────────────────────── */
+        .page-wrap { max-width: 1100px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+
+        /* ─── Auth panel ─────────────────────────────────────────────────── */
+        #authSection {
+            max-width: 440px;
+            margin: 3rem auto;
         }
-        
         .auth-card {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
+            background: var(--clr-surface);
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius-lg);
+            padding: 2.25rem 2rem;
+            box-shadow: var(--shadow-md);
         }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #b30ce6 0%, #9333ea 100%);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.3s;
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 1.75rem;
         }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(179, 12, 230, 0.3);
+        .auth-logo img {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            border: 2px solid rgba(179,12,230,.2);
         }
-        
-        .order-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            border-left: 4px solid #b30ce6;
+        .auth-logo h1 { font-size: 1.35rem; font-weight: 700; margin: .6rem 0 .2rem; color: var(--clr-text); }
+        .auth-logo p { font-size: .85rem; color: var(--clr-muted); }
+
+        .form-group { margin-bottom: 1.1rem; }
+        .form-group label {
+            display: block;
+            font-size: .78rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: var(--clr-muted);
+            margin-bottom: .4rem;
         }
-        
+        .form-control {
+            width: 100%;
+            border: 1.5px solid var(--clr-border);
+            border-radius: var(--radius-md);
+            padding: .7rem .9rem;
+            font-size: .92rem;
+            color: var(--clr-text);
+            outline: none;
+            transition: border-color var(--transition), box-shadow var(--transition);
+            background: #faf9ff;
+        }
+        .form-control:focus {
+            border-color: var(--clr-brand);
+            box-shadow: 0 0 0 3px rgba(179,12,230,.12);
+        }
+        .form-control:read-only { background: #f3f0fa; color: var(--clr-muted); cursor: not-allowed; }
+
+        .pw-wrap { position: relative; }
+        .pw-toggle {
+            position: absolute; right: .75rem; top: 50%; transform: translateY(-50%);
+            background: none; border: none; color: var(--clr-muted); cursor: pointer;
+            font-size: .8rem; font-weight: 600; letter-spacing: .04em;
+            padding: .2rem .35rem; border-radius: 4px;
+            transition: color var(--transition);
+        }
+        .pw-toggle:hover { color: var(--clr-brand); }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+        @media (max-width: 480px) { .form-row { grid-template-columns: 1fr; } }
+
+        /* ─── Buttons ────────────────────────────────────────────────────── */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+            font-weight: 600; font-size: .9rem; border: none;
+            border-radius: var(--radius-md); padding: .75rem 1.25rem;
+            cursor: pointer; transition: all var(--transition);
+            text-decoration: none; line-height: 1;
+        }
+        .btn:disabled { opacity: .6; cursor: not-allowed; }
+        .btn-brand {
+            background: linear-gradient(135deg, var(--clr-brand) 0%, var(--clr-brand2) 100%);
+            color: #fff;
+            box-shadow: var(--shadow-brand);
+            width: 100%; margin-top: .5rem;
+        }
+        .btn-brand:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 28px rgba(179,12,230,.35);
+        }
+        .btn-brand:active:not(:disabled) { transform: translateY(0); }
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid var(--clr-border);
+            color: var(--clr-muted);
+        }
+        .btn-outline:hover { border-color: var(--clr-brand); color: var(--clr-brand); }
+        .btn-danger {
+            background: transparent;
+            border: 1.5px solid #fca5a5;
+            color: #dc2626;
+        }
+        .btn-danger:hover { background: #fef2f2; }
+
+        .btn .spinner {
+            width: 14px; height: 14px;
+            border: 2px solid rgba(255,255,255,.4); border-top-color: #fff;
+            border-radius: 50%; animation: spin .7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ─── Auth toggle links ───────────────────────────────────────────── */
+        .auth-switch {
+            text-align: center;
+            font-size: .85rem;
+            color: var(--clr-muted);
+            margin-top: 1.1rem;
+        }
+        .auth-switch a { color: var(--clr-brand); font-weight: 600; cursor: pointer; }
+        .auth-switch a:hover { text-decoration: underline; }
+
+        /* ─── Toast notifications ────────────────────────────────────────── */
+        #toastContainer {
+            position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 9999;
+            display: flex; flex-direction: column; gap: .5rem; pointer-events: none;
+        }
+        .toast {
+            display: flex; align-items: center; gap: .65rem;
+            background: var(--clr-surface); border: 1px solid var(--clr-border);
+            border-radius: var(--radius-md); padding: .85rem 1.1rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,.14);
+            font-size: .88rem; font-weight: 500;
+            pointer-events: auto;
+            animation: toastIn .3s cubic-bezier(0.34,1.56,0.64,1) both;
+            max-width: 320px;
+        }
+        .toast.removing { animation: toastOut .25s ease forwards; }
+        .toast-icon { font-size: 1rem; flex-shrink: 0; }
+        .toast-success .toast-icon { color: #22c55e; }
+        .toast-error   .toast-icon { color: #ef4444; }
+        .toast-warn    .toast-icon { color: #f59e0b; }
+        @keyframes toastIn  { from { opacity:0; transform:translateX(20px); } to { opacity:1; transform:translateX(0); } }
+        @keyframes toastOut { from { opacity:1; transform:translateX(0); }   to { opacity:0; transform:translateX(20px); } }
+
+        /* ─── Account header banner ──────────────────────────────────────── */
+        .account-banner {
+            background: linear-gradient(135deg, #1a0a2e 0%, #2d1050 50%, #1a0a2e 100%);
+            border-radius: var(--radius-lg);
+            padding: 2rem 2.25rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            border: 1px solid rgba(179,12,230,.2);
+        }
+        .banner-avatar {
+            width: 56px; height: 56px;
+            background: linear-gradient(135deg, var(--clr-brand), var(--clr-brand2));
+            border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.3rem; color: #fff; flex-shrink: 0;
+        }
+        .banner-info { flex: 1; min-width: 0; }
+        .banner-name { font-size: 1.4rem; font-weight: 700; color: #fff; margin: 0 0 .2rem; }
+        .banner-email { font-size: .85rem; color: rgba(255,255,255,.55); }
+        .banner-actions { display: flex; gap: .5rem; flex-shrink: 0; }
+
+        /* ─── Tabs ───────────────────────────────────────────────────────── */
+        .tabs {
+            display: flex;
+            gap: .25rem;
+            background: var(--clr-surface);
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius-md);
+            padding: .35rem;
+            margin-bottom: 1.75rem;
+        }
+        .tab-btn {
+            flex: 1; display: flex; align-items: center; justify-content: center; gap: .45rem;
+            font-size: .88rem; font-weight: 600; color: var(--clr-muted);
+            padding: .6rem .5rem; border-radius: 7px; border: none; background: none;
+            cursor: pointer; transition: all var(--transition);
+        }
+        .tab-btn:hover { color: var(--clr-brand); background: rgba(179,12,230,.06); }
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--clr-brand), var(--clr-brand2));
+            color: #fff;
+            box-shadow: var(--shadow-brand);
+        }
+        .tab-btn .tab-count {
+            background: rgba(255,255,255,.25); color: inherit;
+            font-size: .7rem; padding: .1rem .4rem;
+            border-radius: 99px; font-weight: 700; min-width: 20px; text-align: center;
+        }
+        .tab-btn:not(.active) .tab-count { background: #eee; color: #555; }
+
+        /* ─── Panel section ──────────────────────────────────────────────── */
+        .panel {
+            background: var(--clr-surface);
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius-lg);
+            padding: 1.75rem 2rem;
+            box-shadow: var(--shadow-sm);
+        }
+        .panel-title {
+            font-size: 1.1rem; font-weight: 700; color: var(--clr-text);
+            margin: 0 0 1.25rem;
+        }
+
+        /* ─── Order / Repair cards ───────────────────────────────────────── */
+        .item-card {
+            background: #faf9ff;
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius-md);
+            padding: 1.1rem 1.25rem;
+            margin-bottom: .75rem;
+            transition: box-shadow var(--transition), border-color var(--transition);
+        }
+        .item-card:hover {
+            box-shadow: var(--shadow-md);
+            border-color: rgba(179,12,230,.3);
+        }
+        .item-card-head {
+            display: flex; align-items: flex-start; justify-content: space-between;
+            gap: .75rem; margin-bottom: .75rem;
+        }
+        .item-card-id { font-weight: 700; font-size: .95rem; }
+        .item-card-sub { font-size: .8rem; color: var(--clr-muted); margin-top: .15rem; }
+        .item-card-foot {
+            display: flex; gap: 1rem; padding-top: .75rem;
+            border-top: 1px solid var(--clr-border); flex-wrap: wrap;
+        }
+        .kv { flex: 1; min-width: 90px; }
+        .kv-label { font-size: .72rem; color: var(--clr-muted); text-transform: uppercase; letter-spacing: .05em; margin-bottom: .1rem; }
+        .kv-value { font-size: .9rem; font-weight: 700; color: var(--clr-text); }
+
+        /* ─── Badges ─────────────────────────────────────────────────────── */
         .badge {
-            display: inline-block;
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 500;
+            display: inline-flex; align-items: center; gap: .3rem;
+            padding: .28rem .7rem; border-radius: 99px;
+            font-size: .75rem; font-weight: 700; text-transform: capitalize;
+            flex-shrink: 0;
         }
-        
-        .badge-pending {
-            background: #fef3c7;
-            color: #92400e;
+        .badge::before { content:''; width:6px; height:6px; border-radius:50%; background:currentColor; opacity:.7; }
+        .badge-pending    { background:#fef9c3; color:#854d0e; }
+        .badge-processing { background:#dbeafe; color:#1e40af; }
+        .badge-shipped    { background:#ede9fe; color:#5b21b6; }
+        .badge-completed  { background:#dcfce7; color:#166534; }
+        .badge-cancelled  { background:#fee2e2; color:#991b1b; }
+        .badge-received   { background:#e0f2fe; color:#0c4a6e; }
+        .badge-diagnosed  { background:#fef3c7; color:#78350f; }
+        .badge-in_progress{ background:#ede9fe; color:#5b21b6; }
+        .badge-ready      { background:#dcfce7; color:#14532d; }
+
+        /* ─── Empty state ────────────────────────────────────────────────── */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
         }
-        
-        .badge-processing {
-            background: #bfdbfe;
-            color: #1e40af;
+        .empty-state i { font-size: 2.5rem; color: #d4bbf0; margin-bottom: .75rem; display: block; }
+        .empty-state h3 { font-size: 1rem; font-weight: 600; color: var(--clr-muted); margin: 0 0 .3rem; }
+        .empty-state p  { font-size: .85rem; color: #b0b0c0; }
+
+        /* ─── Skeleton loader ────────────────────────────────────────────── */
+        .skeleton {
+            background: linear-gradient(90deg, #f0ecfa 25%, #e5dff5 50%, #f0ecfa 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s ease-in-out infinite;
+            border-radius: 8px;
         }
-        
-        .badge-completed {
-            background: #dcfce7;
-            color: #166534;
+        @keyframes shimmer { to { background-position: -200% 0; } }
+        .skel-line { height: 14px; margin-bottom: 8px; }
+        .skel-line.w-3-4 { width: 75%; }
+        .skel-line.w-1-2 { width: 50%; }
+        .skel-line.w-1-4 { width: 25%; }
+
+        /* ─── Profile form ───────────────────────────────────────────────── */
+        .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 560px) { .profile-grid { grid-template-columns: 1fr; } }
+        .profile-save-row { display: flex; align-items: center; gap: .75rem; margin-top: 1.25rem; flex-wrap: wrap; }
+        .save-status { font-size: .82rem; font-weight: 600; color: #22c55e; }
+
+        /* ─── Password reset inline ──────────────────────────────────────── */
+        .forgot-link {
+            font-size: .8rem; color: var(--clr-brand); font-weight: 500;
+            text-align: right; display: block; margin-top: .35rem; cursor: pointer;
         }
-        
-        .badge-shipped {
-            background: #e9d5ff;
-            color: #6b21a8;
+        .forgot-link:hover { text-decoration: underline; }
+
+        /* ─── Responsive ─────────────────────────────────────────────────── */
+        @media (max-width: 640px) {
+            .account-banner { flex-direction: column; align-items: flex-start; }
+            .panel { padding: 1.25rem; }
+            .tabs { gap: .15rem; }
+            .tab-btn { font-size: .8rem; padding: .55rem .35rem; }
         }
     </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <img src="../images2/OMEGATEK%20ICON%20ONLY.png" alt="Logo" class="w-8 h-8">
-                <span class="font-bold text-lg text-gray-800">Omegatek</span>
-            </div>
-            <div class="flex items-center gap-6">
-                <a href="/">Home</a>
-                <a href="products">Products</a>
-                <a href="services">Services</a>
-                <a href="blog">Blog</a>
-                <button onclick="logout()" class="btn-primary" id="logoutBtn" style="display:none;">
-                    Logout
-                </button>
-            </div>
+
+<!-- ═══ Navbar ═══════════════════════════════════════════════════════════ -->
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a href="/" class="navbar-brand">
+            <img src="../images2/OMEGATEK_SOLUTIONS_9-NO BG.png" alt="Omegatek">
+            <span>Omegatek</span>
+        </a>
+        <div class="navbar-links">
+            <a href="/">Home</a>
+            <a href="products.html">Products</a>
+            <a href="services.html">Services</a>
+            <button type="button" class="btn btn-outline" id="logoutBtn"
+                    style="display:none;padding:.45rem 1rem;font-size:.85rem;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
         </div>
-    </nav>
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode" title="Toggle dark/light mode">
+         <span class="theme-icon-light"><i class="fas fa-sun"></i></span>
+         <span class="theme-icon-dark"><i class="fas fa-moon"></i></span>
+      </button>
+    </div>
+</nav>
 
-    <!-- Main Content -->
-    <div class="max-w-6xl mx-auto px-4 py-8">
-        
-        <!-- Login Section (Hidden after login) -->
-        <div id="loginSection" class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-            <div class="auth-card">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">Login</h2>
-                <form onsubmit="handleLogin(event)" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                        <input type="email" id="loginEmail" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                        <input type="password" id="loginPassword" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
-                    </div>
-                    <button type="submit" class="w-full btn-primary py-2">Login</button>
-                    <p class="text-center text-sm text-gray-600">
-                        Don't have an account? <a href="#" onclick="switchToRegister()" class="text-purple-600 font-medium">Register here</a>
-                    </p>
-                </form>
-            </div>
+<!-- ═══ Toast container ════════════════════════════════════════════════ -->
+<div id="toastContainer"></div>
 
-            <div class="auth-card">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">Create Account</h2>
-                <form onsubmit="handleRegister(event)" class="space-y-4" id="registerForm" style="display:none;">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
-                        <input type="text" id="regFirstName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
-                        <input type="text" id="regLastName" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                        <input type="email" id="regEmail" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-                        <input type="tel" id="regPhone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                        <input type="password" id="regPassword" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 outline-none">
-                    </div>
-                    <button type="submit" class="w-full btn-primary py-2">Create Account</button>
-                    <p class="text-center text-sm text-gray-600">
-                        Already have an account? <a href="#" onclick="switchToLogin()" class="text-purple-600 font-medium">Login here</a>
-                    </p>
-                </form>
+<!-- ═══ Page wrap ══════════════════════════════════════════════════════ -->
+<div class="page-wrap">
+
+    <!-- ─── Auth section ─────────────────────────────────────────────── -->
+    <div id="authSection">
+        <!-- Login card -->
+        <div class="auth-card" id="loginCard">
+            <div class="auth-logo">
+                <img src="../images2/favicon.png" alt="Omegatek">
+                <h1>Welcome Back</h1>
+                <p>Sign in to manage your orders & repairs</p>
             </div>
+            <form id="loginForm" novalidate>
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" class="form-control" placeholder="you@example.com" required autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <div class="pw-wrap">
+                        <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required autocomplete="current-password" style="padding-right:3.5rem;">
+                        <button type="button" class="pw-toggle" data-target="loginPassword">Show</button>
+                    </div>
+                    <a class="forgot-link" id="forgotPwLink">Forgot password?</a>
+                </div>
+                <button type="submit" class="btn btn-brand" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+                <p class="auth-switch">No account? <a id="showRegisterLink">Create one</a></p>
+            </form>
         </div>
 
-        <!-- Account Dashboard (Shown after login) -->
-        <div id="accountSection" style="display:none;">
-            
-            <!-- Welcome Header -->
-            <div class="bg-gradient-to-r from-purple-600 to-purple-800 text-white rounded-lg p-8 mb-8">
-                <h1 class="text-4xl font-bold mb-2">Welcome, <span id="userGreeting">Guest</span>!</h1>
-                <p class="text-purple-100">Manage your orders and repair tickets from here</p>
+        <!-- Register card (hidden initially) -->
+        <div class="auth-card" id="registerCard" style="display:none;">
+            <div class="auth-logo">
+                <img src="../images2/favicon.png" alt="Omegatek">
+                <h1>Create Account</h1>
+                <p>Join Omegatek for order tracking & more</p>
             </div>
-
-            <!-- Tabs -->
-            <div class="flex gap-4 mb-8 border-b border-gray-200">
-                <button onclick="switchTab('orders')" class="tab-btn active px-6 py-3 font-medium text-gray-700 border-b-2 border-purple-600">
-                    <i class="fas fa-shopping-cart mr-2"></i>Orders
-                </button>
-                <button onclick="switchTab('repairs')" class="tab-btn px-6 py-3 font-medium text-gray-700">
-                    <i class="fas fa-tools mr-2"></i>Repair Tickets
-                </button>
-                <button onclick="switchTab('profile')" class="tab-btn px-6 py-3 font-medium text-gray-700">
-                    <i class="fas fa-user mr-2"></i>Profile
-                </button>
-            </div>
-
-            <!-- Orders Tab -->
-            <div id="orders-tab" class="tab-content">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">Your Orders</h2>
-                <div id="ordersList" class="space-y-4">
-                    <p class="text-gray-600">Loading orders...</p>
-                </div>
-            </div>
-
-            <!-- Repairs Tab -->
-            <div id="repairs-tab" class="tab-content" style="display:none;">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">Repair Tickets</h2>
-               <div id="repairsList" class="space-y-4">
-                    <p class="text-gray-600">Loading repair tickets...</p>
-                </div>
-            </div>
-
-            <!-- Profile Tab -->
-            <div id="profile-tab" class="tab-content" style="display:none;">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">Your Profile</h2>
-                <div class="auth-card max-w-2xl">
-                    <div class="space-y-6">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                            <input type="email" id="profileEmail" readonly class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
-                                <input type="text" id="profileFirstName" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
-                                <input type="text" id="profileLastName" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Phone</label>
-                            <input type="tel" id="profilePhone" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
-                        </div>
-                        <button onclick="updateProfile()" class="btn-primary py-2">Update Profile</button>
+            <form id="registerForm" novalidate>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="regFirstName">First Name</label>
+                        <input type="text" id="regFirstName" class="form-control" placeholder="Sandile" required autocomplete="given-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="regLastName">Last Name</label>
+                        <input type="text" id="regLastName" class="form-control" placeholder="Milanzi" autocomplete="family-name">
                     </div>
                 </div>
-            </div>
-
+                <div class="form-group">
+                    <label for="regEmail">Email</label>
+                    <input type="email" id="regEmail" class="form-control" placeholder="you@example.com" required autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="regPhone">Phone <span style="font-weight:400;text-transform:none;letter-spacing:0;color:#aaa;">(optional)</span></label>
+                    <input type="tel" id="regPhone" class="form-control" placeholder="+27 73 000 0000" autocomplete="tel">
+                </div>
+                <div class="form-group">
+                    <label for="regPassword">Password</label>
+                    <div class="pw-wrap">
+                        <input type="password" id="regPassword" class="form-control" placeholder="Min. 8 characters" required autocomplete="new-password" style="padding-right:3.5rem;">
+                        <button type="button" class="pw-toggle" data-target="regPassword">Show</button>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-brand" id="registerBtn">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </button>
+                <p class="auth-switch">Already have an account? <a id="showLoginLink">Sign in</a></p>
+            </form>
         </div>
-
     </div>
 
-    <script>
-        const API_BASE = './admin/';
-        let currentUser = null;
-        let authToken = localStorage.getItem('authToken');
+    <!-- ─── Account dashboard (hidden until logged in) ────────────────── -->
+    <div id="accountSection" style="display:none;">
 
-        // Check if user is logged in on page load
-        window.addEventListener('DOMContentLoaded', () => {
-            if (authToken) {
-                verifyToken();
-            }
+        <!-- Banner -->
+        <div class="account-banner">
+            <div class="banner-avatar" id="bannerAvatar">?</div>
+            <div class="banner-info">
+                <p class="banner-name" id="bannerName">Loading…</p>
+                <p class="banner-email" id="bannerEmail"></p>
+            </div>
+            <div class="banner-actions">
+                <button type="button" class="btn btn-outline" id="logoutBtnDash"
+                        style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:#fff;padding:.5rem 1rem;font-size:.82rem;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs" role="tablist">
+            <button type="button" class="tab-btn active" data-tab="orders" role="tab">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Orders</span>
+                <span class="tab-count" id="ordersCount">0</span>
+            </button>
+            <button type="button" class="tab-btn" data-tab="repairs" role="tab">
+                <i class="fas fa-screwdriver-wrench"></i>
+                <span>Repairs</span>
+                <span class="tab-count" id="repairsCount">0</span>
+            </button>
+            <button type="button" class="tab-btn" data-tab="profile" role="tab">
+                <i class="fas fa-user-circle"></i>
+                <span>Profile</span>
+            </button>
+        </div>
+
+        <!-- Orders tab -->
+        <div id="tab-orders" class="tab-panel" role="tabpanel">
+            <div class="panel">
+                <h2 class="panel-title"><i class="fas fa-shopping-bag" style="color:var(--clr-brand);margin-right:.45rem;"></i>Your Orders</h2>
+                <div id="ordersList">
+                    <!-- skeleton -->
+                    <div class="skel-card">
+                        <div class="skeleton skel-line w-3-4"></div>
+                        <div class="skeleton skel-line w-1-2"></div>
+                        <div class="skeleton skel-line w-1-4"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Repairs tab -->
+        <div id="tab-repairs" class="tab-panel" role="tabpanel" style="display:none;">
+            <div class="panel">
+                <h2 class="panel-title"><i class="fas fa-screwdriver-wrench" style="color:var(--clr-brand);margin-right:.45rem;"></i>Repair Tickets</h2>
+                <div id="repairsList">
+                    <div class="skel-card">
+                        <div class="skeleton skel-line w-3-4"></div>
+                        <div class="skeleton skel-line w-1-2"></div>
+                        <div class="skeleton skel-line w-1-4"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile tab -->
+        <div id="tab-profile" class="tab-panel" role="tabpanel" style="display:none;">
+            <div class="panel">
+                <h2 class="panel-title"><i class="fas fa-user-circle" style="color:var(--clr-brand);margin-right:.45rem;"></i>Your Profile</h2>
+                <form id="profileForm" novalidate>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="profileEmail" class="form-control" readonly>
+                    </div>
+                    <div class="profile-grid">
+                        <div class="form-group">
+                            <label for="profileFirstName">First Name</label>
+                            <input type="text" id="profileFirstName" class="form-control" placeholder="First name">
+                        </div>
+                        <div class="form-group">
+                            <label for="profileLastName">Last Name</label>
+                            <input type="text" id="profileLastName" class="form-control" placeholder="Last name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="profilePhone">Phone Number</label>
+                        <input type="tel" id="profilePhone" class="form-control" placeholder="+27 73 000 0000">
+                    </div>
+
+                    <hr style="border:none;border-top:1px solid var(--clr-border);margin:1.5rem 0;">
+                    <h3 style="font-size:.95rem;font-weight:700;margin:0 0 1rem;color:var(--clr-text);">Change Password</h3>
+                    <div class="form-group">
+                        <label for="profileNewPw">New Password <span style="font-weight:400;letter-spacing:0;color:#aaa;">(leave blank to keep current)</span></label>
+                        <div class="pw-wrap">
+                            <input type="password" id="profileNewPw" class="form-control" placeholder="New password (min. 8 characters)" autocomplete="new-password" style="padding-right:3.5rem;">
+                            <button type="button" class="pw-toggle" data-target="profileNewPw">Show</button>
+                        </div>
+                    </div>
+
+                    <div class="profile-save-row">
+                        <button type="submit" class="btn btn-brand" id="saveProfileBtn" style="width:auto;margin-top:0;">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                        <span class="save-status" id="profileSaveStatus" style="display:none;">
+                            <i class="fas fa-check-circle"></i> Saved!
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div><!-- /accountSection -->
+
+</div><!-- /page-wrap -->
+
+<script src="../js/transitions.js" defer></script>
+<script src="../js/theme-toggle.js" defer></script>
+<script type="module">
+import {
+    supabase,
+    signInWithEmail,
+    signUpWithEmail,
+    signOutUser,
+    sendPasswordReset,
+    updatePassword,
+    fetchOrdersByEmail,
+    fetchRepairTicketsByEmail,
+    fetchProfileRow,
+    upsertProfileRow,
+    onSupabaseAuthChange
+} from '../js/api.js';
+
+// ─── Toast system ─────────────────────────────────────────────────────────
+const toastContainer = document.getElementById('toastContainer');
+function toast(msg, type = 'success', duration = 4000) {
+    const icons = { success: 'fa-circle-check', error: 'fa-circle-exclamation', warn: 'fa-triangle-exclamation' };
+    const el = document.createElement('div');
+    el.className = `toast toast-${type}`;
+    el.innerHTML = `<i class="fas ${icons[type] || icons.success} toast-icon"></i><span>${msg}</span>`;
+    toastContainer.appendChild(el);
+    setTimeout(() => {
+        el.classList.add('removing');
+        setTimeout(() => el.remove(), 280);
+    }, duration);
+}
+
+// ─── Button loading state ─────────────────────────────────────────────────
+function btnLoad(btn, label = '') {
+    btn._orig    = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner"></span>${label || btn.textContent.trim()}`;
+}
+function btnReset(btn) {
+    btn.disabled  = false;
+    btn.innerHTML = btn._orig || btn.innerHTML;
+}
+
+// ─── Password toggle ──────────────────────────────────────────────────────
+document.querySelectorAll('.pw-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const inp  = document.getElementById(btn.dataset.target);
+        if (!inp) return;
+        const show = inp.type === 'password';
+        inp.type   = show ? 'text' : 'password';
+        btn.textContent = show ? 'Hide' : 'Show';
+    });
+});
+
+// ─── Auth panel switching ─────────────────────────────────────────────────
+function showLogin() {
+    document.getElementById('loginCard').style.display    = '';
+    document.getElementById('registerCard').style.display = 'none';
+    document.getElementById('loginEmail')?.focus();
+}
+function showRegister() {
+    document.getElementById('loginCard').style.display    = 'none';
+    document.getElementById('registerCard').style.display = '';
+    document.getElementById('regFirstName')?.focus();
+}
+
+document.getElementById('showRegisterLink')?.addEventListener('click', showRegister);
+document.getElementById('showLoginLink')?.addEventListener('click', showLogin);
+
+// ─── Auth state: show/hide sections ──────────────────────────────────────
+async function onUserLoggedIn(user) {
+    document.getElementById('authSection').style.display    = 'none';
+    document.getElementById('accountSection').style.display = '';
+    document.getElementById('logoutBtn').style.display      = 'flex';
+
+    const profile = await fetchProfileRow(user.id).catch(() => null);
+    const first   = profile?.first_name || user.user_metadata?.first_name || '';
+    const last    = profile?.last_name  || user.user_metadata?.last_name  || '';
+    const name    = [first, last].filter(Boolean).join(' ') || user.email;
+    const initials = (first?.[0] || '') + (last?.[0] || '') || user.email[0].toUpperCase();
+
+    document.getElementById('bannerName').textContent   = name;
+    document.getElementById('bannerEmail').textContent  = user.email;
+    document.getElementById('bannerAvatar').textContent = initials.toUpperCase();
+
+    // Prefill profile tab
+    document.getElementById('profileEmail').value     = user.email;
+    document.getElementById('profileFirstName').value = first;
+    document.getElementById('profileLastName').value  = last;
+    document.getElementById('profilePhone').value     = profile?.phone || user.user_metadata?.phone || '';
+
+    // Load data
+    await Promise.all([loadOrders(user.email), loadRepairs(user.email)]);
+}
+
+function onUserLoggedOut() {
+    document.getElementById('authSection').style.display    = '';
+    document.getElementById('accountSection').style.display = 'none';
+    document.getElementById('logoutBtn').style.display      = 'none';
+    showLogin();
+}
+
+onSupabaseAuthChange(({ user }) => {
+    if (user) onUserLoggedIn(user);
+    else       onUserLoggedOut();
+});
+
+// ─── Login ────────────────────────────────────────────────────────────────
+document.getElementById('loginForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn   = document.getElementById('loginBtn');
+    const email = document.getElementById('loginEmail').value.trim();
+    const pw    = document.getElementById('loginPassword').value;
+    if (!email || !pw) { toast('Please fill in all fields.', 'warn'); return; }
+    btnLoad(btn, 'Signing in…');
+    try {
+        await signInWithEmail({ email, password: pw });
+        toast('Welcome back! 👋', 'success');
+        document.getElementById('loginPassword').value = '';
+    } catch (err) {
+        toast(err.message === 'Invalid login credentials' ? 'Incorrect email or password.' : err.message, 'error');
+        document.getElementById('loginPassword').value = '';
+    } finally { btnReset(btn); }
+});
+
+// ─── Forgot password ──────────────────────────────────────────────────────
+document.getElementById('forgotPwLink')?.addEventListener('click', async () => {
+    const email = document.getElementById('loginEmail').value.trim();
+    if (!email) { toast('Enter your email address first.', 'warn'); return; }
+    try {
+        await sendPasswordReset(email);
+        toast('Password reset email sent! Check your inbox.', 'success');
+    } catch (err) { toast(err.message, 'error'); }
+});
+
+// ─── Register ─────────────────────────────────────────────────────────────
+document.getElementById('registerForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = document.getElementById('registerBtn');
+    const data = {
+        firstName: document.getElementById('regFirstName').value.trim(),
+        lastName : document.getElementById('regLastName').value.trim(),
+        email    : document.getElementById('regEmail').value.trim(),
+        phone    : document.getElementById('regPhone').value.trim(),
+        password : document.getElementById('regPassword').value
+    };
+    if (!data.firstName || !data.email || !data.password) { toast('Please fill all required fields.', 'warn'); return; }
+    if (data.password.length < 8) { toast('Password must be at least 8 characters.', 'warn'); return; }
+    btnLoad(btn, 'Creating account…');
+    try {
+        const result = await signUpWithEmail(data);
+        if (!result.session) {
+            toast('Account created! Please check your email to confirm.', 'success', 6000);
+            showLogin();
+        } else {
+            toast('Account created! Welcome to Omegatek 🎉', 'success');
+        }
+    } catch (err) {
+        const msg = err.message.includes('already registered')
+            ? 'An account with this email already exists.'
+            : err.message;
+        toast(msg, 'error');
+    } finally { btnReset(btn); }
+});
+
+// ─── Logout ───────────────────────────────────────────────────────────────
+async function doLogout() {
+    try { await signOutUser(); } catch {}
+    toast('Logged out successfully.', 'success');
+}
+document.getElementById('logoutBtn')?.addEventListener('click', doLogout);
+document.getElementById('logoutBtnDash')?.addEventListener('click', doLogout);
+
+// ─── Tabs ─────────────────────────────────────────────────────────────────
+function switchTab(name) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`tab-${name}`).style.display = '';
+    document.querySelector(`[data-tab="${name}"]`)?.classList.add('active');
+}
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+
+// ─── Orders ───────────────────────────────────────────────────────────────
+function statusBadge(status) {
+    const s = (status || 'pending').toLowerCase().replace(/ /g, '_');
+    return `<span class="badge badge-${s}">${s.replace('_', ' ')}</span>`;
+}
+
+async function loadOrders(email) {
+    const el = document.getElementById('ordersList');
+    el.innerHTML = skeletonHTML(3);
+    try {
+        const orders = await fetchOrdersByEmail(email);
+        document.getElementById('ordersCount').textContent = orders.length;
+        if (!orders.length) {
+            el.innerHTML = `<div class="empty-state">
+                <i class="fas fa-shopping-bag"></i>
+                <h3>No orders yet</h3>
+                <p>Your orders will appear here once you place one.</p>
+            </div>`;
+            return;
+        }
+        el.innerHTML = orders.map(o => `
+            <div class="item-card">
+                <div class="item-card-head">
+                    <div>
+                        <div class="item-card-id">#${o.order_number || o.id}</div>
+                        <div class="item-card-sub">${new Date(o.created_at).toLocaleDateString('en-ZA', {day:'numeric',month:'short',year:'numeric'})}</div>
+                    </div>
+                    ${statusBadge(o.status)}
+                </div>
+                <div class="item-card-foot">
+                    <div class="kv">
+                        <div class="kv-label">Total</div>
+                        <div class="kv-value">R${parseFloat(o.total_amount || 0).toFixed(2)}</div>
+                    </div>
+                    <div class="kv">
+                        <div class="kv-label">Payment</div>
+                        <div class="kv-value">${o.payment_status || 'pending'}</div>
+                    </div>
+                    <div class="kv">
+                        <div class="kv-label">Method</div>
+                        <div class="kv-value">${o.payment_method || '—'}</div>
+                    </div>
+                </div>
+            </div>`).join('');
+    } catch (err) {
+        el.innerHTML = `<div class="empty-state"><i class="fas fa-triangle-exclamation" style="color:#fca5a5;"></i><h3>Could not load orders</h3><p>${err.message}</p></div>`;
+    }
+}
+
+// ─── Repairs ──────────────────────────────────────────────────────────────
+async function loadRepairs(email) {
+    const el = document.getElementById('repairsList');
+    el.innerHTML = skeletonHTML(2);
+    try {
+        const tickets = await fetchRepairTicketsByEmail(email);
+        document.getElementById('repairsCount').textContent = tickets.length;
+        if (!tickets.length) {
+            el.innerHTML = `<div class="empty-state">
+                <i class="fas fa-screwdriver-wrench"></i>
+                <h3>No repair tickets</h3>
+                <p>When you bring a device in for repair, your ticket will appear here.</p>
+            </div>`;
+            return;
+        }
+        el.innerHTML = tickets.map(t => `
+            <div class="item-card">
+                <div class="item-card-head">
+                    <div>
+                        <div class="item-card-id">#${t.ticket_number || t.id}</div>
+                        <div class="item-card-sub">${t.device_type} — ${t.issue_description?.slice(0,60) || ''}${t.issue_description?.length > 60 ? '…' : ''}</div>
+                    </div>
+                    ${statusBadge(t.status)}
+                </div>
+                <div class="item-card-foot">
+                    <div class="kv">
+                        <div class="kv-label">Priority</div>
+                        <div class="kv-value">${t.priority || 'normal'}</div>
+                    </div>
+                    <div class="kv">
+                        <div class="kv-label">Technician</div>
+                        <div class="kv-value">${t.assigned_technician || 'Pending'}</div>
+                    </div>
+                    <div class="kv">
+                        <div class="kv-label">Estimate</div>
+                        <div class="kv-value">${t.estimated_cost ? 'R' + parseFloat(t.estimated_cost).toFixed(2) : '—'}</div>
+                    </div>
+                </div>
+            </div>`).join('');
+    } catch (err) {
+        el.innerHTML = `<div class="empty-state"><i class="fas fa-triangle-exclamation" style="color:#fca5a5;"></i><h3>Could not load tickets</h3><p>${err.message}</p></div>`;
+    }
+}
+
+// ─── Profile update ───────────────────────────────────────────────────────
+document.getElementById('profileForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn    = document.getElementById('saveProfileBtn');
+    const status = document.getElementById('profileSaveStatus');
+    const newPw  = document.getElementById('profileNewPw').value;
+
+    btnLoad(btn, 'Saving…');
+    status.style.display = 'none';
+
+    try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error('Not authenticated');
+
+        // Update password if provided
+        if (newPw) {
+            if (newPw.length < 8) throw new Error('Password must be at least 8 characters.');
+            await updatePassword(newPw);
+            document.getElementById('profileNewPw').value = '';
+        }
+
+        // Update profile row
+        await upsertProfileRow({
+            id        : user.id,
+            email     : user.email,
+            first_name: document.getElementById('profileFirstName').value.trim(),
+            last_name : document.getElementById('profileLastName').value.trim(),
+            phone     : document.getElementById('profilePhone').value.trim(),
         });
 
-        // Switch between login and register forms
-        function switchToRegister() {
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('registerForm').style.display = 'block';
-            document.querySelector('.auth-card:first-child').style.display = 'none';
+        // Update banner
+        const first = document.getElementById('profileFirstName').value.trim();
+        const last  = document.getElementById('profileLastName').value.trim();
+        if (first || last) {
+            document.getElementById('bannerName').textContent   = [first, last].filter(Boolean).join(' ');
+            document.getElementById('bannerAvatar').textContent = ((first[0]||'') + (last[0]||'')).toUpperCase() || '?';
         }
 
-        function switchToLogin() {
-            document.getElementById('loginSection').style.display = 'grid';
-            document.getElementById('registerForm').style.display = 'none';
-            document.querySelector('.auth-card:first-child').style.display = 'block';
-        }
+        toast('Profile updated successfully!', 'success');
+        status.style.display = '';
+        setTimeout(() => { status.style.display = 'none'; }, 3000);
+    } catch (err) {
+        toast(err.message, 'error');
+    } finally { btnReset(btn); }
+});
 
-        // Handle login
-        async function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-
-            try {
-                const response = await fetch(API_BASE + 'auth-api.php?action=login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, password })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    localStorage.setItem('authToken', data.token);
-                    authToken = data.token;
-                    currentUser = data.user;
-                    showAccountDashboard();
-                    loadUserOrders();
-                    loadRepairTickets();
-                } else {
-                    alert('Login failed: ' + data.message);
-                }
-            } catch (error) {
-                console.error('Login error:', error);
-                alert('Login error. Please try again.');
-            }
-        }
-
-        // Handle registration
-        async function handleRegister(e) {
-            e.preventDefault();
-            const data = {
-                first_name: document.getElementById('regFirstName').value,
-                last_name: document.getElementById('regLastName').value,
-                email: document.getElementById('regEmail').value,
-                phone: document.getElementById('regPhone').value,
-                password: document.getElementById('regPassword').value
-            };
-
-            try {
-                const response = await fetch(API_BASE + 'auth-api.php?action=register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data)
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    localStorage.setItem('authToken', result.token);
-                    authToken = result.token;
-                    currentUser = result.user;
-                    showAccountDashboard();
-                } else {
-                    alert('Registration failed: ' + result.message);
-                }
-            } catch (error) {
-                console.error('Registration error:', error);
-                alert('Registration error. Please try again.');
-            }
-        }
-
-        // Verify token
-        async function verifyToken() {
-            try {
-                const response = await fetch(API_BASE + 'auth-api.php?action=verify_token', {
-                    headers: { 'Authorization': 'Bearer ' + authToken }
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    currentUser = data.user;
-                    showAccountDashboard();
-                    loadUserOrders();
-                    loadRepairTickets();
-                } else {
-                    logout();
-                }
-            } catch (error) {
-                console.error('Token verification error:', error);
-                logout();
-            }
-        }
-
-        // Show account dashboard
-        function showAccountDashboard() {
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('accountSection').style.display = 'block';
-            document.getElementById('logoutBtn').style.display = 'inline-block';
-            document.getElementById('userGreeting').textContent = currentUser.first_name || currentUser.email;
-            loadProfile();
-        }
-
-        // Load user orders from database
-        async function loadUserOrders() {
-            try {
-                const response = await fetch(API_BASE + 'orders-api.php?action=get_customer_orders', {
-                    headers: { 'Authorization': 'Bearer ' + authToken }
-                });
-
-                const data = await response.json();
-
-                if (data.success && data.orders.length > 0) {
-                    document.getElementById('ordersList').innerHTML = data.orders.map(order => `
-                        <div class="order-card">
-                            <div class="flex items-center justify-between mb-3">
-                                <div>
-                                    <h3 class="font-bold text-gray-800">#${order.order_number}</h3>
-                                    <p class="text-sm text-gray-600">${new Date(order.created_at).toLocaleDateString()}</p>
-                                </div>
-                                <span class="badge badge-${order.status}">${order.status}</span>
-                            </div>
-                            <div class="grid grid-cols-2 gap-4 pt-3 border-t border-gray-200">
-                                <div>
-                                    <p class="text-xs text-gray-600">Total Amount</p>
-                                    <p class="font-bold text-gray-800">R${parseFloat(order.total_amount).toFixed(2)}</p>
-                                </div>
-                                <div>
-                                    <p class="text-xs text-gray-600">Payment Status</p>
-                                    <p class="font-bold text-gray-800">${order.payment_status}</p>
-                                </div>
-                            </div>
-                            <button onclick="viewOrderDetails(${order.id})" class="mt-3 text-purple-600 text-sm font-medium hover:underline">
-                                View Details →
-                            </button>
-                        </div>
-                    `).join('');
-                } else {
-                    document.getElementById('ordersList').innerHTML = '<p class="text-gray-600">No orders yet.</p>';
-                }
-            } catch (error) {
-                console.error('Error loading orders:', error);
-                document.getElementById('ordersList').innerHTML = '<p class="text-red-600">Error loading orders.</p>';
-            }
-        }
-
-        // Load repair tickets
-        async function loadRepairTickets() {
-            try {
-                const response = await fetch(API_BASE + 'orders-api.php?action=get_customer_repairs', {
-                    headers: { 'Authorization': 'Bearer ' + authToken }
-                });
-
-                const data = await response.json();
-
-                if (data.success && data.tickets.length > 0) {
-                    document.getElementById('repairsList').innerHTML = data.tickets.map(ticket => `
-                        <div class="order-card">
-                            <div class="flex items-center justify-between mb-3">
-                                <div>
-                                    <h3 class="font-bold text-gray-800">#${ticket.ticket_number}</h3>
-                                    <p class="text-sm text-gray-600">${ticket.device_type}</p>
-                                </div>
-                                <span class="badge badge-${ticket.status}">${ticket.status}</span>
-                            </div>
-                            <p class="text-sm text-gray-600 mb-3">${ticket.issue_description}</p>
-                            <div class="grid grid-cols-2 gap-4 pt-3 border-t border-gray-200">
-                                <div>
-                                    <p class="text-xs text-gray-600">Priority</p>
-                                    <p class="font-bold text-gray-800 capitalize">${ticket.priority}</p>
-                                </div>
-                                <div>
-                                    <p class="text-xs text-gray-600">Assigned To</p>
-                                    <p class="font-bold text-gray-800">${ticket.assigned_technician || 'Pending'}</p>
-                                </div>
-                            </div>
-                            <button onclick="viewTicketDetails(${ticket.id})" class="mt-3 text-purple-600 text-sm font-medium hover:underline">
-                                View Details →
-                            </button>
-                        </div>
-                    `).join('');
-                } else {
-                    document.getElementById('repairsList').innerHTML = '<p class="text-gray-600">No repair tickets yet.</p>';
-                }
-            } catch (error) {
-                console.error('Error loading repairs:', error);
-                document.getElementById('repairsList').innerHTML = '<p class="text-red-600">Error loading repair tickets.</p>';
-            }
-        }
-
-        // Load user profile
-        async function loadProfile() {
-            if (!currentUser) return;
-
-            document.getElementById('profileEmail').value = currentUser.email;
-            document.getElementById('profileFirstName').value = currentUser.first_name || '';
-            document.getElementById('profileLastName').value = currentUser.last_name || '';
-            document.getElementById('profilePhone').value = currentUser.phone || '';
-        }
-
-        // Update profile
-        async function updateProfile() {
-            // Profile update functionality coming soon
-            alert('Profile update functionality coming soon!');
-        }
-
-        // Switch tabs
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
-            document.querySelectorAll('.tab-btn').forEach(el => {
-                el.classList.remove('border-b-2', 'border-purple-600');
-                el.classList.add('text-gray-700');
-            });
-
-            document.getElementById(tab + '-tab').style.display = 'block';
-            event.target.closest('.tab-btn').classList.add('border-b-2', 'border-purple-600');
-            event.target.closest('.tab-btn').classList.remove('text-gray-700');
-        }
-
-        // Logout
-        function logout() {
-            localStorage.removeItem('authToken');
-            authToken = null;
-            currentUser = null;
-            document.getElementById('loginSection').style.display = 'grid';
-            document.getElementById('accountSection').style.display = 'none';
-            document.getElementById('logoutBtn').style.display = 'none';
-            document.getElementById('loginEmail').value = '';
-            document.getElementById('loginPassword').value = '';
-        }
-
-        // Placeholder functions
-        function viewOrderDetails(orderId) {
-            alert('Order details page coming soon! Order ID: ' + orderId);
-        }
-
-        function viewTicketDetails(ticketId) {
-            alert('Ticket details page coming soon! Ticket ID: ' + ticketId);
-        }
-    </script>
+// ─── Skeleton helper ──────────────────────────────────────────────────────
+function skeletonHTML(count = 2) {
+    return Array.from({ length: count }, () => `
+        <div class="item-card" style="margin-bottom:.75rem;">
+            <div class="skeleton skel-line w-3-4" style="margin-bottom:.5rem;"></div>
+            <div class="skeleton skel-line w-1-2" style="margin-bottom:.5rem;"></div>
+            <div class="skeleton skel-line w-1-4"></div>
+        </div>`).join('');
+}
+</script>
 </body>
 </html>
-
-

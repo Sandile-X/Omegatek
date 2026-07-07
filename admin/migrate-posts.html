@@ -52,7 +52,8 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBlZmpraWlqcXJhdGppeHNrbWR4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MzkwNDQsImV4cCI6MjA4ODAxNTA0NH0.x6s38k7avvoszJATabbUcp2zv9kjUVYRjKPT7n-pQJA';
         const { createClient } = window.supabase;
         const _sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-            auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
+            auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false,
+                    storageKey: 'sb-admin-auth-token' }
         });
 
         // ── Old blog posts data ───────────────────────────────────────────────

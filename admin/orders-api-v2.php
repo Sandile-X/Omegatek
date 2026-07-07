@@ -77,12 +77,14 @@ switch ($action) {
         getCustomerOrders($userId);
         break;
     case 'get_order':
+        requireAuth();
         getOrder();
         break;
     case 'create_order':
         createOrder();
         break;
     case 'update_order':
+        requireAuth(); // admin must be authenticated to mutate orders
         updateOrder();
         break;
     case 'get_customer_repairs':
@@ -241,15 +243,39 @@ function createOrder() {
     try {
         $orderNumber = 'OMG-' . strtoupper(substr(uniqid(), -8));
         $totalAmount = 0;
-        
-        // Calculate total
+
+        // Validate items and look up prices server-side when product_id is supplied
+        $validatedItems = [];
         foreach ($data['items'] as $item) {
-            $totalAmount += floatval($item['total_price']);
+            $productId = intval($item['product_id'] ?? 0);
+            if ($productId > 0) {
+                $product = fetchOne(
+                    "SELECT name, price FROM products WHERE id = ? AND is_active = 1",
+                    [$productId]
+                );
+                if (!$product) {
+                    http_response_code(400);
+                    echo json_encode(['success' => false, 'message' => 'Invalid product']);
+                    return;
+                }
+                $qty         = max(1, intval($item['quantity']));
+                $unitPrice   = floatval($product['price']);
+                $totalPrice  = $unitPrice * $qty;
+                $productName = htmlspecialchars($product['name']);
+            } else {
+                // Custom / service item — no catalogue entry
+                $qty         = max(1, intval($item['quantity']));
+                $unitPrice   = floatval($item['unit_price']);
+                $totalPrice  = $unitPrice * $qty;
+                $productName = htmlspecialchars($item['product_name'] ?? '');
+            }
+            $totalAmount      += $totalPrice;
+            $validatedItems[]  = compact('productName', 'qty', 'unitPrice', 'totalPrice');
         }
-        
+
         // Create order
         execute(
-            "INSERT INTO orders (order_number, customer_email, customer_name, customer_phone, total_amount, payment_method, status) 
+            "INSERT INTO orders (order_number, customer_email, customer_name, customer_phone, total_amount, payment_method, status)
              VALUES (?, ?, ?, ?, ?, ?, 'pending')",
             [
                 $orderNumber,
@@ -260,21 +286,21 @@ function createOrder() {
                 htmlspecialchars($data['payment_method'] ?? 'pending')
             ]
         );
-        
+
         global $pdo;
         $orderId = $pdo->lastInsertId();
-        
-        // Add order items
-        foreach ($data['items'] as $item) {
+
+        // Add order items using server-validated data only
+        foreach ($validatedItems as $item) {
             execute(
-                "INSERT INTO order_items (order_id, product_name, quantity, unit_price, total_price) 
+                "INSERT INTO order_items (order_id, product_name, quantity, unit_price, total_price)
                  VALUES (?, ?, ?, ?, ?)",
                 [
                     $orderId,
-                    htmlspecialchars($item['product_name']),
-                    intval($item['quantity']),
-                    floatval($item['unit_price']),
-                    floatval($item['total_price'])
+                    $item['productName'],
+                    $item['qty'],
+                    $item['unitPrice'],
+                    $item['totalPrice'],
                 ]
             );
         }
@@ -286,8 +312,9 @@ function createOrder() {
             'order_number' => $orderNumber
         ]);
     } catch (Exception $e) {
+        error_log('createOrder error: ' . $e->getMessage());
         http_response_code(500);
-        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        echo json_encode(['success' => false, 'message' => 'Failed to create order. Please try again.']);
     }
 }
 
@@ -324,8 +351,9 @@ function updateOrder() {
         
         echo json_encode(['success' => true, 'message' => 'Order updated']);
     } catch (Exception $e) {
+        error_log('updateOrder error: ' . $e->getMessage());
         http_response_code(500);
-        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        echo json_encode(['success' => false, 'message' => 'Failed to update order. Please try again.']);
     }
 }
 
@@ -368,8 +396,9 @@ function createRepairTicket($userId) {
             'ticket_number' => $ticketNumber
         ]);
     } catch (Exception $e) {
+        error_log('createRepairTicket error: ' . $e->getMessage());
         http_response_code(500);
-        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        echo json_encode(['success' => false, 'message' => 'Failed to create repair ticket. Please try again.']);
     }
 }
 
