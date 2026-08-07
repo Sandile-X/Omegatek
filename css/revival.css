@@ -1,6 +1,14 @@
 /* ============================================================
    revival.css — iOS-Inspired Design System
    Omegatek Solutions 2026
+
+   Loaded AFTER style.css on every page by design: this file is an
+   override/theme layer (dark mode, glassmorphism, spring hover), not
+   a standalone stylesheet. ~60 selectors intentionally re-declare
+   base rules from style.css so the cascade lets this file win — that
+   overlap is the mechanism, not accidental duplication. Don't merge
+   the two files or reorder their <link> tags without visually
+   re-checking every affected section in both light and dark mode.
    ============================================================ */
 
 /* ── 1. CSS Custom Properties (Light + Dark) ─────────────── */

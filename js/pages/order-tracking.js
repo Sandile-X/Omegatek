@@ -1,14 +1,6 @@
 import { fetchOrderById } from '../api.js';
 import { onReady } from '../site-shell.js';
-
-function escapeHtml(value) {
-    return String(value ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-}
+import { escapeHtml } from '../utils.js';
 
 const statusIcons = {
     pending: 'fa-clock',

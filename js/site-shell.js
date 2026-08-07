@@ -126,23 +126,37 @@ export function initSiteChrome(options = {}) {
     if (enableProgressBar && !document.getElementById(progressBarId)) {
         const progressBar = document.createElement('div');
         progressBar.id = progressBarId;
+        // Full-width bar scaled via transform (GPU-composited) instead of
+        // animating `width` (layout property — forces reflow every scroll tick).
         progressBar.style.cssText = [
             'position:fixed',
             'top:0',
             'left:0',
-            'width:0%',
+            'width:100%',
             'height:4px',
             'background:linear-gradient(90deg, #b30ce6, #9333ea, #7c3aed)',
             'z-index:10000',
-            'transition:width 0.1s ease',
+            'transform-origin:left center',
+            'transform:scaleX(0)',
+            'transition:transform 0.1s ease',
+            'will-change:transform',
             'box-shadow:0 2px 8px rgba(179, 12, 230, 0.4)'
         ].join(';');
         document.body.appendChild(progressBar);
 
-        window.addEventListener('scroll', () => {
+        let progressRafPending = false;
+        const updateProgressBar = () => {
+            progressRafPending = false;
             const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const percent = scrollHeight > 0 ? (window.scrollY / scrollHeight) * 100 : 0;
-            progressBar.style.width = `${percent}%`;
+            const fraction = scrollHeight > 0 ? window.scrollY / scrollHeight : 0;
+            progressBar.style.transform = `scaleX(${fraction})`;
+        };
+
+        window.addEventListener('scroll', () => {
+            if (!progressRafPending) {
+                progressRafPending = true;
+                window.requestAnimationFrame(updateProgressBar);
+            }
         }, { passive: true });
     }
 
@@ -264,6 +278,10 @@ export function initBackToTop(selector = '.back-to-top, #scrollToTop', threshold
 }
 
 export function initMagneticHover(selectors, options = {}) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        return;
+    }
+
     const {
         strength = 0.1,
         scale = 1.05
@@ -275,11 +293,21 @@ export function initMagneticHover(selectors, options = {}) {
         }
 
         element.dataset.magneticBound = 'true';
+        let rafPending = false;
+        let lastEvent = null;
         element.addEventListener('mousemove', (event) => {
-            const rect = element.getBoundingClientRect();
-            const x = event.clientX - rect.left - rect.width / 2;
-            const y = event.clientY - rect.top - rect.height / 2;
-            element.style.transform = `translate(${x * strength}px, ${y * strength}px) scale(${scale})`;
+            lastEvent = event;
+            if (rafPending) {
+                return;
+            }
+            rafPending = true;
+            window.requestAnimationFrame(() => {
+                rafPending = false;
+                const rect = element.getBoundingClientRect();
+                const x = lastEvent.clientX - rect.left - rect.width / 2;
+                const y = lastEvent.clientY - rect.top - rect.height / 2;
+                element.style.transform = `translate(${x * strength}px, ${y * strength}px) scale(${scale})`;
+            });
         });
         element.addEventListener('mouseleave', () => {
             element.style.transform = 'translate(0px, 0px) scale(1)';
@@ -288,6 +316,10 @@ export function initMagneticHover(selectors, options = {}) {
 }
 
 export function initTiltHover(selectors, options = {}) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        return;
+    }
+
     const {
         rotateDivisor = 20,
         perspective = 1000,
@@ -301,18 +333,28 @@ export function initTiltHover(selectors, options = {}) {
         }
 
         element.dataset.tiltBound = 'true';
+        let rafPending = false;
+        let lastEvent = null;
         element.addEventListener('mousemove', (event) => {
-            const rect = element.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            const rotateX = (y - centerY) / rotateDivisor;
-            const rotateY = (centerX - x) / rotateDivisor;
-            element.style.transform = `perspective(${perspective}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${scale})`;
-            if (boxShadow) {
-                element.style.boxShadow = boxShadow;
+            lastEvent = event;
+            if (rafPending) {
+                return;
             }
+            rafPending = true;
+            window.requestAnimationFrame(() => {
+                rafPending = false;
+                const rect = element.getBoundingClientRect();
+                const x = lastEvent.clientX - rect.left;
+                const y = lastEvent.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = (y - centerY) / rotateDivisor;
+                const rotateY = (centerX - x) / rotateDivisor;
+                element.style.transform = `perspective(${perspective}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${scale})`;
+                if (boxShadow) {
+                    element.style.boxShadow = boxShadow;
+                }
+            });
         });
 
         element.addEventListener('mouseleave', () => {

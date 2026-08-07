@@ -10,21 +10,9 @@ $csrfToken = csrf_token();
     <title>Admin Dashboard | Omegatek Solutions</title>
     <meta name="robots" content="noindex, nofollow">
     <?= csrf_meta_tag() ?>
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://unpkg.com https://cdnjs.cloudflare.com; img-src 'self' data: https:;">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://unpkg.com https://cdnjs.cloudflare.com; img-src 'self' data: https:;">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-       tailwind.config = {
-          theme: {
-             extend: {
-                colors: {
-                   primary: '#b30ce6',
-                   secondary: '#ff6b9d'
-                }
-             }
-          }
-       }
-    </script>
+    <link rel="stylesheet" href="../css/tailwind-built.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">

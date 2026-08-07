@@ -51,20 +51,34 @@ function getAuthToken() {
 
 function requireAuth() {
     $token = getAuthToken();
-    
+
     if (!$token) {
         http_response_code(401);
         echo json_encode(['success' => false, 'message' => 'Unauthorized']);
         exit;
     }
-    
-    $session = fetchOne("SELECT user_id FROM sessions WHERE token = ?", [$token]);
+
+    // This is a management API (order/repair-ticket admin actions), not a
+    // customer-facing endpoint — require an admin-role session, same check
+    // used by products-api.php. Also enforces expiry, which the previous
+    // query never did (sessions never expired).
+    $session = fetchOne(
+        "SELECT s.user_id, u.role FROM sessions s
+         INNER JOIN users u ON u.id = s.user_id
+         WHERE s.token = ? AND s.expires_at > NOW()",
+        [$token]
+    );
     if (!$session) {
         http_response_code(401);
-        echo json_encode(['success' => false, 'message' => 'Invalid token']);
+        echo json_encode(['success' => false, 'message' => 'Invalid or expired token']);
         exit;
     }
-    
+    if (($session['role'] ?? '') !== 'admin') {
+        http_response_code(403);
+        echo json_encode(['success' => false, 'message' => 'Admin access required']);
+        exit;
+    }
+
     return $session['user_id'];
 }
 
@@ -263,11 +277,24 @@ function createOrder() {
                 $totalPrice  = $unitPrice * $qty;
                 $productName = htmlspecialchars($product['name']);
             } else {
-                // Custom / service item — no catalogue entry
-                $qty         = max(1, intval($item['quantity']));
-                $unitPrice   = floatval($item['unit_price']);
-                $totalPrice  = $unitPrice * $qty;
-                $productName = htmlspecialchars($item['product_name'] ?? '');
+                // Custom / service item — no catalogue entry, so there's no
+                // server-side price to look up. Bound it instead: reject
+                // non-numeric, zero/negative, or absurd values rather than
+                // trusting the client outright.
+                $qty       = max(1, intval($item['quantity']));
+                $unitPrice = filter_var($item['unit_price'] ?? null, FILTER_VALIDATE_FLOAT);
+                if ($unitPrice === false || $unitPrice <= 0 || $unitPrice > 200000) {
+                    http_response_code(400);
+                    echo json_encode(['success' => false, 'message' => 'Invalid item price']);
+                    return;
+                }
+                $productName = htmlspecialchars(trim($item['product_name'] ?? ''));
+                if ($productName === '') {
+                    http_response_code(400);
+                    echo json_encode(['success' => false, 'message' => 'Item name required']);
+                    return;
+                }
+                $totalPrice = $unitPrice * $qty;
             }
             $totalAmount      += $totalPrice;
             $validatedItems[]  = compact('productName', 'qty', 'unitPrice', 'totalPrice');

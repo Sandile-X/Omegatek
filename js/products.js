@@ -9,6 +9,7 @@ import { CartStore } from './cart.js';
 import { WishlistStore } from './wishlist.js';
 import { initUi, bindNewsletterForm, initProductsShellUi, openAuthModal, showAuthToast } from './ui.js';
 import { initAuth, requireAuthForCheckout } from './auth.js';
+import { escapeHtml } from './utils.js';
 
 const PRODUCT_SCHEMA = {
     '@context': 'https://schema.org',
@@ -47,13 +48,59 @@ const PRODUCT_SCHEMA = {
 
 let activeManager = null;
 
-function escapeHtml(value) {
-    return String(value ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
+// Shown whenever a product has no image, or its image URL fails to load
+// (404, bad data, etc.) — a data URI so it never triggers its own network
+// request or a broken-image icon.
+const PRODUCT_IMG_FALLBACK = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">' +
+    '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
+    '<stop offset="0" stop-color="#b30ce6"/><stop offset="1" stop-color="#6d28d9"/>' +
+    '</linearGradient></defs>' +
+    '<rect width="200" height="200" fill="url(#g)"/>' +
+    '<g fill="none" stroke="#ffffff" stroke-width="6" stroke-linejoin="round" stroke-linecap="round" opacity="0.6">' +
+    '<rect x="55" y="62" width="90" height="76" rx="8"/>' +
+    '<circle cx="82" cy="88" r="7" fill="#ffffff" stroke="none"/>' +
+    '<path d="M63 130l23-24 17 16 14-13 20 21"/>' +
+    '</g></svg>'
+);
+
+const IMG_ERROR_ATTR = `onerror="this.onerror=null;this.src='${PRODUCT_IMG_FALLBACK}';"`;
+
+// The current catalog import has no `category` data at all (every row is
+// null). Rather than lump 431 products into one "Uncategorised" bucket —
+// which also leaves the category filters/chips empty — guess a reasonable
+// category (and a matching icon for the no-photo placeholder) from the
+// product name. Order matters: more specific patterns first.
+const CATEGORY_RULES = [
+    { test: /\bwatch\b/i, category: 'Wearables', icon: 'fa-clock' },
+    { test: /\bcamera|cctv|ip\s?cam|webcam/i, category: 'Cameras & Security', icon: 'fa-video' },
+    { test: /joystick|gamepad|game controller/i, category: 'Gaming', icon: 'fa-gamepad' },
+    { test: /bluetooth (receiver|transmitter)/i, category: 'Audio', icon: 'fa-headphones' },
+    { test: /cat5e|cat6|rj45|optical fibre|network (cable|patch)/i, category: 'Networking', icon: 'fa-network-wired' },
+    { test: /router|mifi|modem|\b[345]g\b.*wireless/i, category: 'Networking', icon: 'fa-wifi' },
+    { test: /\blamp\b|\blight(ing)?\b/i, category: 'Lighting', icon: 'fa-lightbulb' },
+    { test: /backpack|sling bag|laptop bag/i, category: 'Bags & Cases', icon: 'fa-briefcase' },
+    { test: /clean(ing|er)?\s?kit|cleaning/i, category: 'Cleaning & Care', icon: 'fa-pump-soap' },
+    { test: /cable\s?(organiser|organizer|holder|tie|clip)/i, category: 'Cable Management', icon: 'fa-grip-lines' },
+    { test: /wall mount|tv mount/i, category: 'TV & Wall Mounts', icon: 'fa-tv' },
+    { test: /\bmount\b|\bholder\b|airvent|bike.*mobile/i, category: 'Mounts & Holders', icon: 'fa-mobile-screen-button' },
+    { test: /headset|soundbar|sound card|earbud|earphone|headphone|\bspeaker\b/i, category: 'Audio', icon: 'fa-headphones' },
+    { test: /hdmi|\bvga\b|displayport|\bdvi\b|multi-display|docking station/i, category: 'Video & Display', icon: 'fa-display' },
+    { test: /charger|charging|power ?bank|pd cable|power (cord|supply|socket)/i, category: 'Cables & Chargers', icon: 'fa-bolt' },
+    { test: /\b(usb|type-c|usb-c|lightning)\b.*cable|cable.*\b(usb|type-c|lightning)\b|aux.*cable|rca.*cable/i, category: 'Cables & Chargers', icon: 'fa-bolt' },
+    { test: /\bssd\b|\bhdd\b|hard drive|\bnvme\b/i, category: 'Storage', icon: 'fa-hard-drive' },
+    { test: /\bddr-?\d\b|\bram\b|memory module/i, category: 'Memory (RAM)', icon: 'fa-memory' },
+    { test: /\bmouse\b|mousepad/i, category: 'Computer Accessories', icon: 'fa-computer-mouse' },
+    { test: /\bkeyboard\b/i, category: 'Computer Accessories', icon: 'fa-keyboard' },
+    { test: /cooling.*stand|notebook lock|combination lock|barcode scanner|card reader|usb hub|extension hub|serial adapter|rs232/i, category: 'Computer Accessories', icon: 'fa-desktop' },
+    { test: /\bcase\b|\bcover\b|screen protector|tempered glass/i, category: 'Phone Accessories', icon: 'fa-mobile-screen' }
+];
+const DEFAULT_CATEGORY = { category: 'Tech Accessories', icon: 'fa-microchip' };
+
+function inferCategory(name) {
+    const source = String(name || '');
+    const match = CATEGORY_RULES.find((rule) => rule.test.test(source));
+    return match ? { category: match.category, icon: match.icon } : DEFAULT_CATEGORY;
 }
 
 function injectStructuredData() {
@@ -145,7 +192,9 @@ class ProductManager {
     normalizeProduct(product) {
         const tags = Array.isArray(product.tags) ? [...product.tags] : [];
         const variantColor = product.variant_color || product.variantColor || '';
-        const category = product.category || 'Uncategorised';
+        const inferred = inferCategory(product.name);
+        const category = product.category || inferred.category;
+        const placeholderIcon = product.category ? DEFAULT_CATEGORY.icon : inferred.icon;
         const partNo = product.part_no || product.partNo || product.sku || product.id || '';
         const modelNo = product.model_no || product.modelNo || '';
 
@@ -167,6 +216,7 @@ class ProductManager {
             costPrice: Number.parseFloat(product.cost_price ?? product.costPrice) || 0,
             image: product.image_url || product.image || '',
             category,
+            placeholderIcon,
             warranty: product.warranty || '',
             variantColor,
             supplier: product.supplier || 'Astrum',
@@ -220,7 +270,7 @@ class ProductManager {
                 price: 99,
                 costPrice: 49,
                 warranty: '12 Months',
-                image: 'products/demo.jpg',
+                image: PRODUCT_IMG_FALLBACK,
                 category: 'Demo Category',
                 rating: 4,
                 reviews: 10,
@@ -242,7 +292,7 @@ class ProductManager {
                 name: 'USB-C Fast Charging Cable 3m',
                 description: 'High-speed 100W charging cable with 480Mbps data transfer and braided design.',
                 price: 89.99,
-                image: 'products/image007.png',
+                image: PRODUCT_IMG_FALLBACK,
                 category: 'Cables & Chargers',
                 rating: 4.6,
                 reviews: 156,
@@ -260,7 +310,7 @@ class ProductManager {
                 description: 'Industry-leading noise cancellation with 30-hour battery life and premium sound quality.',
                 price: 1299.99,
                 originalPrice: 1599.99,
-                image: 'products/image009.png',
+                image: PRODUCT_IMG_FALLBACK,
                 category: 'Audio & Headphones',
                 rating: 4.9,
                 reviews: 89,
@@ -277,7 +327,7 @@ class ProductManager {
                 name: 'Apple MagSafe Wireless Charger',
                 description: 'Official Apple MagSafe charger with 15W fast wireless charging for iPhone 12 and later.',
                 price: 649.99,
-                image: 'products/image010.png',
+                image: PRODUCT_IMG_FALLBACK,
                 category: 'Cables & Chargers',
                 rating: 4.7,
                 reviews: 312,
@@ -294,7 +344,7 @@ class ProductManager {
                 name: 'Logitech MX Master 3S Wireless Mouse',
                 description: 'Advanced wireless mouse with ultra-precise scrolling and ergonomic design.',
                 price: 899.99,
-                image: 'products/image011.png',
+                image: PRODUCT_IMG_FALLBACK,
                 category: 'Computer Accessories',
                 rating: 4.8,
                 reviews: 445,
@@ -766,8 +816,8 @@ class ProductManager {
             : '<span class="prd-avail prd-avail-out"><i class="fas fa-clock"></i> Order in</span>';
 
         const mediaContent = product.image
-            ? `<img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" loading="lazy">`
-            : `<div class="prd-img-fallback"><i class="fas fa-microchip"></i><p>${escapeHtml(product.category)}</p></div>`;
+            ? `<img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" loading="lazy" ${IMG_ERROR_ATTR}>`
+            : `<div class="prd-img-fallback"><i class="fas ${product.placeholderIcon || 'fa-microchip'}"></i><p>${escapeHtml(product.category)}</p></div>`;
 
         return `
             <div class="prd-img-wrap">
@@ -828,7 +878,7 @@ class ProductManager {
             <article class="product-card store-card store-list-card flex flex-col xl:flex-row" data-aos="fade-up">
                 ${product.image ? `
                     <div class="store-list-media product-image-container">
-                        <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" class="w-full h-full object-cover" loading="lazy">
+                        <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" class="w-full h-full object-cover" loading="lazy" ${IMG_ERROR_ATTR}>
                         <div class="absolute left-4 top-4 z-10 flex flex-wrap gap-2">
                             <span class="store-badge">${escapeHtml(product.category)}</span>
                             ${this.getSaleBadge(product)}
@@ -840,7 +890,7 @@ class ProductManager {
                 ` : `
                     <div class="store-list-media store-media-fallback product-image-container">
                         <div class="text-center text-white p-6">
-                            <i class="fas fa-microchip text-5xl mb-3 opacity-60"></i>
+                            <i class="fas ${product.placeholderIcon || 'fa-microchip'} text-5xl mb-3 opacity-60"></i>
                             <h4 class="text-lg font-semibold">${escapeHtml(product.name)}</h4>
                             <p class="text-sm opacity-80 mt-2">${escapeHtml(product.category)}</p>
                         </div>
@@ -993,7 +1043,7 @@ class ProductManager {
 
         container.innerHTML = items.map((item) => `
             <div class="flex items-center gap-4 p-4 border-b border-gray-200">
-                <img src="${escapeHtml(item.image || '../images2/favicon.png')}" alt="${escapeHtml(item.name)}" class="w-16 h-16 object-cover rounded-lg" loading="lazy">
+                <img src="${escapeHtml(item.image || PRODUCT_IMG_FALLBACK)}" alt="${escapeHtml(item.name)}" class="w-16 h-16 object-cover rounded-lg" loading="lazy" ${IMG_ERROR_ATTR}>
                 <div class="flex-1">
                     <h4 class="font-semibold text-gray-800">${escapeHtml(item.name)}</h4>
                     <p class="text-primary font-bold">R${item.price.toFixed(2)}</p>
@@ -1105,8 +1155,8 @@ class ProductManager {
         empty.classList.add('hidden');
         container.innerHTML = items.map((product) => {
             const imageMarkup = product.image
-                ? `<img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" class="w-full h-full object-cover">`
-                : '<div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-500 to-pink-500"><i class="fas fa-microchip text-white text-xl"></i></div>';
+                ? `<img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" class="w-full h-full object-cover" loading="lazy" ${IMG_ERROR_ATTR}>`
+                : `<div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-500 to-pink-500"><i class="fas ${product.placeholderIcon || 'fa-microchip'} text-white text-xl"></i></div>`;
             const stockMarkup = product.inStock
                 ? '<span class="text-green-600">In Stock</span>'
                 : '<span class="text-red-400">Out of Stock</span>';
@@ -1152,7 +1202,7 @@ class ProductManager {
         const media = product.image
             ? `
                 <div class="store-media store-media-flat product-image-container">
-                    <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" class="store-quick-view-image" loading="lazy">
+                    <img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}" class="store-quick-view-image" loading="lazy" ${IMG_ERROR_ATTR}>
                     <div class="absolute left-4 top-4 z-10 flex flex-wrap gap-2">
                         <span class="store-badge">${escapeHtml(product.category)}</span>
                         ${this.getSaleBadge(product)}
@@ -1165,7 +1215,7 @@ class ProductManager {
             : `
                 <div class="store-media store-media-flat store-media-fallback product-image-container">
                     <div class="text-center text-white p-8">
-                        <i class="fas fa-microchip text-6xl mb-4 opacity-60"></i>
+                        <i class="fas ${product.placeholderIcon || 'fa-microchip'} text-6xl mb-4 opacity-60"></i>
                         <h3 class="text-2xl font-semibold">${escapeHtml(product.name)}</h3>
                         <p class="text-sm opacity-80 mt-3">${escapeHtml(product.category)}</p>
                     </div>
@@ -1376,11 +1426,32 @@ function bindAdminHelpers() {
     };
 }
 
+const CONSTRUCTION_BANNER_KEY = 'omegatek_construction_banner_dismissed';
+
+function initConstructionBanner() {
+    const banner = document.getElementById('storeConstructionBanner');
+    const dismissBtn = document.getElementById('dismissConstructionBanner');
+    if (!banner) {
+        return;
+    }
+
+    if (window.sessionStorage.getItem(CONSTRUCTION_BANNER_KEY) === 'true') {
+        banner.classList.add('is-dismissed');
+        return;
+    }
+
+    dismissBtn?.addEventListener('click', () => {
+        banner.classList.add('is-dismissed');
+        window.sessionStorage.setItem(CONSTRUCTION_BANNER_KEY, 'true');
+    });
+}
+
 async function bootstrapProductsPage() {
     if (!document.getElementById('productsGrid')) {
         return;
     }
 
+    initConstructionBanner();
     await initUi();
     await initAuth();
     bindNewsletterForm();

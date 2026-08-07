@@ -1,4 +1,6 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600&family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+﻿/* Fonts are loaded via a direct <link> in each page's <head> (not @import
+   here) so the browser can discover and fetch them immediately instead of
+   waiting for this stylesheet to download and parse first. */
 
 html {
   scroll-behavior: smooth;
@@ -558,7 +560,7 @@ section {
   color: #444;
 }
 
-.fun-fact .box h3 {
+.fun-fact .box .fun-fact-number {
   font-variant-numeric: tabular-nums;
 }
 
@@ -682,7 +684,7 @@ section {
   height: 10rem;
 }
 
-.fun-fact .box h3 {
+.fun-fact .box .fun-fact-number {
   font-size: 4rem;
   text-transform: capitalize;
   color: #334;

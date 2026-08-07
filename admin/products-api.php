@@ -161,6 +161,7 @@ function getProducts() {
             'source' => 'database'
         ]);
     } catch (PDOException $e) {
+        error_log('getProducts DB error: ' . $e->getMessage());
         // If table doesn't exist, fallback to JSON
         $jsonPath = __DIR__ . '/../data/products.json';
         if (file_exists($jsonPath)) {
@@ -169,14 +170,12 @@ function getProducts() {
                 'success' => true,
                 'products' => $products,
                 'total' => count($products),
-                'source' => 'json_fallback',
-                'db_error' => $e->getMessage()
+                'source' => 'json_fallback'
             ]);
         } else {
             echo json_encode([
                 'success' => false,
-                'message' => 'Database error and no fallback data',
-                'error' => $e->getMessage()
+                'message' => 'Service temporarily unavailable. Please try again later.'
             ]);
         }
     }
@@ -239,8 +238,9 @@ function createProduct() {
             'product' => $product
         ]);
     } catch (Exception $e) {
+        error_log('createProduct error: ' . $e->getMessage());
         http_response_code(500);
-        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        echo json_encode(['success' => false, 'message' => 'Failed to create product. Please try again.']);
     }
 }
 
@@ -291,8 +291,9 @@ function updateProduct() {
             'product' => $product
         ]);
     } catch (Exception $e) {
+        error_log('updateProduct error: ' . $e->getMessage());
         http_response_code(500);
-        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        echo json_encode(['success' => false, 'message' => 'Failed to update product. Please try again.']);
     }
 }
 
@@ -311,8 +312,9 @@ function deleteProduct() {
         
         echo json_encode(['success' => true, 'message' => 'Product deleted']);
     } catch (Exception $e) {
+        error_log('deleteProduct error: ' . $e->getMessage());
         http_response_code(500);
-        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        echo json_encode(['success' => false, 'message' => 'Failed to delete product. Please try again.']);
     }
 }
 

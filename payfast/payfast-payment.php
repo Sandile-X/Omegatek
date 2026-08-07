@@ -42,7 +42,7 @@ $data = [
 ];
 
 // Generate signature
-$signature = generatePayFastSignature($data);
+$signature = generatePayFastSignature($data, PAYFAST_PASSPHRASE);
 $data['signature'] = $signature;
 
 // Log payment initiation

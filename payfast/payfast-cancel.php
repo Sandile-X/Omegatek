@@ -22,18 +22,7 @@ if (isset($_SESSION['pending_payfast_order'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment Cancelled | Omegatek Solutions</title>
     <link rel="icon" type="image/png" href="images2/OMEGATEK%20ICON%20ONLY.png">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#b30ce6',
-                    }
-                }
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="../css/tailwind-built.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {

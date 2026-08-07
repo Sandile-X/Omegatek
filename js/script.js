@@ -9,7 +9,7 @@ if (menu && navbarLinks) {
 }
 
 let _scrollTicking = false;
-window.onscroll = () => {
+window.addEventListener('scroll', () => {
    if (_scrollTicking) return;
    _scrollTicking = true;
    requestAnimationFrame(() => {
@@ -28,7 +28,7 @@ window.onscroll = () => {
       }
       _scrollTicking = false;
    });
-}
+}, { passive: true });
 
 document.addEventListener("DOMContentLoaded", function() {
    const contactForm = document.getElementById("contactForm");

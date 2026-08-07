@@ -11,6 +11,7 @@ ini_set('display_errors', 0);
 error_reporting(E_ALL);
 
 require_once __DIR__ . '/../config/secure-config.php';
+require_once __DIR__ . '/../config/rate-limit.php';
 
 // Security headers
 header('X-Content-Type-Options: nosniff');
@@ -73,6 +74,7 @@ function checkAuth(): void {
 }
 
 checkAuth();
+rate_limit('gemini_api_' . ($_GET['action'] ?? 'default'), 30, 60);
 
 // CORS — admin-only: restrict to known origins (must be set after auth so 401 also has CORS headers)
 $_allowedOrigins = ['http://127.0.0.1:8000','http://localhost:8000','https://omegateksolutions.co.za','https://www.omegateksolutions.co.za'];

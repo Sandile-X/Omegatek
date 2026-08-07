@@ -39,11 +39,11 @@
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
-   <script src="https://cdn.tailwindcss.com"></script>
-   <script src="../js/tailwind-main-site-config.js"></script>
+   <link rel="stylesheet" href="../css/tailwind-built.css">
 
-   <link rel="stylesheet" href="../css/style.css">
-   <link rel="stylesheet" href="../css/revival.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600&family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+   <link rel="stylesheet" href="../css/style.min.css">
+   <link rel="stylesheet" href="../css/revival.min.css">
    <link rel="stylesheet" href="../css/cookie-consent.css">
    <link rel="stylesheet" href="../css/auth.css">
 
@@ -355,6 +355,97 @@
          gap: 1.2rem;
          flex-wrap: wrap;
       }
+      .trust-line {
+         font-size: 1.3rem;
+         color: #888;
+         font-weight: 500;
+         margin: 1.6rem 0 0;
+      }
+      .audio-btn-outline-light {
+         background: transparent;
+         color: #b30ce6;
+         border: 2px solid rgba(179,12,230,0.3);
+      }
+      .audio-btn-outline-light:hover {
+         background: rgba(179,12,230,0.08);
+         border-color: #b30ce6;
+         transform: translateY(-3px);
+      }
+      .plugin-featured-grid.reverse .plugin-visual { order: 2; }
+      .plugin-featured-grid.reverse .plugin-info { order: 1; }
+      .section-eyebrow {
+         color: #b30ce6;
+         font-weight: 700;
+         text-transform: uppercase;
+         letter-spacing: .1em;
+         font-size: 1.2rem;
+         margin: 0 0 1rem;
+      }
+      .narrative-caption {
+         font-size: 1.25rem;
+         color: #999;
+         font-style: italic;
+         margin-top: 1.2rem;
+      }
+      .narrative-section { padding: 6rem 10%; background: #fff; }
+      .narrative-section.alt-bg { background: #f8f8fc; }
+      .context-chips {
+         display: flex;
+         flex-wrap: wrap;
+         gap: 1rem;
+         margin-top: 2.2rem;
+      }
+      .mini-gallery {
+         display: grid;
+         grid-template-columns: 1fr 1fr;
+         gap: 2.5rem;
+         max-width: 1100px;
+         margin: 4rem auto 0;
+      }
+      .mini-gallery figure { margin: 0; }
+      .mini-gallery img {
+         width: 100%;
+         height: auto;
+         border-radius: 1.2rem;
+         border: 1px solid #eee;
+         box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+         display: block;
+      }
+      .mini-gallery figcaption {
+         font-size: 1.2rem;
+         color: #888;
+         margin-top: .9rem;
+         text-align: center;
+      }
+      .mzansi-callout {
+         max-width: 900px;
+         margin: 4rem auto 0;
+         background: linear-gradient(135deg, rgba(179,12,230,0.06), rgba(179,12,230,0.02));
+         border: 1px solid rgba(179,12,230,0.18);
+         border-radius: 1.6rem;
+         padding: 2.8rem;
+         display: flex;
+         gap: 2rem;
+         align-items: flex-start;
+      }
+      .mzansi-callout .spec-icon { flex-shrink: 0; margin-bottom: 0; }
+      .mzansi-callout h3 { font-size: 1.8rem; font-weight: 700; color: #334; margin: 0 0 .8rem; }
+      .mzansi-callout p { font-size: 1.4rem; color: #666; line-height: 1.75; margin: 0; }
+      .poster-section {
+         background: #0a0a1a;
+         display: flex;
+         justify-content: center;
+         padding-top: 5rem;
+         padding-bottom: 5rem;
+      }
+      .poster-image {
+         width: 100%;
+         max-width: 340px;
+         height: auto;
+         border-radius: 1.6rem;
+         box-shadow: 0 25px 70px rgba(179,12,230,0.3);
+         display: block;
+      }
 
       /* ─── SPECS ─────────────────────────────────────────────── */
       .plugin-specs {
@@ -539,6 +630,10 @@
             margin: 0 auto;
          }
          .plugin-info h2 { font-size: 3rem; }
+         .plugin-featured-grid.reverse .plugin-visual { order: 1; }
+         .plugin-featured-grid.reverse .plugin-info { order: 2; }
+         .mini-gallery { grid-template-columns: 1fr; max-width: 500px; }
+         .mzansi-callout { flex-direction: column; padding: 2.2rem; }
       }
       /* ─── HERO VIDEO & TYPEWRITER ────────────────────────── */
       .audio-hero-video {
@@ -583,6 +678,8 @@
          .specs-grid { grid-template-columns: 1fr 1fr; }
          .eq-bars { height: 100px; }
          .eq-bar { width: 8px; }
+         .narrative-section { padding: 4rem 6% !important; }
+         .section-eyebrow { font-size: 1.05rem; }
       }
    </style>
 </head>
@@ -657,88 +754,153 @@
 
    <div class="plugin-featured-grid">
       <div class="plugin-visual" data-aos="fade-right">
-         <img class="plugin-visual-bg" src="../images2/omegahertzcoverart.png" alt="OmegaHertzEQ Cover Art">
-         <div class="eq-visualizer">
-            <div class="eq-bars-wrap">
-            <div class="eq-bars">
-               <div class="eq-bar"></div>
-               <div class="eq-bar"></div>
-               <div class="eq-bar"></div>
-               <div class="eq-bar"></div>
-               <div class="eq-bar"></div>
-               <div class="eq-bar"></div>
-               <div class="eq-bar"></div>
-               <div class="eq-bar"></div>
-               <div class="eq-bar"></div>
-               <div class="eq-bar"></div>
-               <div class="eq-bar"></div>
-               <div class="eq-bar"></div>
-            </div>
-            </div>
-         </div>
+         <img class="plugin-visual-bg" src="../images2/WebsiteAssets/PromoCampaign/01-flagship-acoustic-chamber.webp" width="1600" height="666" alt="OmegaHertzEQ's plugin window in a dark architectural studio setting, displaying the eight-band EQ curve">
       </div>
       <div class="plugin-info" data-aos="fade-left">
+         <p class="plugin-kicker" style="color:var(--ot-primary,#b30ce6);font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:.85rem;margin:0 0 .4rem;">Omegatek Solutions | Windows VST3 + Standalone</p>
          <h2>Omega<span>Hertz</span>EQ</h2>
-         <p class="plugin-tagline">8-Band Fully Parametric &amp; Dynamic Equalizer</p>
+         <p class="plugin-tagline">Eight bands. One focused EQ workflow.</p>
          <p class="plugin-desc">
-            A professional-grade parametric equalizer built with JUCE 8. Featuring 8 fully configurable bands with per-band dynamic EQ controls, real-time spectrum analysis, A/B comparison, and a stunning RGB-animated UI. Shape your sound with surgical precision.
+            OmegaHertzEQ combines precision parametric EQ, per-band dynamic processing, and a clear visual workspace for fast, intentional tone shaping. Shape a mix, tame a resonance, or build a wider mastering move without leaving the curve.
          </p>
 
          <div class="feature-chips">
-            <span class="feature-chip"><i class="fas fa-sliders-h"></i> 8 Parametric Bands</span>
-            <span class="feature-chip"><i class="fas fa-wave-square"></i> Dynamic EQ</span>
-            <span class="feature-chip"><i class="fas fa-chart-area"></i> Spectrum Analyser</span>
-            <span class="feature-chip"><i class="fas fa-exchange-alt"></i> A/B Compare</span>
-            <span class="feature-chip"><i class="fas fa-undo"></i> Undo / Redo</span>
-            <span class="feature-chip"><i class="fas fa-tachometer-alt"></i> Loudness Meter</span>
-            <span class="feature-chip"><i class="fas fa-save"></i> 8 Factory Presets</span>
-            <span class="feature-chip"><i class="fas fa-expand-arrows-alt"></i> Resizable UI</span>
+            <span class="feature-chip"><i class="fas fa-sliders-h"></i> 8 Configurable Bands</span>
+            <span class="feature-chip"><i class="fas fa-wave-square"></i> Dynamic EQ on Every Band</span>
+            <span class="feature-chip"><i class="fas fa-chart-area"></i> Pre, Post &amp; Sidechain Views</span>
+            <span class="feature-chip"><i class="fas fa-arrows-alt-h"></i> Stereo / Mid / Side / L / R</span>
+            <span class="feature-chip"><i class="fas fa-exchange-alt"></i> A/B Compare + Undo/Redo</span>
+            <span class="feature-chip"><i class="fas fa-tachometer-alt"></i> Peak, RMS &amp; Loudness</span>
          </div>
 
          <div class="plugin-actions">
             <a href="https://drive.google.com/uc?export=download&id=1ggWt7WLL3dCEuk5oAwmWKfH4JyLn8jms&confirm=t" target="_blank" rel="noopener noreferrer" class="audio-btn audio-btn-primary" style="font-size:1.4rem;padding:1.2rem 2.5rem;">
-               <i class="fas fa-download"></i> Download Setup
+               <i class="fas fa-download"></i> Download for Windows
+            </a>
+            <a href="#specs" class="audio-btn audio-btn-outline-light" style="font-size:1.4rem;padding:1.2rem 2.5rem;">
+               Explore the Features
             </a>
          </div>
+         <p class="trust-line">Windows x64 · VST3 + Standalone · 8-band parametric EQ</p>
       </div>
    </div>
 </section>
 
-<!-- ═══ SPECS ══════════════════════════════════════════════════════ -->
-<section class="plugin-specs">
-   <h1 class="heading" data-aos="fade-down">technical <span>specs</span></h1>
+<!-- ═══ PRECISION ══════════════════════════════════════════════════ -->
+<section class="narrative-section" id="specs">
+   <div class="plugin-featured-grid">
+      <div class="plugin-info" data-aos="fade-right">
+         <p class="section-eyebrow">Precision When You Need It</p>
+         <h2 style="font-size:2.6rem;">Shape the whole picture — or the exact problem</h2>
+         <p class="plugin-desc" style="font-size:1.4rem;">
+            Start on the interactive spectrum canvas, where every band is visible at once. Drag a numbered node to move frequency and gain together, use the mouse wheel to refine Q, and switch between focused ±18 dB and extended ±24 dB gain ranges. Choose Low Cut, Low Shelf, Peak, High Shelf, High Cut, or Notch filtering, with 12, 24, or 48 dB/octave cut slopes where they matter.
+         </p>
+      </div>
+      <figure class="plugin-visual" data-aos="fade-left" style="margin:0;">
+         <img class="plugin-visual-bg" src="../images2/WebsiteAssets/PromoCampaign/04-sound-intelligence-layers.webp" width="1600" height="800" loading="lazy" alt="OmegaHertzEQ interface with translucent layers representing the EQ curve, spectrum, dynamics, and metering stages">
+      </figure>
+   </div>
+   <p class="narrative-caption" style="text-align:center;max-width:700px;margin:2rem auto 0;">Every layer of the curve — EQ, spectrum, dynamics, and metering — visible at once.</p>
+</section>
 
-   <div class="specs-grid">
+<!-- ═══ DYNAMICS ═══════════════════════════════════════════════════ -->
+<section class="narrative-section alt-bg">
+   <div class="plugin-featured-grid reverse">
+      <div class="plugin-info" data-aos="fade-left">
+         <p class="section-eyebrow">Dynamics Where the Music Needs It</p>
+         <h2 style="font-size:2.6rem;">Make a band react, not just sit still</h2>
+         <p class="plugin-desc" style="font-size:1.4rem;">
+            Each EQ band includes its own Dynamic EQ controls: threshold, attack, release, ratio, and dynamic boost. Target harshness only when it appears, hold a vocal in place, or make tonal moves respond to the programme material. Gain-reduction feedback on the canvas keeps the action visible as you work.
+         </p>
+      </div>
+      <figure class="plugin-visual" data-aos="fade-right" style="margin:0;">
+         <img class="plugin-visual-bg" src="../images2/WebsiteAssets/PromoCampaign/07-dynamic-eq-macro.webp" width="1600" height="800" loading="lazy" alt="Macro view of OmegaHertzEQ's Dynamic EQ controls — threshold, attack, release, and ratio">
+      </figure>
+   </div>
+   <p class="narrative-caption" style="text-align:center;max-width:700px;margin:2rem auto 0;">Threshold, attack, release, ratio — dialled in per band, live.</p>
+</section>
+
+<!-- ═══ POSTER MOMENT ══════════════════════════════════════════════ -->
+<section class="narrative-section poster-section">
+   <img src="../images2/WebsiteAssets/PromoCampaign/03-shape-what-moves-poster.webp" width="700" height="1475" loading="lazy" class="poster-image" data-aos="zoom-in" alt="Vertical OmegaHertzEQ campaign poster reading 'Shape What Moves', with the plugin's eight bands arranged in a circular orbit around the interface">
+</section>
+
+<!-- ═══ CONTEXT / WORKFLOW ═════════════════════════════════════════ -->
+<section class="narrative-section" style="text-align:center;">
+   <p class="section-eyebrow">Make Decisions With Context</p>
+   <h2 style="font-size:2.6rem;max-width:800px;margin:0 auto;">Hear it. See it. Compare it.</h2>
+   <p class="plugin-desc" style="font-size:1.4rem;max-width:800px;margin:1.5rem auto 0;">
+      Switch the real-time spectrum display between pre-EQ, post-EQ, and sidechain views. Use A/B snapshots for instant comparisons, and use undo / redo freely while you explore. Integrated peak, RMS, and loudness metering, plus Auto Gain and master bypass, make level-aware decisions part of the same workflow.
+   </p>
+   <div class="context-chips" style="justify-content:center;">
+      <span class="feature-chip"><i class="fas fa-eye"></i> Pre / Post / Sidechain</span>
+      <span class="feature-chip"><i class="fas fa-exchange-alt"></i> A/B Snapshots</span>
+      <span class="feature-chip"><i class="fas fa-undo"></i> Free Undo / Redo</span>
+      <span class="feature-chip"><i class="fas fa-tachometer-alt"></i> Peak / RMS / LUFS</span>
+      <span class="feature-chip"><i class="fas fa-magic"></i> Auto Gain</span>
+      <span class="feature-chip"><i class="fas fa-power-off"></i> Master Bypass</span>
+   </div>
+</section>
+
+<!-- ═══ BUILT FOR REAL SESSIONS ════════════════════════════════════ -->
+<section class="narrative-section alt-bg">
+   <p class="section-eyebrow" style="text-align:center;">Built for Real Sessions</p>
+   <h2 style="font-size:2.6rem;text-align:center;max-width:800px;margin:0 auto;">Start fast, then make it yours</h2>
+   <p class="plugin-desc" style="font-size:1.4rem;max-width:800px;margin:1.5rem auto 0;text-align:center;">
+      OmegaHertzEQ opens with a practical 8-band layout and includes 49 factory presets for common starting points. Work in Stereo, Mid, Side, Left, or Right per band; solo or mute bands while hunting down a frequency; then resize the interface to suit the session.
+   </p>
+
+   <div class="specs-grid" style="margin-top:3.5rem;">
       <div class="spec-card" data-aos="fade-up" data-aos-delay="50">
-         <div class="spec-icon"><i class="fas fa-sliders-h"></i></div>
-         <h3>Band Types</h3>
-         <p>Low Shelf, Bell, High Shelf, Low Pass, High Pass, Notch, All Pass, and Band Pass — all fully selectable per band.</p>
+         <div class="spec-icon"><i class="fas fa-save"></i></div>
+         <h3>49 Factory Presets</h3>
+         <p>A full bank of starting points across Factory, Mastering, Vocal, Headphone Correction, Dynamic EQ, and Mzansi Mix categories.</p>
       </div>
       <div class="spec-card" data-aos="fade-up" data-aos-delay="100">
-         <div class="spec-icon"><i class="fas fa-bolt"></i></div>
-         <h3>Dynamic Processing</h3>
-         <p>Per-band dynamic EQ with dedicated attack, release, threshold, and ratio controls for surgical frequency-dependent compression.</p>
-      </div>
-      <div class="spec-card" data-aos="fade-up" data-aos-delay="150">
-         <div class="spec-icon"><i class="fas fa-chart-line"></i></div>
-         <h3>Spectrum Analyser</h3>
-         <p>Real-time FFT spectrum display with pre, post, and delta viewing modes. See exactly how your EQ shapes the signal.</p>
-      </div>
-      <div class="spec-card" data-aos="fade-up" data-aos-delay="200">
          <div class="spec-icon"><i class="fas fa-headphones"></i></div>
-         <h3>Band Solo &amp; Mute</h3>
+         <h3>Per-Band Solo &amp; Mute</h3>
          <p>Isolate individual bands to fine-tune adjustments, or mute bands to quickly compare with and without processing.</p>
       </div>
+      <div class="spec-card" data-aos="fade-up" data-aos-delay="150">
+         <div class="spec-icon"><i class="fas fa-arrows-alt-h"></i></div>
+         <h3>Stereo / Mid / Side / L / R</h3>
+         <p>Route each band independently — keep sub-bass mono, put air on the Side, and leave the rest of the field untouched.</p>
+      </div>
+      <div class="spec-card" data-aos="fade-up" data-aos-delay="200">
+         <div class="spec-icon"><i class="fas fa-expand-arrows-alt"></i></div>
+         <h3>Resizable Interface</h3>
+         <p>Scale the UI from 780×520 up to 2560×1440 — work small in a crowded session, or blow it up on a second monitor.</p>
+      </div>
       <div class="spec-card" data-aos="fade-up" data-aos-delay="250">
-         <div class="spec-icon"><i class="fas fa-th-list"></i></div>
-         <h3>Band Inspector</h3>
-         <p>Dedicated inspector panel for precise numeric editing of every parameter — frequency, gain, Q, and dynamic controls.</p>
+         <div class="spec-icon"><i class="fas fa-desktop"></i></div>
+         <h3>Windows x64</h3>
+         <p>VST3 for DAW use, plus a Standalone application for working directly against an audio device.</p>
       </div>
-      <div class="spec-card" data-aos="fade-up" data-aos-delay="300">
-         <div class="spec-icon"><i class="fas fa-volume-up"></i></div>
-         <h3>Loudness Metering</h3>
-         <p>Integrated LUFS, peak, and RMS metering bridge for professional loudness monitoring during mastering sessions.</p>
+   </div>
+
+   <div class="mzansi-callout" data-aos="fade-up">
+      <div class="spec-icon"><i class="fas fa-globe-africa"></i></div>
+      <div>
+         <h3>Mzansi Mix Presets</h3>
+         <p>12 factory presets built from the ground up for South African music. From Amapiano log drums and Gqom drum buses to gospel choirs, maskandi guitar, kwaito low end, lekompo synth buses, and a club mastering chain — every preset is a research-backed starting context, not a fixed prescription. Load it, listen, and dial it your way.</p>
       </div>
+   </div>
+
+   <div class="mini-gallery">
+      <figure data-aos="fade-up">
+         <img src="../images2/WebsiteAssets/omegahertzeq-main-interface.webp" width="1349" height="858" loading="lazy" alt="OmegaHertzEQ full interface showing all eight bands with the default preset loaded">
+         <figcaption>Full interface — default 8-band layout.</figcaption>
+      </figure>
+      <figure data-aos="fade-up" data-aos-delay="100">
+         <img src="../images2/WebsiteAssets/omegahertzeq-dynamic-eq-inspector.webp" width="1351" height="856" loading="lazy" alt="OmegaHertzEQ Dynamic EQ inspector panel for a selected band, showing gain, frequency, Q, and dynamics controls">
+         <figcaption>Band Inspector — numeric control over every parameter.</figcaption>
+      </figure>
+   </div>
+
+   <div class="plugin-actions" style="justify-content:center;margin-top:3.5rem;">
+      <a href="https://drive.google.com/uc?export=download&id=1ggWt7WLL3dCEuk5oAwmWKfH4JyLn8jms&confirm=t" target="_blank" rel="noopener noreferrer" class="audio-btn audio-btn-primary" style="font-size:1.4rem;padding:1.2rem 2.5rem;">
+         <i class="fas fa-download"></i> Download OmegaHertzEQ for Windows
+      </a>
    </div>
 </section>
 
@@ -757,7 +919,7 @@
          <div class="plugin-card-body">
             <p class="plugin-type">Equalizer</p>
             <h3>OmegaHertzEQ</h3>
-            <p>8-band fully parametric &amp; dynamic EQ with real-time spectrum analyser, A/B compare, and RGB-animated UI.</p>
+            <p>Precision filtering, per-band dynamics, real-time spectrum views, detailed stereo control, and monitoring tools in a single focused interface.</p>
             <span class="plugin-status status-available"><i class="fas fa-check-circle"></i> Available</span>
          </div>
       </div>
@@ -903,13 +1065,10 @@
 
 <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 <script src="../js/cookie-consent.js"></script>
-<script type="module" src="../js/auth.js"></script>
+<script type="module" src="../js/pages/audio-software.js"></script>
 <script src="../js/transitions.js" defer></script>
 <script src="../js/theme-toggle.js" defer></script>
 <script>
-   // AOS init
-   AOS.init({ duration: 800, once: true, offset: 80 });
-
    // Smooth scroll
    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function (e) {

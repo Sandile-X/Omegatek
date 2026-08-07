@@ -48,38 +48,53 @@ CREATE POLICY "Public read published posts"
     FOR SELECT
     USING (published = true);
 
--- Admin: authenticated users can read ALL posts (including drafts)
+-- Admin registry + helper (idempotent — safe if already created by another
+-- schema file). "TO authenticated" below used to mean "any signed-up
+-- customer", not "admin" — these policies now gate on is_admin() instead.
+CREATE TABLE IF NOT EXISTS public.admin_users (
+    id          uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    email       text,
+    created_at  timestamptz DEFAULT now()
+);
+ALTER TABLE public.admin_users ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "No direct access" ON public.admin_users;
+CREATE POLICY "No direct access" ON public.admin_users FOR ALL USING (false);
+
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS boolean LANGUAGE sql SECURITY DEFINER SET search_path = public STABLE
+AS $$ SELECT EXISTS (SELECT 1 FROM public.admin_users WHERE id = auth.uid()) $$;
+
+-- Admin: real admins can read ALL posts (including drafts)
 DROP POLICY IF EXISTS "Admin read all posts" ON public.blog_posts;
 CREATE POLICY "Admin read all posts"
     ON public.blog_posts
     FOR SELECT
-    TO authenticated
-    USING (true);
+    USING (is_admin());
 
--- Admin: authenticated users can INSERT posts
+-- Admin: real admins can INSERT posts
 DROP POLICY IF EXISTS "Admin insert posts" ON public.blog_posts;
 CREATE POLICY "Admin insert posts"
     ON public.blog_posts
     FOR INSERT
-    TO authenticated
-    WITH CHECK (true);
+    WITH CHECK (is_admin());
 
--- Admin: authenticated users can UPDATE posts
+-- Admin: real admins can UPDATE posts
 DROP POLICY IF EXISTS "Admin update posts" ON public.blog_posts;
 CREATE POLICY "Admin update posts"
     ON public.blog_posts
     FOR UPDATE
-    TO authenticated
-    USING (true)
-    WITH CHECK (true);
+    USING (is_admin())
+    WITH CHECK (is_admin());
 
--- Admin: authenticated users can DELETE posts
+-- Admin: real admins can DELETE posts
 DROP POLICY IF EXISTS "Admin delete posts" ON public.blog_posts;
 CREATE POLICY "Admin delete posts"
     ON public.blog_posts
     FOR DELETE
-    TO authenticated
-    USING (true);
+    USING (is_admin());
+
+-- After running this file: add yourself —
+--   INSERT INTO public.admin_users (id, email) VALUES ('<your-auth-uid>', '<your-email>');
 
 -- =============================================================
 -- OPTIONAL: seed one sample post to verify setup

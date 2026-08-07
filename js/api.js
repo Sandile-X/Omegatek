@@ -71,9 +71,11 @@ function ensureFirebase() {
 }
 
 export async function fetchProductsRows() {
+    // NOTE: cost_price is intentionally excluded — this query is public-facing
+    // (storefront catalog) and cost_price is internal wholesale/margin data.
     const { data, error } = await supabase
         .from('products')
-        .select('part_no,model_no,name,description,variant_color,price,cost_price,image_url,category,warranty,is_new,stock,featured,tags,supplier,created_at')
+        .select('part_no,model_no,name,description,variant_color,price,image_url,category,warranty,is_new,stock,featured,tags,supplier,created_at')
         .order('name', { ascending: true });
 
     if (error) {
@@ -292,6 +294,10 @@ export async function fetchOrdersByEmail(email) {
 }
 
 export async function fetchRepairTicketsByEmail(email) {
+    // NOTE: repair_jobs (admin/js/jobs.js) is the internal staff work-board
+    // and is being locked to admin-only RLS — do not read it from the
+    // storefront. repair_tickets is the customer-facing table, though
+    // nothing currently writes to it (no self-service booking form yet).
     const { data, error } = await supabase
         .from('repair_tickets')
         .select('*')

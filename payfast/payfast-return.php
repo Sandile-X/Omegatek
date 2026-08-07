@@ -21,8 +21,9 @@ if (empty($orderId)) {
     exit;
 }
 
-// Load order data
-$ordersFile = __DIR__ . '/order_data/orders.json';
+// Load order data — orders live in admin/order_data/, not payfast/order_data/
+// (must match the path payfast-notify.php writes to)
+$ordersFile = __DIR__ . '/../admin/order_data/orders.json';
 $order = null;
 
 if (file_exists($ordersFile)) {
@@ -43,18 +44,7 @@ if (file_exists($ordersFile)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment Successful | Omegatek Solutions</title>
     <link rel="icon" type="image/png" href="images2/OMEGATEK%20ICON%20ONLY.png">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#b30ce6',
-                    }
-                }
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="../css/tailwind-built.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {

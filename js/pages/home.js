@@ -313,19 +313,45 @@ function initFrameSequence() {
         observer.observe(section);
     }
 
-    for (let index = 0; index < frameCount; index += 1) {
-        const image = new Image();
-        image.src = `demo/frames/frame_${String(index + 1).padStart(4, '0')}.jpg`;
-        image.onload = () => {
-            frames[index] = image;
-            loadedCount += 1;
-            if (loadedCount === 1) {
-                drawFrame(0);
+    // Frames are ~12MB total — don't pull them on every homepage load.
+    // Start fetching only once the section is within a screen's reach,
+    // so a visitor who never scrolls this far never pays for it.
+    let framesLoading = false;
+    const loadFrames = () => {
+        if (framesLoading) {
+            return;
+        }
+        framesLoading = true;
+
+        for (let index = 0; index < frameCount; index += 1) {
+            const image = new Image();
+            image.decoding = 'async';
+            image.src = `demo/frames/frame_${String(index + 1).padStart(4, '0')}.jpg`;
+            image.onload = () => {
+                frames[index] = image;
+                loadedCount += 1;
+                if (loadedCount === 1) {
+                    drawFrame(0);
+                }
+            };
+            image.onerror = () => {
+                loadedCount += 1;
+            };
+        }
+    };
+
+    if ('IntersectionObserver' in window) {
+        const preloadObserver = new IntersectionObserver((entries) => {
+            if (entries[0]?.isIntersecting) {
+                loadFrames();
+                preloadObserver.disconnect();
             }
-        };
-        image.onerror = () => {
-            loadedCount += 1;
-        };
+        }, { rootMargin: '600px 0px' });
+
+        preloadObserver.observe(section);
+    } else {
+        // No IntersectionObserver support — fall back to loading immediately.
+        loadFrames();
     }
 }
 

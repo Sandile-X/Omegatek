@@ -143,13 +143,16 @@ switch ($payment_status) {
             'timestamp' => date('Y-m-d H:i:s'),
             'note' => 'Payment failed via PayFast'
         ];
-        
+
         logPayFastTransaction('Payment failed', [
             'order_id' => $orderId,
             'pf_payment_id' => $pfData['pf_payment_id'] ?? ''
         ]);
+
+        sendPaymentIssueEmail($order, 'failed');
+        sendAdminIssueNotificationEmail($order, 'failed');
         break;
-        
+
     case 'CANCELLED':
         $order['paymentStatus'] = 'cancelled';
         $order['statusHistory'][] = [
@@ -157,10 +160,13 @@ switch ($payment_status) {
             'timestamp' => date('Y-m-d H:i:s'),
             'note' => 'Payment cancelled by customer'
         ];
-        
+
         logPayFastTransaction('Payment cancelled', [
             'order_id' => $orderId
         ]);
+
+        sendPaymentIssueEmail($order, 'cancelled');
+        sendAdminIssueNotificationEmail($order, 'cancelled');
         break;
         
     default:
@@ -176,12 +182,20 @@ file_put_contents($ordersFile, json_encode($orders, JSON_PRETTY_PRINT));
 logPayFastTransaction('Order updated and saved successfully', ['order_id' => $orderId]);
 
 /**
+ * HTML-escape a value for safe interpolation into an email body.
+ * Order fields originate from customer-controlled checkout input.
+ */
+function e($value) {
+    return htmlspecialchars((string)($value ?? ''), ENT_QUOTES, 'UTF-8');
+}
+
+/**
  * Send payment confirmation email
  */
 function sendPaymentConfirmationEmail($order) {
     $to = $order['customer']['email'];
     $subject = 'Payment Confirmed - Order ' . $order['orderId'];
-    
+
     $message = "
         <html>
         <head>
@@ -202,19 +216,19 @@ function sendPaymentConfirmationEmail($order) {
                 </div>
                 
                 <div class='content'>
-                    <p>Hi {$order['customer']['fullName']},</p>
-                    
+                    <p>Hi " . e($order['customer']['fullName']) . ",</p>
+
                     <div class='success-box'>
                         <h2 style='color: #059669; margin-top: 0;'>✓ Payment Successful</h2>
-                        <p style='margin: 5px 0;'><strong>Order Number:</strong> {$order['orderId']}</p>
+                        <p style='margin: 5px 0;'><strong>Order Number:</strong> " . e($order['orderId']) . "</p>
                         <p style='margin: 5px 0;'><strong>Amount Paid:</strong> R" . number_format($order['total'], 2) . "</p>
                         <p style='margin: 5px 0;'><strong>Payment Method:</strong> Card Payment (PayFast)</p>
                     </div>
-                    
+
                     <p>Your payment has been successfully processed and your order is now confirmed. We're preparing your items for dispatch and will notify you once shipped.</p>
-                    
+
                     <center>
-                        <a href='" . SITE_URL . "/order-tracking.html?order={$order['orderId']}' class='button' style='color: white;'>Track Your Order</a>
+                        <a href='" . SITE_URL . "/order-tracking.html?order=" . urlencode($order['orderId']) . "' class='button' style='color: white;'>Track Your Order</a>
                     </center>
                     
                     <p style='margin-top: 30px; color: #666; font-size: 14px;'>
@@ -241,19 +255,19 @@ function sendAdminNotificationEmail($order) {
     $itemsHtml = '';
     foreach ($order['items'] as $item) {
         $itemTotal = $item['price'] * $item['quantity'];
-        $itemsHtml .= "<tr><td>{$item['name']}</td><td>x{$item['quantity']}</td><td>R" . number_format($itemTotal, 2) . "</td></tr>";
+        $itemsHtml .= "<tr><td>" . e($item['name']) . "</td><td>x" . intval($item['quantity']) . "</td><td>R" . number_format($itemTotal, 2) . "</td></tr>";
     }
-    
+
     $subject = 'New Paid Order - ' . $order['orderId'];
-    
+
     $message = "
         <html>
         <body style='font-family: Arial, sans-serif;'>
             <h2 style='color: #10b981;'>✓ New PAID Order Received</h2>
-            <p><strong>Order ID:</strong> {$order['orderId']}</p>
-            <p><strong>Customer:</strong> {$order['customer']['fullName']}</p>
-            <p><strong>Email:</strong> {$order['customer']['email']}</p>
-            <p><strong>Phone:</strong> {$order['customer']['phone']}</p>
+            <p><strong>Order ID:</strong> " . e($order['orderId']) . "</p>
+            <p><strong>Customer:</strong> " . e($order['customer']['fullName']) . "</p>
+            <p><strong>Email:</strong> " . e($order['customer']['email']) . "</p>
+            <p><strong>Phone:</strong> " . e($order['customer']['phone']) . "</p>
             <p><strong>Payment Method:</strong> PayFast (PAID)</p>
             <p><strong>Amount:</strong> R" . number_format($order['total'], 2) . "</p>
             <h3>Items:</h3>
@@ -263,20 +277,94 @@ function sendAdminNotificationEmail($order) {
             </table>
             <h3>Delivery Address:</h3>
             <p>
-                {$order['address']['street']}<br>
-                {$order['address']['suburb']}<br>
-                {$order['address']['city']}, {$order['address']['province']}<br>
-                {$order['address']['postalCode']}
+                " . e($order['address']['street']) . "<br>
+                " . e($order['address']['suburb']) . "<br>
+                " . e($order['address']['city']) . ", " . e($order['address']['province']) . "<br>
+                " . e($order['address']['postalCode']) . "
             </p>
-            <p><a href='" . SITE_URL . "/admin/orders-admin.html' style='background: #b30ce6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px;'>View in Admin Dashboard</a></p>
+            <p><a href='" . SITE_URL . "/admin/pages/orders-admin.html' style='background: #b30ce6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px;'>View in Admin Dashboard</a></p>
         </body>
         </html>
     ";
-    
+
     $headers = "From: Omegatek Solutions <noreply@omegateksolutions.co.za>\r\n";
     $headers .= "MIME-Version: 1.0\r\n";
     $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-    
+
+    mail(MERCHANT_EMAIL, $subject, $message, $headers);
+}
+
+/**
+ * Notify the customer their payment did not go through.
+ */
+function sendPaymentIssueEmail($order, $reason) {
+    $to = $order['customer']['email'] ?? '';
+    if (!$to) {
+        return;
+    }
+
+    $reasonText = $reason === 'cancelled'
+        ? 'You cancelled the payment before it completed.'
+        : 'The payment could not be processed by PayFast.';
+
+    $subject = 'Payment ' . ($reason === 'cancelled' ? 'Cancelled' : 'Unsuccessful') . ' - Order ' . $order['orderId'];
+
+    $message = "
+        <html>
+        <body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>
+            <div style='max-width: 600px; margin: 0 auto; padding: 20px;'>
+                <div style='background: linear-gradient(135deg, #b30ce6, #9333ea); padding: 30px; text-align: center; color: white; border-radius: 12px 12px 0 0;'>
+                    <h1 style='margin: 0;'>Payment " . ($reason === 'cancelled' ? 'Cancelled' : 'Unsuccessful') . "</h1>
+                </div>
+                <div style='background: white; padding: 30px; border: 1px solid #e5e7eb;'>
+                    <p>Hi " . e($order['customer']['fullName']) . ",</p>
+                    <div style='background: #fef3c7; border-left: 4px solid #f59e0b; padding: 20px; margin: 20px 0; border-radius: 8px;'>
+                        <p style='margin: 5px 0;'><strong>Order Number:</strong> " . e($order['orderId']) . "</p>
+                        <p style='margin: 5px 0;'>" . e($reasonText) . "</p>
+                    </div>
+                    <p>No money has been taken from your account. If this wasn't intentional, you're welcome to try again — your order is still saved and waiting for payment.</p>
+                    <p style='margin-top: 30px; color: #666; font-size: 14px;'>
+                        Questions? Contact us at " . MERCHANT_EMAIL . " or call 073 653 8207.
+                    </p>
+                </div>
+            </div>
+        </body>
+        </html>
+    ";
+
+    $headers = "From: Omegatek Solutions <noreply@omegateksolutions.co.za>\r\n";
+    $headers .= "Reply-To: " . MERCHANT_EMAIL . "\r\n";
+    $headers .= "MIME-Version: 1.0\r\n";
+    $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+
+    mail($to, $subject, $message, $headers);
+}
+
+/**
+ * Let the admin know a payment attempt failed or was cancelled, in case
+ * the customer needs a follow-up call.
+ */
+function sendAdminIssueNotificationEmail($order, $reason) {
+    $subject = 'Payment ' . ($reason === 'cancelled' ? 'cancelled' : 'failed') . ' - Order ' . $order['orderId'];
+
+    $message = "
+        <html>
+        <body style='font-family: Arial, sans-serif;'>
+            <h2 style='color: #d97706;'>Payment " . ($reason === 'cancelled' ? 'Cancelled' : 'Failed') . "</h2>
+            <p><strong>Order ID:</strong> " . e($order['orderId']) . "</p>
+            <p><strong>Customer:</strong> " . e($order['customer']['fullName']) . "</p>
+            <p><strong>Email:</strong> " . e($order['customer']['email']) . "</p>
+            <p><strong>Phone:</strong> " . e($order['customer']['phone']) . "</p>
+            <p><strong>Amount:</strong> R" . number_format($order['total'], 2) . "</p>
+            <p><a href='" . SITE_URL . "/admin/pages/orders-admin.html' style='background: #b30ce6; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px;'>View in Admin Dashboard</a></p>
+        </body>
+        </html>
+    ";
+
+    $headers = "From: Omegatek Solutions <noreply@omegateksolutions.co.za>\r\n";
+    $headers .= "MIME-Version: 1.0\r\n";
+    $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+
     mail(MERCHANT_EMAIL, $subject, $message, $headers);
 }
 

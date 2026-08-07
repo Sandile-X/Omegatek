@@ -1,15 +1,7 @@
 import { fetchPublishedBlogPosts } from '../api.js';
 import { bindNewsletterForm, initUi } from '../ui.js';
 import { initAos, initBackToTop, initSiteChrome, onReady } from '../site-shell.js';
-
-function escapeHtml(value) {
-    return String(value ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-}
+import { escapeHtml } from '../utils.js';
 
 function isPagesVariant() {
     return window.location.pathname.replace(/\\/g, '/').includes('/pages/');

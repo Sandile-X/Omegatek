@@ -2,15 +2,7 @@ import { fetchBlogPostBySlug } from '../api.js';
 import { bindNewsletterForm, initUi } from '../ui.js';
 import { initAos, initBackToTop, initSiteChrome, onReady } from '../site-shell.js';
 import DOMPurify from 'https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.es.mjs';
-
-function escapeHtml(value) {
-    return String(value ?? '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-}
+import { escapeHtml } from '../utils.js';
 
 function renderBody(content, excerpt) {
     if (content && /<[a-z][\s\S]*>/i.test(content)) {

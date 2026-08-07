@@ -151,7 +151,10 @@ RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
     
     # Content Security Policy
-    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://cdn.chatway.app https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://unpkg.com https://cdn.chatway.app; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: blob: https:; media-src 'self' blob:; connect-src 'self' https://*.supabase.co https://openrouter.ai https://www.cloudflare.com https://*.chatway.app https://firestore.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://identitytoolkit.googleapis.com; frame-src https://www.google.com https://www.youtube.com https://player.vimeo.com; frame-ancestors 'self'; object-src 'none'; base-uri 'self';"
+    # cdn.tailwindcss.com removed 2026-07 — the site now ships a built,
+    # purged local stylesheet (css/tailwind-built.css) instead of the
+    # runtime "Play CDN" compiler, so that origin is no longer needed here.
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://unpkg.com https://cdn.chatway.app https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://unpkg.com https://cdn.chatway.app; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: blob: https:; media-src 'self' blob:; connect-src 'self' https://*.supabase.co https://openrouter.ai https://www.cloudflare.com https://*.chatway.app https://firestore.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://identitytoolkit.googleapis.com; frame-src https://www.google.com https://www.youtube.com https://player.vimeo.com; frame-ancestors 'self'; object-src 'none'; base-uri 'self';"
     
     # Permissions Policy
     Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=(self)"

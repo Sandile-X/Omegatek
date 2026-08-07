@@ -1,0 +1,1025 @@
+---
+name: techy-ui-revitalization
+description: Concrete techniques to make any website feel cutting-edge and technical without changing colors/theme. Focus on micro-interactions, code visualization, glassmorphism, live data, and sophisticated animations.
+version: 1.0
+for: Omegatek Solutions (applicable to any tech site)
+---
+
+# Techy UI Revitalization Skill
+
+## 🎯 Overview
+
+Your site has **good fundamentals** (video hero, particles, hover effects) but needs **technical sophistication**. This skill elevates the experience to feel like a cutting-edge tech company's site.
+
+**No color changes** — just smarter interactions, better data viz, and refined micro-behaviors.
+
+---
+
+## 1️⃣ MICRO-INTERACTIONS (Instant Impact)
+
+### Problem
+Currently: Click a button → immediate action
+Techy: Click a button → tactile feedback → sound → glow → ripple
+
+### Solution: Ripple Effect on All Buttons
+
+```html
+<!-- Add this to your CTA buttons -->
+<button class="btn-ripple">
+  <span class="ripple-content">Get Started</span>
+  <span class="ripple"></span>
+</button>
+
+<style>
+.btn-ripple {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.btn-ripple .ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  transform: scale(0);
+  animation: ripple-effect 0.6s ease-out;
+  pointer-events: none;
+}
+
+@keyframes ripple-effect {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+.btn-ripple:active .ripple {
+  animation: ripple-effect 0.6s ease-out;
+}
+</style>
+
+<script>
+document.querySelectorAll('.btn-ripple').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    const ripple = this.querySelector('.ripple');
+    const rect = this.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = e.clientX - rect.left - size / 2;
+    const y = e.clientY - rect.top - size / 2;
+    
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = x + 'px';
+    ripple.style.top = y + 'px';
+  });
+});
+</script>
+```
+
+### Solution: Cursor Glow Tracking
+
+Users will FEEL the interactivity. Add to hero section:
+
+```html
+<style>
+  .cursor-glow {
+    position: fixed;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(179, 12, 230, 0.3), transparent);
+    pointer-events: none;
+    z-index: 9999;
+    filter: blur(20px);
+    transform: translate(-50%, -50%);
+    display: none;
+  }
+  
+  body:hover .cursor-glow {
+    display: block;
+  }
+</style>
+
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<script>
+const glow = document.getElementById('cursorGlow');
+document.addEventListener('mousemove', (e) => {
+  glow.style.left = e.clientX + 'px';
+  glow.style.top = e.clientY + 'px';
+});
+</script>
+```
+
+### Solution: Button Hover State with Icon Animation
+
+```html
+<!-- Service cards or CTA buttons -->
+<button class="tech-btn">
+  <span class="btn-text">View Service</span>
+  <span class="btn-icon">→</span>
+  <div class="btn-glow"></div>
+</button>
+
+<style>
+.tech-btn {
+  position: relative;
+  padding: 1rem 2rem;
+  border: 2px solid #b30ce6;
+  background: transparent;
+  color: #b30ce6;
+  font-weight: 600;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.tech-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: #b30ce6;
+  z-index: -1;
+  transition: left 0.3s ease;
+}
+
+.tech-btn:hover::before {
+  left: 0;
+}
+
+.tech-btn:hover {
+  color: white;
+  box-shadow: 0 0 30px rgba(179, 12, 230, 0.5);
+}
+
+.btn-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translate(-50%, -50%);
+}
+
+.tech-btn:hover .btn-glow {
+  animation: glow-pulse 0.6s ease-out;
+}
+
+@keyframes glow-pulse {
+  0% {
+    width: 0;
+    height: 0;
+  }
+  100% {
+    width: 300px;
+    height: 300px;
+  }
+}
+
+.btn-icon {
+  margin-left: 0.5rem;
+  display: inline-block;
+  transition: transform 0.3s ease;
+}
+
+.tech-btn:hover .btn-icon {
+  transform: translateX(5px);
+}
+</style>
+```
+
+---
+
+## 2️⃣ CODE/TECHNICAL VISUALIZATION
+
+### Problem
+Your apps are listed, but users don't SEE the technical depth
+
+### Solution: Live Code Snippet Carousel
+
+Add to your portfolio section:
+
+```html
+<!-- Above portfolio cards -->
+<div class="tech-stack-showcase">
+  <div class="code-preview">
+    <div class="code-header">
+      <span class="code-lang">TrendScan API</span>
+      <div class="code-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+    <pre><code class="code-snippet" id="codeSnippet">// Real-time inventory sync
+const scanBarcode = async (code) => {
+  const item = await db.query(
+    'SELECT * FROM inventory WHERE barcode = ?',
+    [code]
+  );
+  return updateQuantity(item.id, -1);
+};</code></pre>
+  </div>
+  
+  <div class="code-nav">
+    <button class="code-nav-btn active" data-snippet="trendscan">TrendScan</button>
+    <button class="code-nav-btn" data-snippet="alphaguard">AlphaGuard</button>
+    <button class="code-nav-btn" data-snippet="omegahertz">OmegaHertz</button>
+  </div>
+</div>
+
+<style>
+.tech-stack-showcase {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(179, 12, 230, 0.2);
+  overflow: hidden;
+  margin: 2rem 0;
+  backdrop-filter: blur(10px);
+}
+
+.code-preview {
+  position: relative;
+  padding: 1.5rem;
+}
+
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(179, 12, 230, 0.1);
+}
+
+.code-lang {
+  font-family: 'Monaco', 'Courier New', monospace;
+  color: #b30ce6;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.code-dots {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.code-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(179, 12, 230, 0.3);
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.code-dots span:nth-child(1) { background: #ff5f56; }
+.code-dots span:nth-child(2) { background: #ffbd2e; }
+.code-dots span:nth-child(3) { background: #27c93f; }
+
+.code-snippet {
+  font-family: 'Monaco', monospace;
+  color: #e0e0e0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  background: transparent;
+  border: none;
+  outline: none;
+  margin: 0;
+  overflow-x: auto;
+  min-height: 100px;
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.code-snippet::-webkit-scrollbar {
+  height: 4px;
+}
+
+.code-snippet::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.code-snippet::-webkit-scrollbar-thumb {
+  background: #b30ce6;
+  border-radius: 2px;
+}
+
+.code-nav {
+  display: flex;
+  border-top: 1px solid rgba(179, 12, 230, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.code-nav-btn {
+  flex: 1;
+  padding: 0.75rem;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  font-family: monospace;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+  border-bottom: 2px solid transparent;
+}
+
+.code-nav-btn:hover {
+  color: #b30ce6;
+}
+
+.code-nav-btn.active {
+  color: #b30ce6;
+  border-bottom-color: #b30ce6;
+  background: rgba(179, 12, 230, 0.1);
+}
+</style>
+
+<script>
+const snippets = {
+  trendscan: `// Real-time inventory sync\nconst scanBarcode = async (code) => {\n  const item = await db.query(\n    'SELECT * FROM inventory WHERE barcode = ?',\n    [code]\n  );\n  return updateQuantity(item.id, -1);\n};`,
+  alphaguard: `// Asset tracking with GPS\nconst trackAsset = async (assetId) => {\n  const location = await getGPS();\n  await db.updateAsset(assetId, {\n    lat: location.latitude,\n    lng: location.longitude,\n    timestamp: Date.now()\n  });\n};`,
+  omegahertz: `// Acoustic analysis algorithm\nconst measureRT60 = (audioBuffer) => {\n  const spectrum = analyzeFreq(audioBuffer);\n  const rt60 = calculateDecayTime(spectrum);\n  return { freq: spectrum, rt60 };\n};`
+};
+
+document.querySelectorAll('.code-nav-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    document.querySelectorAll('.code-nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const key = btn.dataset.snippet;
+    document.getElementById('codeSnippet').textContent = snippets[key];
+  });
+});
+</script>
+```
+
+---
+
+## 3️⃣ GLASSMORPHISM & BACKDROP BLUR
+
+### Problem
+Cards feel flat; no depth
+
+### Solution: Glass Card Overlay
+
+```html
+<style>
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(179, 12, 230, 0.3);
+  box-shadow: 0 8px 32px rgba(179, 12, 230, 0.15);
+}
+
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  background: linear-gradient(135deg, transparent 0%, rgba(179, 12, 230, 0.1) 100%);
+  border-radius: 12px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.glass-card:hover::before {
+  opacity: 1;
+}
+</style>
+
+<!-- Apply to service cards, reviews, anything -->
+<div class="glass-card">
+  <h3>Advanced Analytics</h3>
+  <p>Real-time insights into your repair workflow and customer trends.</p>
+</div>
+```
+
+---
+
+## 4️⃣ LIVE DATA COUNTERS
+
+### Problem
+Static numbers don't feel alive
+
+### Solution: Animated Counters with Pulse
+
+```html
+<section class="stats-section">
+  <div class="stat-card glass-card">
+    <div class="stat-number" data-target="127" data-duration="2000">0</div>
+    <div class="stat-label">Client Reviews</div>
+    <div class="stat-bar">
+      <div class="stat-bar-fill" style="width: 85%;"></div>
+    </div>
+  </div>
+  
+  <div class="stat-card glass-card">
+    <div class="stat-number" data-target="4800" data-duration="2000">0</div>
+    <span class="stat-suffix">+</span>
+    <div class="stat-label">Devices Repaired</div>
+  </div>
+  
+  <div class="stat-card glass-card">
+    <div class="stat-number" data-target="98" data-duration="2000">0</div>
+    <span class="stat-suffix">%</span>
+    <div class="stat-label">Success Rate</div>
+  </div>
+  
+  <div class="stat-card glass-card">
+    <div class="stat-number" data-target="6" data-duration="2000">0</div>
+    <span class="stat-suffix">+</span>
+    <div class="stat-label">Years in Business</div>
+  </div>
+</section>
+
+<style>
+.stats-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin: 3rem 0;
+}
+
+.stat-card {
+  position: relative;
+  text-align: center;
+  padding: 2rem 1.5rem;
+}
+
+.stat-number {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #b30ce6;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 0.5rem;
+}
+
+.stat-suffix {
+  font-size: 1.5rem;
+  color: #b30ce6;
+  margin-left: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+
+.stat-bar {
+  height: 3px;
+  background: rgba(179, 12, 230, 0.1);
+  border-radius: 2px;
+  margin-top: 1rem;
+  overflow: hidden;
+}
+
+.stat-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #b30ce6, #9333ea);
+  border-radius: 2px;
+  animation: fill 2s ease-out;
+}
+
+@keyframes fill {
+  from {
+    width: 0 !important;
+  }
+}
+
+.stat-card:hover .stat-number {
+  animation: pulse-color 0.6s ease;
+}
+
+@keyframes pulse-color {
+  0%, 100% { color: #b30ce6; }
+  50% { color: #9333ea; }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const counters = document.querySelectorAll('[data-target]');
+  
+  const observerOptions = {
+    threshold: 0.5,
+    rootMargin: '0px'
+  };
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !entry.target.dataset.counted) {
+        const target = parseInt(entry.target.dataset.target);
+        const duration = parseInt(entry.target.dataset.duration) || 2000;
+        const element = entry.target;
+        
+        let current = 0;
+        const increment = target / (duration / 16);
+        
+        const counter = setInterval(() => {
+          current += increment;
+          if (current >= target) {
+            element.textContent = target.toLocaleString();
+            clearInterval(counter);
+            element.dataset.counted = 'true';
+          } else {
+            element.textContent = Math.floor(current).toLocaleString();
+          }
+        }, 16);
+      }
+    });
+  }, observerOptions);
+  
+  counters.forEach(counter => observer.observe(counter));
+});
+</script>
+```
+
+---
+
+## 5️⃣ PARALLAX BACKGROUND PATTERNS
+
+### Problem
+Solid backgrounds feel static
+
+### Solution: Animated Grid + Gradient
+
+```html
+<style>
+.tech-bg-section {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+}
+
+.tech-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    linear-gradient(0deg, transparent 24%, rgba(179, 12, 230, 0.05) 25%, rgba(179, 12, 230, 0.05) 26%, transparent 27%, transparent 74%, rgba(179, 12, 230, 0.05) 75%, rgba(179, 12, 230, 0.05) 76%, transparent 77%, transparent),
+    linear-gradient(90deg, transparent 24%, rgba(179, 12, 230, 0.05) 25%, rgba(179, 12, 230, 0.05) 26%, transparent 27%, transparent 74%, rgba(179, 12, 230, 0.05) 75%, rgba(179, 12, 230, 0.05) 76%, transparent 77%, transparent);
+  background-size: 50px 50px;
+  animation: slide 20s linear infinite;
+  z-index: 1;
+}
+
+@keyframes slide {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(50px);
+  }
+}
+
+.tech-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* Floating orbs */
+.tech-bg::before,
+.tech-bg::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(179, 12, 230, 0.3), transparent);
+  filter: blur(40px);
+  animation: float 8s ease-in-out infinite;
+}
+
+.tech-bg::before {
+  width: 300px;
+  height: 300px;
+  top: -100px;
+  left: -100px;
+}
+
+.tech-bg::after {
+  width: 200px;
+  height: 200px;
+  bottom: -50px;
+  right: -50px;
+  animation-delay: 4s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+</style>
+
+<!-- Wrap your content section -->
+<section class="tech-bg-section">
+  <div class="tech-bg"></div>
+  <div class="tech-content">
+    <!-- Your actual content here -->
+  </div>
+</section>
+```
+
+---
+
+## 6️⃣ SKELETON LOADING STATES
+
+### Problem
+Data loads but no feedback
+
+### Solution: Shimmer Skeleton Loaders
+
+```html
+<div class="skeleton-loader">
+  <div class="skeleton-card">
+    <div class="skeleton skeleton-image"></div>
+    <div class="skeleton skeleton-text"></div>
+    <div class="skeleton skeleton-text" style="width: 70%;"></div>
+  </div>
+</div>
+
+<style>
+.skeleton-loader {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.skeleton-card {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1rem;
+  backdrop-filter: blur(10px);
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.skeleton-image {
+  height: 150px;
+}
+
+.skeleton-text {
+  height: 12px;
+  width: 100%;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+</style>
+```
+
+---
+
+## 7️⃣ SCROLL-TRIGGERED ANIMATIONS (Better)
+
+### Current Issue
+Using AOS is fine, but feels generic
+
+### Solution: Custom Scroll Trigger with Stagger
+
+```javascript
+// Replace/enhance current scroll animations
+class ScrollReveal {
+  constructor(selector, options = {}) {
+    this.elements = document.querySelectorAll(selector);
+    this.options = {
+      threshold: options.threshold || 0.2,
+      stagger: options.stagger || 100,
+      duration: options.duration || 600,
+      ...options
+    };
+    this.setupObserver();
+  }
+
+  setupObserver() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('reveal-visible');
+            observer.unobserve(entry.target);
+          }, this.options.stagger * index);
+        }
+      });
+    }, { threshold: this.options.threshold });
+
+    this.elements.forEach(el => observer.observe(el));
+  }
+}
+
+// Usage in your script
+new ScrollReveal('.service-card', {
+  threshold: 0.3,
+  stagger: 80,
+  duration: 700
+});
+```
+
+```css
+.service-card {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.service-card.reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+```
+
+---
+
+## 8️⃣ 3D CARD HOVER EFFECT
+
+### Problem
+Flat hover states
+
+### Solution: 3D Perspective
+
+```html
+<div class="card-3d">
+  <div class="card-3d-inner">
+    <div class="card-3d-front">
+      <h3>TrendScan</h3>
+      <p>Inventory Management</p>
+    </div>
+    <div class="card-3d-back">
+      <p>Real-time barcode scanning, offline support, Excel integration.</p>
+    </div>
+  </div>
+</div>
+
+<style>
+.card-3d {
+  perspective: 1000px;
+  width: 300px;
+  height: 300px;
+  cursor: pointer;
+}
+
+.card-3d-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transform-style: preserve-3d;
+}
+
+.card-3d:hover .card-3d-inner {
+  transform: rotateY(180deg);
+}
+
+.card-3d-front,
+.card-3d-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.card-3d-front {
+  background: linear-gradient(135deg, rgba(179, 12, 230, 0.2), transparent);
+  border: 1px solid rgba(179, 12, 230, 0.3);
+}
+
+.card-3d-back {
+  background: linear-gradient(135deg, #b30ce6, #9333ea);
+  color: white;
+  transform: rotateY(180deg);
+}
+
+.card-3d-front h3 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  color: #b30ce6;
+}
+</style>
+```
+
+---
+
+## 9️⃣ LOADING PROGRESS INDICATOR
+
+### Problem
+No feedback when AI/API is processing
+
+### Solution: Subtle Progress Bar
+
+```html
+<div id="progress-bar" class="progress-indicator">
+  <div class="progress-fill"></div>
+</div>
+
+<style>
+.progress-indicator {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: transparent;
+  z-index: 9999;
+  width: 100%;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #b30ce6, #9333ea);
+  width: 0%;
+  transition: width 0.3s ease;
+  box-shadow: 0 0 20px rgba(179, 12, 230, 0.8);
+}
+
+.progress-fill.active {
+  animation: progress-infinite 1.5s ease-in-out infinite;
+}
+
+@keyframes progress-infinite {
+  0% {
+    width: 10%;
+  }
+  50% {
+    width: 70%;
+  }
+  100% {
+    width: 90%;
+  }
+}
+</style>
+
+<script>
+const progressBar = {
+  start() {
+    const fill = document.querySelector('.progress-fill');
+    fill.classList.add('active');
+    fill.style.width = '10%';
+  },
+  complete() {
+    const fill = document.querySelector('.progress-fill');
+    fill.classList.remove('active');
+    fill.style.width = '100%';
+    setTimeout(() => {
+      fill.style.width = '0%';
+    }, 300);
+  }
+};
+
+// Usage in your API calls
+async function callAI(prompt) {
+  progressBar.start();
+  try {
+    const response = await fetch('gemini-api.php', {
+      method: 'POST',
+      body: JSON.stringify({ prompt })
+    });
+    const data = await response.json();
+    progressBar.complete();
+    return data;
+  } catch (err) {
+    progressBar.complete();
+    throw err;
+  }
+}
+</script>
+```
+
+---
+
+## 🔟 SCROLL VELOCITY-BASED TEXT EFFECT
+
+### Problem
+Text doesn't respond to scroll speed
+
+### Solution: Blur/Scale on Scroll
+
+```html
+<h2 class="scroll-text" data-blur="true">
+  Advanced Technology Solutions
+</h2>
+
+<style>
+.scroll-text {
+  font-size: 3rem;
+  font-weight: 700;
+  transition: filter 0.1s ease;
+}
+
+.scroll-text.blur {
+  filter: blur(2px);
+  opacity: 0.8;
+}
+</style>
+
+<script>
+const scrollTexts = document.querySelectorAll('[data-blur="true"]');
+let lastScrollPos = 0;
+
+window.addEventListener('scroll', () => {
+  const currentScrollPos = window.scrollY;
+  const scrollVelocity = Math.abs(currentScrollPos - lastScrollPos);
+  
+  scrollTexts.forEach(text => {
+    if (scrollVelocity > 5) {
+      text.classList.add('blur');
+    } else {
+      text.classList.remove('blur');
+    }
+  });
+  
+  lastScrollPos = currentScrollPos;
+});
+</script>
+```
+
+---
+
+## IMPLEMENTATION PRIORITY
+
+**Week 1 (Do First):**
+1. Ripple effect on buttons (instant polish)
+2. Cursor glow tracking (wow factor)
+3. Glass card styling (depth)
+4. Live data counters (credibility)
+
+**Week 2:**
+5. Code snippet carousel (technical credibility)
+6. Tech background grid (atmosphere)
+7. 3D card flip (engagement)
+
+**Week 3:**
+8. Custom scroll reveals (refinement)
+9. Loading progress bar (professionalism)
+10. Scroll velocity blur (sophistication)
+
+---
+
+## QUICK COPY-PASTE CHECKLIST
+
+- [ ] Add ripple effect to CTA buttons
+- [ ] Add cursor glow div + event listener
+- [ ] Convert service cards to glass-card class
+- [ ] Add stat counters section
+- [ ] Wrap portfolio/content in tech-bg-section
+- [ ] Replace AOS with custom ScrollReveal
+- [ ] Add 3D flip to app cards
+- [ ] Add progress bar to API calls
+- [ ] Test all effects on mobile
+
+---
+
+This skill keeps **your brand** (purple, dark, professional) but adds **2026 technical flair**. Every effect serves a purpose — no bloat.

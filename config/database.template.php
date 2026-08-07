@@ -48,11 +48,11 @@ try {
         $options
     );
 } catch (PDOException $e) {
+    error_log('DB connection failed: ' . $e->getMessage());
     http_response_code(500);
     echo json_encode([
         'success' => false,
-        'message' => 'Database connection failed',
-        'error' => $e->getMessage()
+        'message' => 'Database connection failed'
     ]);
     exit;
 }
@@ -83,12 +83,11 @@ function execute($query, $params = []) {
     return $stmt->rowCount();
 }
 
-// CORS headers
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
-
+// NOTE: CORS headers are intentionally NOT set here anymore — callers
+// (e.g. orders-api-v2.php) set their own origin allowlist before requiring
+// this file, and a blanket 'Access-Control-Allow-Origin: *' here would
+// silently overwrite that restriction on every request.
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }

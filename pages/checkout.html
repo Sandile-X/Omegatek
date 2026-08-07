@@ -8,13 +8,15 @@
     <meta name="description" content="Complete your purchase securely at Omegatek Solutions">
     <meta name="robots" content="noindex, nofollow">
 
-<script src="https://cdn.tailwindcss.com"></script>
-     <script src="../js/tailwind-checkout-config.js"></script>
+<link rel="stylesheet" href="../css/tailwind-built.css">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="../images2/favicon.png">
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/revival.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600&family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="../css/style.min.css">
+    <link rel="stylesheet" href="../css/revival.min.css">
 
     <style>
         * {
@@ -49,7 +51,14 @@
             border-color: rgba(255, 255, 255, 0.12);
             color: #f5f5f7;
         }
-        
+
+        /* Tailwind's gray text utilities are hardcoded for a light card —
+           override them under dark mode so labels/prices stay legible. */
+        [data-theme="dark"] .text-gray-800 { color: #f5f5f7; }
+        [data-theme="dark"] .text-gray-700 { color: #e4e4e7; }
+        [data-theme="dark"] .text-gray-600 { color: #a1a1aa; }
+
+
         .checkout-container {
             max-width: 1400px;
             margin: 0 auto;
@@ -180,20 +189,20 @@
                             
                             <div class="grid md:grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-gray-700 mb-2 font-semibold">Full Name *</label>
-                                    <input type="text" name="fullName" class="form-input" required placeholder="John Doe">
+                                    <label for="checkoutFullName" class="block text-gray-700 mb-2 font-semibold">Full Name *</label>
+                                    <input id="checkoutFullName" type="text" name="fullName" class="form-input" required placeholder="John Doe">
                                 </div>
                                 <div>
-                                    <label class="block text-gray-700 mb-2 font-semibold">Email Address *</label>
-                                    <input type="email" name="email" class="form-input" required placeholder="john@example.com">
+                                    <label for="checkoutEmail" class="block text-gray-700 mb-2 font-semibold">Email Address *</label>
+                                    <input id="checkoutEmail" type="email" name="email" class="form-input" required placeholder="john@example.com">
                                 </div>
                                 <div>
-                                    <label class="block text-gray-700 mb-2 font-semibold">Phone Number *</label>
-                                    <input type="tel" name="phone" class="form-input" required placeholder="073 123 4567">
+                                    <label for="checkoutPhone" class="block text-gray-700 mb-2 font-semibold">Phone Number *</label>
+                                    <input id="checkoutPhone" type="tel" name="phone" class="form-input" required placeholder="073 123 4567">
                                 </div>
                                 <div>
-                                    <label class="block text-gray-700 mb-2 font-semibold">Alternative Phone</label>
-                                    <input type="tel" name="altPhone" class="form-input" placeholder="Optional">
+                                    <label for="checkoutAltPhone" class="block text-gray-700 mb-2 font-semibold">Alternative Phone</label>
+                                    <input id="checkoutAltPhone" type="tel" name="altPhone" class="form-input" placeholder="Optional">
                                 </div>
                             </div>
                         </div>
@@ -202,22 +211,22 @@
                             <h2 class="text-3xl font-bold text-gray-800 mb-6">Delivery Address</h2>
                             
                             <div class="mb-4">
-                                <label class="block text-gray-700 mb-2 font-semibold">Street Address *</label>
-                                <input type="text" name="address" class="form-input" required placeholder="123 Main Street">
+                                <label for="checkoutAddress" class="block text-gray-700 mb-2 font-semibold">Street Address *</label>
+                                <input id="checkoutAddress" type="text" name="address" class="form-input" required placeholder="123 Main Street">
                             </div>
-                            
+
                             <div class="grid md:grid-cols-3 gap-4 mb-4">
                                 <div>
-                                    <label class="block text-gray-700 mb-2 font-semibold">Suburb/Area *</label>
-                                    <input type="text" name="suburb" class="form-input" required placeholder="Midrand">
+                                    <label for="checkoutSuburb" class="block text-gray-700 mb-2 font-semibold">Suburb/Area *</label>
+                                    <input id="checkoutSuburb" type="text" name="suburb" class="form-input" required placeholder="Midrand">
                                 </div>
                                 <div>
-                                    <label class="block text-gray-700 mb-2 font-semibold">City *</label>
-                                    <input type="text" name="city" class="form-input" required placeholder="Johannesburg">
+                                    <label for="checkoutCity" class="block text-gray-700 mb-2 font-semibold">City *</label>
+                                    <input id="checkoutCity" type="text" name="city" class="form-input" required placeholder="Johannesburg">
                                 </div>
                                 <div>
-                                    <label class="block text-gray-700 mb-2 font-semibold">Province *</label>
-                                    <select name="province" class="form-input" required>
+                                    <label for="checkoutProvince" class="block text-gray-700 mb-2 font-semibold">Province *</label>
+                                    <select id="checkoutProvince" name="province" class="form-input" required>
                                         <option value="">Select Province</option>
                                         <option value="Gauteng">Gauteng</option>
                                         <option value="Western Cape">Western Cape</option>
@@ -233,8 +242,8 @@
                             </div>
                             
                             <div>
-                                <label class="block text-gray-700 mb-2 font-semibold">Postal Code *</label>
-                                <input type="text" name="postalCode" class="form-input" required placeholder="1685">
+                                <label for="checkoutPostalCode" class="block text-gray-700 mb-2 font-semibold">Postal Code *</label>
+                                <input id="checkoutPostalCode" type="text" name="postalCode" class="form-input" required placeholder="1685">
                             </div>
                         </div>
 

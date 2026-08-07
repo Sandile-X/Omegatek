@@ -23,10 +23,14 @@ config/database.php
 # ── Runtime User / PII Data ───────────────────────────────────
 admin/order_data/
 admin/newsletter_data/
+admin/rate_limit_data/
 payfast/order_data/
 data/orders*.json
 data/users*.json
 logs/
+
+# ── Claude Code worktrees (may contain stray copies of secrets) ──
+.claude/worktrees/
 
 # ── IDE & Editor ──────────────────────────────────────────────
 .vscode/
